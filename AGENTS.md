@@ -1,23 +1,26 @@
 # Agent instructions
 
-This repository is a small robotics learning test bench. Optimize for fast experiments that build physical intuition, not framework complexity.
+This repository is a disposable robotics learning test bench. Optimize for fast experiments that build physical intuition, not framework complexity.
 
-- Read `README.md` and the current experiment before changing anything.
+- Read the root `README.md`, then the current experiment README and code before changing anything.
+- New experiments belong in `experiments/YYYY-MM-DD-short-question/` and should keep their code, README, and meaningful agent log local to that directory.
+- Root docs contain only repo-wide conventions. Keep experiment-specific findings inside the experiment.
 - Prefer the smallest change that answers the current question. Keep experiments easy to inspect, revert, and compare.
-- Preserve the learning loop: ask for or respect an Iteration 0 prediction before revealing a non-trivial mechanism or diagnosis when the user is learning from the result.
+- Preserve Iteration 0: ask for or respect the human prediction before revealing a non-trivial mechanism or diagnosis when learning is the target.
 - Automate setup, API lookup, boilerplate, repetitive edits, plotting, and other implementation friction aggressively.
-- Do not outsource the learning target. Leave hypotheses, physical interpretation, architecture tradeoffs, and diagnosis with the user unless explicitly asked to solve them.
-- Change one physical or numerical variable at a time when possible. Avoid bundled perturbations that make causality unclear.
+- Do not outsource the learning target. Leave hypotheses, physical interpretation, architecture tradeoffs, and diagnosis with the human unless explicitly asked to solve them.
+- Change one physical or numerical variable at a time when causality matters.
 - When behavior is surprising, consider model parameters, contacts, actuators, controller logic, and numerical integration before assuming one cause.
-- Verify important claims with the cheapest reliable check: inspect the MuJoCo model/data, run the experiment, print a focused state value, or use a minimal test.
-- Do not add tests, abstractions, infrastructure, or dependencies by default. Add them only when they protect meaningful behavior or remove repeated friction.
-- Keep repo-specific findings here in concise comments, docs, or issues. Do not turn this repo into a general robotics knowledge base.
-- Use GitHub Issues only for durable follow-up work. Do not create process for trivial experiments.
+- Verify important claims with the cheapest reliable check: inspect MuJoCo state, run the experiment, print a focused value, or use a minimal test.
+- Do not add tests, abstractions, infrastructure, or dependencies by default.
+- Record an `agent-log.md` entry only when an interaction changes a prediction, experiment, interpretation, decision, code direction, or next meaningful action. Do not log routine syntax/API help.
+- Use `templates/agent-interaction.md` when a structured entry is useful. Do not store full chat transcripts.
+- Use GitHub Issues for durable follow-up work, not trivial experiment steps.
 - Keep communication concise. Distinguish observed behavior from inference when it matters.
 
 ## Current conventions
 
 - Python + MuJoCo.
-- `pendulum.py` is the current minimal experiment.
-- Prefer direct MuJoCo concepts (`mjModel`, `mjData`, `qpos`, `qvel`, `ctrl`, contacts, timestep) over hiding them behind higher-level frameworks while learning.
-- For perturbation sessions, default loop: predict -> change one thing -> run -> explain -> revert or record.
+- Prefer direct MuJoCo concepts (`mjModel`, `mjData`, `qpos`, `qvel`, `ctrl`, contacts, timestep) while learning.
+- Default experiment loop: predict -> change -> run -> explain -> record next question.
+- Do not polish an experiment after its learning value is exhausted; move to the next mechanism.
