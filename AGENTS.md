@@ -14,7 +14,8 @@ This repository is a disposable robotics learning test bench. Optimize for fast 
 - Verify important claims with the cheapest reliable check: inspect MuJoCo state, run the experiment, print a focused value, or use a minimal test.
 - Do not add tests, abstractions, infrastructure, or dependencies by default.
 - Record an `agent-log.md` entry only when an interaction changes a prediction, experiment, interpretation, decision, code direction, or next meaningful action. Do not log routine syntax/API help.
-- Use `templates/agent-interaction.md` when a structured entry is useful. Do not store full chat transcripts.
+- Meaningful agent-log entries use the stable `Q/R/E/A/O` ontology from `templates/agent-interaction.md`: Question -> Response -> Evaluation -> Action -> Outcome. Preserve IDs across updates and record explicit relations and Librarian status.
+- Use `templates/agent-interaction.md` as the canonical log shape. Do not store full chat transcripts.
 - Use GitHub Issues for durable follow-up work, not trivial experiment steps.
 - Keep communication concise. Distinguish observed behavior from inference when it matters.
 
