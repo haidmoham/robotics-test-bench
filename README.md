@@ -1,46 +1,60 @@
 # Robotics Test Bench
 
-Fast, failure-driven robotics experiments. The goal is to use agents to remove setup and boilerplate friction without outsourcing the parts that build physical intuition.
+A disposable laboratory for building robotics intuition through small simulation experiments.
 
-## Operating loop
+The goal is to shorten the distance between a physical question and an observation. This is not a polished robotics project.
 
-1. Predict what should happen.
-2. Change one thing.
-3. Run it.
-4. Explain what happened.
-5. Revert or record it.
+## Core loop
 
-Agent help is welcome for setup, API lookup, boilerplate, plotting, and repetitive code. I should own the prediction, physical interpretation, and diagnosis.
+1. State a question.
+2. Make an Iteration 0 prediction.
+3. Build the smallest useful test.
+4. Run it.
+5. Observe the result.
+6. Update the mental model.
+7. Record the next question.
 
-## MuJoCo mental model
+Agents should remove setup, API, boilerplate, and repetitive implementation friction. The human should own prediction, physical interpretation, and diagnosis when those are the learning target.
 
-- `mjModel` = what the simulated system **is**.
-- `mjData` = what the system is **doing now**.
-- `worldbody` = the fixed global coordinate frame, not a faithful model of "the world."
-- Bodies form a tree rooted at the world frame.
-- A robot can have its own root/base body inside that tree.
-- Contacts and constraints add relationships beyond the body tree, so the full physical interaction structure can behave like a graph.
-- `qpos` = generalized configuration.
-- `qvel` = generalized velocity.
-- `ctrl` = actuator command; it is not necessarily joint torque.
-- `mj_step()` roughly means: kinematics -> collision/contact -> forces/constraints -> acceleration -> integration -> new state.
+## Structure
 
-When behavior looks wrong, suspect more than the controller: model parameters, contacts, actuators, and numerical integration can all be the cause.
+```text
+experiments/
+  YYYY-MM-DD-short-question/
+    README.md
+    <experiment code>
+    agent-log.md
+
+templates/
+  agent-interaction.md
+```
+
+Each experiment owns its code and local evidence. Root docs contain only repo-wide conventions.
 
 ## Current experiment
 
-`pendulum.py`: one rigid body, one hinge, gravity, and a MuJoCo viewer.
+[`experiments/2026-08-08-pendulum-control`](experiments/2026-08-08-pendulum-control)
 
-Useful things to perturb independently:
+MuJoCo mental model:
+- `mjModel` = what the simulated system is.
+- `mjData` = what the system is doing now.
+- `worldbody` = fixed global frame.
+- bodies form a tree; contacts and constraints add relationships beyond that tree.
+- `qpos` = generalized configuration.
+- `qvel` = generalized velocity.
+- `ctrl` = actuator command, not necessarily joint torque.
+- `mj_step()` advances kinematics, contact/constraints, forces, acceleration, and integration.
 
-- gravity
-- initial `qpos`
-- initial `qvel`
-- hinge axis
-- mass
-- arm length / geometry
-- damping
-- timestep
-- floor / contact geometry
+## Rules
 
-Keep experiments small enough that the result can be predicted before running them.
+- Run something quickly.
+- Change one meaningful variable at a time when causality matters.
+- Predict before executing.
+- Optimize for understanding, not elegance.
+- Ugly experiment code is acceptable.
+- Refactor only when it removes repeated friction or enables the next question.
+- Do not turn this repo into a general robotics encyclopedia.
+
+## Success metrics
+
+Measure questions tested, predictions made, surprising failures, observations, and updated beliefs. Do not optimize for lines of code or production polish.
