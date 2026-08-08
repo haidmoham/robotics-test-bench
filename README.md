@@ -31,6 +31,19 @@ templates/
 
 Each experiment owns its code and local evidence. Root docs contain only repo-wide conventions.
 
+## Small ontology
+
+Meaningful agent interactions use stable local objects:
+
+```text
+Question -> Response -> Evaluation -> Action -> Outcome
+   Q          R           E           A          O
+```
+
+Each object gets a stable ID such as `Q-20260808-001`. The experiment `agent-log.md` records the object summaries, relations, evidence status, unresolved questions, and a compact Librarian handoff. The ontology is an audit layer, not a reason to log routine syntax help or full conversations.
+
+Use [`templates/agent-interaction.md`](templates/agent-interaction.md) for the canonical shape.
+
 ## Current experiment
 
 [`experiments/2026-08-08-pendulum-control`](experiments/2026-08-08-pendulum-control)
