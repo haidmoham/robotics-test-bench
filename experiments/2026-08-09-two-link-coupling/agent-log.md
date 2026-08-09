@@ -1,12 +1,12 @@
 # Agent log
 
-## AI-20260809-001 — Multi-DOF coupling scaffold
+## AI-20260809-001 — Multi-DOF coupling
 
 ```yaml
 id: AI-20260809-001
 date: 2026-08-09
 agent: Codex
-status: acted
+status: resolved
 evaluation: confirmed
 repo_state:
   repository: robotics-test-bench
@@ -39,7 +39,7 @@ librarian:
 
 ## Q — Question
 
-How does commanding joint 1 change joint 2's behavior in a planar two-link arm, and how does that change with configuration, gravity, and joint-2 control?
+How does commanding joint 1 change joint 2's behavior in a planar two-link arm, and what does that reveal about multi-joint dynamics?
 
 ### Human prediction
 
@@ -51,11 +51,11 @@ The elbow motor never drives in passive mode, so the observed flopping should be
 
 ### Next prediction
 
-With joint 2 switched to `hold` while keeping elbow-down configuration and normal gravity, expect a more distinctive, intentional-looking motion—possibly not a wave, but more recognizable than the passive flopping.
+With joint 2 switched to `hold` while keeping elbow-down configuration and normal gravity, expect a more distinctive, intentional-looking motion than the passive flopping.
 
 ### Gravity-off prediction
 
-With gravity disabled, expect the staged coupled motion to look cleaner and more recognizable because the motors do not need to oppose the gravitational load.
+With gravity disabled, expect the staged motion to look cleaner because the motors do not need to oppose the gravitational load.
 
 ### Purpose
 
@@ -69,61 +69,45 @@ Move beyond one-joint control intuition with the smallest experiment that can ex
 
 ## R — Response summary
 
-A two-link vertical-plane MuJoCo arm was scaffolded. It drives only joint 1, lets joint 2 be passive or lightly held, and exposes pose and gravity as single-variable comparisons.
+A two-link MuJoCo arm was used to compare a passive elbow, a held elbow, and gravity-on/off behavior while keeping the controller deliberately simple.
 
 ## E — Human evaluation
 
 ### Accepted
 
-- In the passive, elbow-down run with normal Earth gravity enabled (`0 0 -9.81` m/s²), joint 2 visibly flopped around while joint 1 was commanded.
-- The motion was not exactly the predicted janky wave, but it was qualitatively close enough to support the expectation of uncommanded elbow movement.
-- With the same configuration and gravity but `joint2_mode=hold`, the motion looked more organized and wave-like than the passive run.
-- The faster, in-plane rotated, control-coupled run produced an unmistakable wave; from the user's forward viewpoint, it appeared upside down.
-- With gravity disabled, the staged coupled wave looked cleaner and more recognizable, matching the gravity-off prediction.
+- In the passive, elbow-down run with normal gravity, joint 2 visibly moved while only joint 1 was commanded.
+- The motion was qualitatively close to the predicted janky, loosely waving arm.
+- With the same configuration and gravity but `joint2_mode=hold`, the motion became more organized and wave-like.
+- With gravity disabled, the staged motion looked cleaner and more recognizable, matching the gravity-off prediction.
+- The experiment made the important distinction between physical coupling and controller-imposed coupling visible. Explicit target cross-feed can create a coordinated gesture, but it is not evidence for the passive physical coupling that motivated issue #2.
+- Further parameter search for a more exact wave was judged to have low learning value once the coupling behavior was understood.
 
 ### Rejected
 
 - “The elbow motor is too weak to overcome gravity” was rejected. In passive mode, the elbow motor receives `ctrl[1] = 0.0` and never drives.
 
-### Unresolved
+### Deferred
 
-- Does joint 2 show behavior that the independent-pendulum mental model misses?
-- Which observed differences depend on configuration, gravity, or motion?
-- Does the observed motion resemble the predicted janky, loosely waving arm?
-- Does changing joint 2 to `hold` materially change the elbow behavior now that the passive motor command is explicit?
-- Does the held-elbow run produce the predicted more intentional-looking motion?
-- Does the gravity-off run look cleaner and more recognizable than the normal-gravity run?
+- A precise decomposition of which coupling effects dominate across pose, gravity, and velocity can be revisited when a later experiment needs it.
+- The elbow-up comparison remains available as a follow-up, but it is not required for the current learning target.
 
 ### Verification required
 
-- Repeat the passive-elbow comparison from the `elbow-up` configuration.
-- Repeat one case with gravity disabled and inspect the printed state samples.
+None for the current closure. Deferred comparisons should make a fresh prediction if they are revisited.
 
 ## A — Action
 
-Created the local experiment scaffold and documented an Iteration 0 prediction prompt plus minimal comparison runs. Added a `wave` mode that gives joint 2 its own phase-shifted sinusoidal target and PD tracking command, then added explicit control coupling so joint 2's target includes a tunable fraction of joint 1's desired motion.
-
-Raised the shoulder base from `z=1.5 m` to `z=2.5 m` to keep the elbow-down arm above the floor while preserving the same control experiment.
-
-Rotated the arm +90° within the plane orthogonal to the hinge axes (about Y), increased the wave frequency from `0.8` to `1.4` rad/s, and increased the wave tracking gains to make the coordinated motion faster.
-
-Increased joint 2's wave amplitude from `0.55` to `0.70` rad and its tracking gains from `Kp=8, Kd=1` to `Kp=10, Kd=1.2` so its contribution is more visually distinct.
-
-Widened joint 2's excursion to `1.20` rad with `Kp=14, Kd=1.5` so the intentionally non-human wave hyperextends in both directions.
-
-Changed the coupled joint-2 target to sweep exactly from `-2` to `+2 rad` at the current coupling gain, compensating the base wave amplitude for the joint-1 cross-feed.
-
-Replaced the always-on target with staged `ready → wave → return → hold` targets using smoothstep return interpolation, and added a small sphere at the link tip as a hand proxy.
-
-Reverted the deliberately extreme joint-2 target range from `-2…+2 rad` to `-1.2…+1.2 rad` while preserving the staged motion and hand proxy.
+Built the minimal two-link experiment, compared passive and held joint-2 behavior, and tested a gravity-off case. Added a coordinated wave mode for exploration, then stopped waveform tuning when it no longer tested the multi-DOF mental model.
 
 ## O — Outcome
 
-Observed two runs with the same elbow-down configuration and normal Earth gravity: passive joint 2 flopped around, while held joint 2 produced more organized, wave-like motion. The faster, in-plane rotated, control-coupled run produced a recognizable wave, though its orientation was upside down from the user's forward viewpoint. The visual resemblance is now confirmed; the remaining mismatch is viewpoint/orientation.
+Issue #2 is resolved for now. The experiment produced direct evidence that one joint's behavior cannot be reasoned about as an isolated pendulum once it is part of a moving two-link system. The passive elbow moved with zero elbow command, changing joint-2 control changed the motion, and removing gravity changed the resulting behavior.
+
+The recognizable wave was useful as an engaging visualization, but reproducing a particular waveform became a controller-tuning search rather than the learning target.
 
 ### Effect on current belief
 
-The prediction that shoulder-driven motion would produce uncommanded elbow motion is supported, and the held-elbow comparison changed the visible behavior. The gravity-off result strengthens the belief that removing gravitational load makes this simple controller track the intended qualitative wave more cleanly; orientation remains a presentation variable.
+The independent-joint mental model is insufficient for this system. Multi-joint behavior depends on the state and motion of the full mechanism, not only the local command at each joint. The next useful work does not need more tuning of this experiment.
 
 ## Librarian update
 
@@ -136,23 +120,23 @@ objects:
   - id: Q-20260809-001
     type: Question
     summary: How does driving one joint affect the other joint in a two-link arm?
-    status: open
+    status: resolved
   - id: R-20260809-001
     type: Response
-    summary: Created a minimal two-link comparison scaffold with pose, gravity, and joint-2 control toggles.
-    status: proposed
+    summary: Used a minimal two-link comparison with passive/held elbow behavior and gravity as discriminating conditions.
+    status: confirmed
   - id: E-20260809-001
     type: Evaluation
-    summary: Passive elbow flopped while joint 1 was driven; the gravity-off staged wave was cleaner and more recognizable, matching the prediction.
+    summary: Passive joint 2 moved with zero elbow command; holding it changed the motion; gravity-off behavior changed as predicted; waveform tuning stopped when it ceased to test the coupling model.
     status: confirmed
   - id: A-20260809-001
     type: Action
-    summary: Added README, MuJoCo experiment script, local agent log, staged phase-shifted and coupled wave controller, raised base height, in-plane rotation, faster wave tracking, controlled `-1.2` to `+1.2 rad` joint-2 target, and a hand proxy for issue #2.
+    summary: Built and ran the two-link coupling experiment, compared meaningful control conditions, and stopped presentation-oriented tuning after the learning target was met.
     status: completed
   - id: O-20260809-001
     type: Outcome
-    summary: With normal Earth gravity enabled, passive joint 2 flopped while the held-joint-2 run looked more organized; with gravity off, the staged coupled run produced a cleaner, recognizable wave.
-    status: observed
+    summary: Independent-joint intuition was replaced by a full-state multi-joint mental model; issue #2 is resolved for now.
+    status: resolved
 relations:
   - subject: Q-20260809-001
     predicate: receives
@@ -167,7 +151,7 @@ relations:
     predicate: produces
     object: O-20260809-001
 unresolved_questions:
-  - Does joint 2 move in a way that cannot be understood as an independent pendulum?
+  - Deferred: which coupling terms dominate across pose, gravity, and velocity when a later task requires that decomposition?
 superseded_claims:
   - The initial motor-strength explanation was superseded by the code-level observation that passive joint 2 is unpowered.
 ```
