@@ -66,6 +66,65 @@ The belief that compensation makes the control job easier is retained, while “
 
 Related: #4
 
+## AI-20260809-005 — Mathematical interpretation
+
+id: AI-20260809-005
+date: 2026-08-09
+agent: Codex
+status: acted
+evaluation: unconfirmed
+repo_state:
+  repository: robotics-test-bench
+  branch: main
+  commit: eff6885
+  changed_files:
+    - experiments/2026-08-09-model-based-control/agent-log.md
+related:
+  experiment: experiments/2026-08-09-model-based-control
+  issues: [4]
+objects:
+  question: Q-20260809-005
+  response: R-20260809-005
+  evaluation: E-20260809-005
+  action: A-20260809-005
+  outcome: O-20260809-005
+librarian:
+  status: pending
+  record_ids: []
+
+## Q — Question
+
+Why might the gravity-compensation arm look more coordinated or fluid?
+
+## R — Response summary
+
+For manipulator dynamics M(q)qdd + C(q,qdot)qdot + g(q) = tau, baseline PD leaves g(q) as a disturbance. PD plus gravity compensation adds an estimate of g(q), so the feedback loop handles mainly tracking error and residual dynamic terms.
+
+## E — Human evaluation
+
+### Accepted
+
+- The hypothesis is mathematically plausible: removing the configuration-dependent gravity forcing can reduce uneven corrective errors between joints.
+
+### Unresolved
+
+- The total torque command need not be smaller because it includes the explicit gravity torque.
+- The current visual impression still needs a split between feedback torque and gravity torque to test “easier” directly.
+
+## A — Action
+
+Derived the error dynamics and evaluated the initial gravity-torque vector numerically at the experiment's starting pose.
+
+## O — Outcome
+
+At q=(0.35,-0.70), the model's gravity torque is approximately (13.64, 2.58) N·m. A static PD-only balance estimate with Kp=18 is approximately (0.758, 0.143) radians of position error; this is a nonlinear, moving-target comparison aid, not an observed trajectory result.
+
+### Effect on current belief
+
+The fluid-motion observation is consistent with gravity compensation removing a large configuration-dependent forcing term, but visual smoothness alone does not establish lower total control effort.
+
+Related: #4
+
 ## AI-20260809-004 — Visual comparison observation
 
 id: AI-20260809-004
