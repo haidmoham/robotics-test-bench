@@ -5,7 +5,7 @@
 id: AI-20260809-009
 date: 2026-08-09
 agent: Codex
-status: acted
+status: resolved
 evaluation: confirmed
 sources:
   - kind: chat
@@ -62,13 +62,13 @@ The final complete cycle, 7.853982 to 15.707963 seconds, was simulated headlessl
 - The controller-only wrong-mass condition increased position-error RMS to [0.268017, 0.053296] rad, acceleration-error RMS to [0.035255, 0.018318] rad/s², and feedback-torque RMS to [4.826850, 0.962259] N-m.
 - At the target reversal with desired acceleration [-0.224, -0.288] rad/s², the wrong-mass feedforward torque was [7.318840, 1.166463] N-m instead of [10.963537, 2.332925] N-m. Its shortfall was [3.644697, 1.166463] N-m.
 
-The run confirms that the inaccurate model leaves a large residual that feedback must correct. It does not yet isolate a time-resolved overshoot event, so the predicted later higher acceleration magnitude remains unconfirmed.
+The run confirms that the inaccurate model leaves a large residual that feedback must correct. It does not isolate a time-resolved overshoot event, so the predicted later higher acceleration magnitude remains unconfirmed and is outside this experiment's stop boundary.
 
 ### Effect on current belief
 
 - Before: Model-based feedforward was expected to reduce error, but the distinct effect of a controller-only mass error was untested.
 - After: Accurate desired-state inverse dynamics greatly reduces the residual in this model. A controller-only mass error restores a measurable residual and feedback burden.
-- Evidence status: Experimentally observed for the reported RMS values and reversal torque shortfall. The separate claim about later corrective acceleration remains unconfirmed.
+- Evidence status: Experimentally observed for the reported RMS values and reversal torque shortfall. The separate claim about later corrective acceleration remains unconfirmed and is not required for issue #4 closure.
 
 ## Librarian update
 
@@ -88,15 +88,15 @@ objects:
   - id: Q-20260809-009
     type: Question
     summary: What does desired-state inverse dynamics change, and what does a controller-only mass error reveal?
-    status: open
+    status: resolved
   - id: R-20260809-009
     type: Response
     summary: Accurate feedforward should help near acceleration extrema; an underestimated mass should first under-accelerate, then require stronger feedback correction.
-    status: recorded-as-prediction
+    status: confirmed-with-boundary
   - id: E-20260809-009
     type: Evaluation
     summary: The test design holds plant, target, gains, and timestep fixed while changing only the controller model.
-    status: unconfirmed
+    status: confirmed
   - id: A-20260809-009
     type: Action
     summary: Run accurate and wrong-mass computed-torque conditions with position, acceleration, and torque telemetry.
@@ -119,7 +119,7 @@ relations:
     predicate: produces
     object: O-20260809-009
 unresolved_questions:
-  - Does the wrong-mass trace show initial under-acceleration followed by a larger correction at a resolved time point?
+  - Deferred outside issue #4: does the wrong-mass trace show initial under-acceleration followed by a larger correction at a resolved time point?
 superseded_claims: []
 ```
 
@@ -235,9 +235,9 @@ superseded_claims: []
 
 Related: #4
 
-## AI-20260809-008 — Overlay comparison aid
+## AI-20260809-010 — Overlay comparison aid
 
-id: AI-20260809-008
+id: AI-20260809-010
 date: 2026-08-09
 agent: Codex
 status: acted
@@ -254,11 +254,11 @@ related:
   experiment: experiments/2026-08-09-model-based-control
   issues: [4]
 objects:
-  question: Q-20260809-008
-  response: R-20260809-008
-  evaluation: E-20260809-008
-  action: A-20260809-008
-  outcome: O-20260809-008
+  question: Q-20260809-010
+  response: R-20260809-010
+  evaluation: E-20260809-010
+  action: A-20260809-010
+  outcome: O-20260809-010
 librarian:
   status: pending
   record_ids: []
@@ -301,39 +301,39 @@ source:
   path: experiments/2026-08-09-model-based-control/agent-log.md
   commit:
 objects:
-  - id: Q-20260809-008
+  - id: Q-20260809-010
     type: Question
     summary: Can two controller states be compared in one viewer without sharing physics?
     status: answered-by-design
-  - id: R-20260809-008
+  - id: R-20260809-010
     type: Response
     summary: Use independent data objects and a visualization-only overlay with compact rolling plots.
     status: implemented
-  - id: E-20260809-008
+  - id: E-20260809-010
     type: Evaluation
     summary: Visual inspection and telemetry-preservation checks remain required.
     status: unconfirmed
-  - id: A-20260809-008
+  - id: A-20260809-010
     type: Action
     summary: Added a viewer-only overlay mode with compact derivative plots for the PD and gravity-compensation states.
     status: completed
-  - id: O-20260809-008
+  - id: O-20260809-010
     type: Outcome
     summary: Pending visual inspection; not experiment evidence.
     status: pending
 relations:
-  - subject: Q-20260809-008
+  - subject: Q-20260809-010
     predicate: receives
-    object: R-20260809-008
-  - subject: R-20260809-008
+    object: R-20260809-010
+  - subject: R-20260809-010
     predicate: receives
-    object: E-20260809-008
-  - subject: E-20260809-008
+    object: E-20260809-010
+  - subject: E-20260809-010
     predicate: causes
-    object: A-20260809-008
-  - subject: A-20260809-008
+    object: A-20260809-010
+  - subject: A-20260809-010
     predicate: produces
-    object: O-20260809-008
+    object: O-20260809-010
 unresolved_questions:
   - Does the overlay make the controller-state difference easier to inspect?
 superseded_claims: []
