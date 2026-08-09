@@ -20,6 +20,8 @@ This repository is a disposable robotics learning test bench. Optimize for fast 
 - Use `templates/agent-interaction.md` as the canonical log shape. Do not store full chat transcripts.
 - Commit at meaningful experimental boundaries: completed experiments, informative failures, ontology changes, and before broad refactors. Commit messages should state the hypothesis or change and the observed result when known. Do not batch unrelated learning into one commit.
 - Use GitHub Issues for durable follow-up work, not trivial experiment steps.
+- Treat a GitHub issue number as stable concept identity, not experiment chronology. Do not renumber or backfill issues when evidence resolves out of issue order.
+- Treat the dated experiment directory and the commit that records its resolved boundary as the chronology source. Portfolio or other projections must carry the issue number only as provenance and must assign their own contiguous display order from completed evidence.
 - Keep communication concise. Distinguish observed behavior from inference when it matters.
 
 ## Current conventions
