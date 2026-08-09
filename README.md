@@ -31,6 +31,75 @@ templates/
 
 Each experiment owns its code and local evidence. Root docs contain only repo-wide conventions.
 
+## Concept map
+
+GitHub issues are concept nodes, not a fixed syllabus. Node numbers below match issue numbers. Arrows mean that one concept can make another experiment more meaningful; they do **not** mean that the nodes must be completed in order.
+
+Choose the next node from the evidence produced by the current experiment. Branch, repeat, skip, or insert a smaller local question when the observations justify it.
+
+```mermaid
+flowchart TD
+    C01["#1 Feedback fundamentals"]
+    C02["#2 Multi-DOF dynamics"]
+    C03["#3 Robot kinematics"]
+    C04["#4 Model-based control"]
+    C05["#5 Trajectory tracking"]
+    C06["#6 Jacobians & task space"]
+    C07["#7 Actuator limits"]
+    C08["#8 Contact & friction"]
+    C09["#9 IK vs dynamic feasibility"]
+    C10["#10 Underactuation"]
+    C11["#11 State estimation"]
+    C12["#12 System identification"]
+    C13["#13 Numerical sensitivity"]
+    C14["#14 Robustness & uncertainty"]
+    C15["#15 Diagnosis by experiment"]
+
+    C01 --> C02
+    C01 --> C03
+    C01 --> C05
+    C01 --> C11
+
+    C02 --> C04
+    C02 --> C05
+    C02 --> C10
+    C02 --> C12
+
+    C03 --> C06
+    C03 --> C09
+
+    C04 --> C05
+    C04 --> C12
+    C04 --> C14
+
+    C05 --> C07
+    C05 --> C11
+    C05 --> C13
+
+    C06 --> C08
+    C06 --> C09
+
+    C07 --> C08
+    C07 --> C14
+
+    C08 --> C14
+    C09 --> C14
+    C10 --> C14
+
+    C11 --> C14
+    C11 --> C15
+
+    C12 --> C14
+    C12 --> C15
+
+    C13 --> C14
+    C13 --> C15
+
+    C14 --> C15
+```
+
+The map is intentionally incomplete as a path planner. The core loop remains authoritative: an experiment should end by producing the next question, even when that question points sideways or backward in the graph.
+
 ## Small ontology
 
 Meaningful agent interactions use stable local objects:
