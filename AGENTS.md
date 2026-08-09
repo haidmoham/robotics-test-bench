@@ -15,6 +15,8 @@ This repository is a disposable robotics learning test bench. Optimize for fast 
 - Do not add tests, abstractions, infrastructure, or dependencies by default.
 - Record an `agent-log.md` entry only when an interaction changes a prediction, experiment, interpretation, decision, code direction, or next meaningful action. Do not log routine syntax/API help.
 - Meaningful agent-log entries use the stable `Q/R/E/A/O` ontology from `templates/agent-interaction.md`: Question -> Response -> Evaluation -> Action -> Outcome. Preserve IDs across updates and record explicit relations and Librarian status.
+- New agent-log entries must identify their source provenance. Keep coding-agent, chat, human-observation, and external-reference sources distinct; do not merge claims from different sources without attribution.
+- For conversation-derived entries, preserve the epistemic change as an explicit before -> after belief update and keep verification status separate from source provenance.
 - Use `templates/agent-interaction.md` as the canonical log shape. Do not store full chat transcripts.
 - Commit at meaningful experimental boundaries: completed experiments, informative failures, ontology changes, and before broad refactors. Commit messages should state the hypothesis or change and the observed result when known. Do not batch unrelated learning into one commit.
 - Use GitHub Issues for durable follow-up work, not trivial experiment steps.
