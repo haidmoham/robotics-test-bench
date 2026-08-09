@@ -28,6 +28,8 @@ pythonw model_based_control.py --controller gravity-comp
 
 `pythonw` keeps the terminal hidden while leaving the MuJoCo viewer open.
 
+The baseline PD arm is blue. The gravity-compensation arm is orange.
+
 Every 0.25 seconds, the script prints target position, actual position, per-joint error, torque command, total error magnitude, and total control-effort magnitude. Use the late-run samples for the steady-state comparison.
 
 ## Boundaries

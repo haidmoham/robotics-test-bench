@@ -9,18 +9,18 @@ import mujoco.viewer
 import numpy as np
 
 
-XML = """
-<mujoco model="model_based_control">
+XML_TEMPLATE = """
+<mujoco model="model_based_control_{model_name}">
   <option timestep="0.002" gravity="0 0 -9.81"/>
   <worldbody>
     <light pos="0 0 4"/>
     <geom type="plane" size="3 3 0.1"/>
     <body name="shoulder" pos="0 0 2.5" euler="0 90 0">
       <joint name="joint1" type="hinge" axis="0 1 0" damping="0.02"/>
-      <geom name="link1" type="capsule" fromto="0 0 0 0 0 -1" size="0.05" mass="1"/>
+      <geom name="link1" type="capsule" fromto="0 0 0 0 0 -1" size="0.05" mass="1" rgba="{rgba}"/>
       <body name="elbow" pos="0 0 -1">
         <joint name="joint2" type="hinge" axis="0 1 0" damping="0.02"/>
-        <geom name="link2" type="capsule" fromto="0 0 0 0 0 -0.8" size="0.045" mass="0.7"/>
+        <geom name="link2" type="capsule" fromto="0 0 0 0 0 -0.8" size="0.045" mass="0.7" rgba="{rgba}"/>
       </body>
     </body>
   </worldbody>
@@ -36,6 +36,10 @@ KP = 18.0
 KD = 4.0
 AMPLITUDE = (0.35, 0.45)
 FREQUENCY = 0.8
+COLORS = {
+    "pd": ("pd_blue", "0.15 0.40 0.95 1"),
+    "gravity-comp": ("gravity_orange", "0.95 0.45 0.08 1"),
+}
 
 
 def parse_args():
@@ -48,8 +52,11 @@ def parse_args():
     return parser.parse_args()
 
 
-def make_model():
-    return mujoco.MjModel.from_xml_string(XML)
+def make_model(controller):
+    model_name, rgba = COLORS[controller]
+    return mujoco.MjModel.from_xml_string(
+        XML_TEMPLATE.format(model_name=model_name, rgba=rgba)
+    )
 
 
 def desired_state(elapsed):
@@ -100,12 +107,12 @@ def report(elapsed, data, target, error):
 def main():
     args = parse_args()
 
-    model = make_model()
+    model = make_model(args.controller)
     data = mujoco.MjData(model)
     data.qpos[:] = START
     mujoco.mj_forward(model, data)
 
-    print(f"controller={args.controller}")
+    print(f"controller={args.controller} color={COLORS[args.controller][0]}")
     next_report = 0.0
 
     start_time = time.time()
