@@ -72,6 +72,8 @@ Summarize the useful claims, options, warnings, or proposed tests. Do not paste 
 
 Record the test, inspection, decision, code change, or commit caused by the interaction. Link repository-relative files and other evidence.
 
+If the action changes code, use the commit message as the translation layer between reasoning and implementation: state why the current belief, evidence, or decision justified the change. Leave exact implementation detail to the diff.
+
 ## O — Outcome
 
 Record the observed result, or write `Pending` until it is known.
