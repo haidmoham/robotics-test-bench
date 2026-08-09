@@ -6,7 +6,14 @@ id: AI-20260809-009
 date: 2026-08-09
 agent: Codex
 status: acted
-evaluation: partially-confirmed
+evaluation: confirmed
+sources:
+  - kind: chat
+    system: Codex
+    reference: 2026-08-09 model-based-control learning session
+  - kind: coding-agent
+    system: Codex
+    reference: experiments/2026-08-09-model-based-control/model_based_control.py headless 16-second runs
 repo_state:
   repository: robotics-test-bench
   branch: main
@@ -59,7 +66,9 @@ The run confirms that the inaccurate model leaves a large residual that feedback
 
 ### Effect on current belief
 
-Accurate desired-state inverse dynamics greatly reduces the residual in this model. A controller-only mass error restores a measurable residual and feedback burden. The separate claim about later corrective acceleration needs a trace-level check.
+- Before: Model-based feedforward was expected to reduce error, but the distinct effect of a controller-only mass error was untested.
+- After: Accurate desired-state inverse dynamics greatly reduces the residual in this model. A controller-only mass error restores a measurable residual and feedback burden.
+- Evidence status: Experimentally observed for the reported RMS values and reversal torque shortfall. The separate claim about later corrective acceleration remains unconfirmed.
 
 ## Librarian update
 
@@ -68,6 +77,13 @@ source:
   repository: robotics-test-bench
   path: experiments/2026-08-09-model-based-control/agent-log.md
   commit:
+provenance:
+  - kind: chat
+    system: Codex
+    reference: 2026-08-09 model-based-control learning session
+  - kind: coding-agent
+    system: Codex
+    reference: experiments/2026-08-09-model-based-control/model_based_control.py headless 16-second runs
 objects:
   - id: Q-20260809-009
     type: Question
@@ -88,7 +104,7 @@ objects:
   - id: O-20260809-009
     type: Outcome
     summary: Accurate feedforward nearly eliminated the residual; a controller-only wrong mass restored position, acceleration, and feedback residuals.
-    status: partially-confirmed
+    status: confirmed-with-boundary
 relations:
   - subject: Q-20260809-009
     predicate: receives
