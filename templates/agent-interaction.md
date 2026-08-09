@@ -30,6 +30,8 @@ librarian:
   record_ids: []
 ```
 
+`NNN` is repository-wide for that date, not experiment-local. Allocate the next unused suffix across all experiment logs. Never reuse an `AI/Q/R/E/A/O` ID in another experiment. Preserve an allocated ID across later updates. Keep interaction entries in causal order so prediction -> observation -> interpretation can be reconstructed from the file as well as Git history.
+
 ## Q — Question
 
 State the decision-relevant question.
