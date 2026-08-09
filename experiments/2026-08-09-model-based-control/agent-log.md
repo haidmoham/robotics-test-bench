@@ -1,8 +1,8 @@
 # Agent log
 
-## AI-20260809-003 — Iteration 0 prediction
+## AI-20260809-004 — Iteration 0 prediction
 
-id: AI-20260809-003
+id: AI-20260809-004
 date: 2026-08-09
 agent: Codex
 status: acted
@@ -17,11 +17,11 @@ related:
   experiment: experiments/2026-08-09-model-based-control
   issues: [4]
 objects:
-  question: Q-20260809-003
-  response: R-20260809-003
-  evaluation: E-20260809-003
-  action: A-20260809-003
-  outcome: O-20260809-003
+  question: Q-20260809-004
+  response: R-20260809-004
+  evaluation: E-20260809-004
+  action: A-20260809-004
+  outcome: O-20260809-004
 librarian:
   status: pending
   record_ids: []
@@ -50,7 +50,7 @@ The human prediction was that gravity compensation should make the controller's 
 
 ### Unresolved
 
-- Whether the visual motion, steady-state error, and control effort show that prediction.
+- Whether the visual motion, periodic steady-state tracking error, and feedback control effort show that prediction.
 
 ## A — Action
 
@@ -64,11 +64,57 @@ Pending visual comparison.
 
 The belief that compensation makes the control job easier is retained, while “faster” has been marked as an ambiguous visual proxy rather than a direct speed prediction. No experiment observation has changed the belief yet.
 
+## Librarian update
+
+```yaml
+source:
+  repository: robotics-test-bench
+  path: experiments/2026-08-09-model-based-control/agent-log.md
+  commit:
+objects:
+  - id: Q-20260809-004
+    type: Question
+    summary: What should gravity compensation change when the plant, target, and PD gains are fixed?
+    status: answered-as-prediction
+  - id: R-20260809-004
+    type: Response
+    summary: Gravity compensation should reduce the burden on PD feedback.
+    status: recorded
+  - id: E-20260809-004
+    type: Evaluation
+    summary: The prediction is plausible but still needs observation and telemetry.
+    status: unconfirmed
+  - id: A-20260809-004
+    type: Action
+    summary: Recorded Iteration 0 before running either controller condition.
+    status: completed
+  - id: O-20260809-004
+    type: Outcome
+    summary: Visual and telemetry comparison pending.
+    status: pending
+relations:
+  - subject: Q-20260809-004
+    predicate: receives
+    object: R-20260809-004
+  - subject: R-20260809-004
+    predicate: receives
+    object: E-20260809-004
+  - subject: E-20260809-004
+    predicate: causes
+    object: A-20260809-004
+  - subject: A-20260809-004
+    predicate: produces
+    object: O-20260809-004
+unresolved_questions:
+  - Do the visual motion and telemetry support the prediction?
+superseded_claims: []
+```
+
 Related: #4
 
-## AI-20260809-006 — Final-cycle telemetry comparison
+## AI-20260809-007 — Final-cycle telemetry comparison
 
-id: AI-20260809-006
+id: AI-20260809-007
 date: 2026-08-09
 agent: Codex
 status: acted
@@ -76,7 +122,7 @@ evaluation: confirmed
 repo_state:
   repository: robotics-test-bench
   branch: main
-  commit: 0166d66
+  commit: 869c764
   changed_files:
     - experiments/2026-08-09-model-based-control/model_based_control.py
     - experiments/2026-08-09-model-based-control/agent-log.md
@@ -84,11 +130,11 @@ related:
   experiment: experiments/2026-08-09-model-based-control
   issues: [4]
 objects:
-  question: Q-20260809-006
-  response: R-20260809-006
-  evaluation: E-20260809-006
-  action: A-20260809-006
-  outcome: O-20260809-006
+  question: Q-20260809-007
+  response: R-20260809-007
+  evaluation: E-20260809-007
+  action: A-20260809-007
+  outcome: O-20260809-007
 librarian:
   status: pending
   record_ids: []
@@ -106,14 +152,10 @@ Both modes were run headlessly for 16 simulated seconds with identical model, ta
 ### Accepted
 
 - Baseline PD RMS tracking error was [0.679127, 0.082077] radians; gravity compensation was [0.019344, 0.004964].
-- Baseline PD feedback-torque RMS was [12.226788, 1.485622] N·m; gravity compensation feedback-torque RMS was [0.356078, 0.093290].
-- The model gravity-torque RMS was [12.255165, 1.534452] N·m in the baseline comparison and [12.846722, 2.229886] N·m under compensation.
+- Baseline PD feedback-torque RMS was [12.226788, 1.485622] N-m; gravity compensation feedback-torque RMS was [0.356078, 0.093290].
+- Model gravity-torque RMS was [12.255165, 1.534452] N-m in the baseline comparison and [12.846722, 2.229886] N-m under compensation.
 - Baseline feedback projected onto the model gravity term with coefficients [0.997479, 0.967702] per joint.
-- Gravity-compensation total-torque RMS was [12.869362, 2.194443] N·m, so total effort did not fall in the same way as the feedback residual.
-
-### Unresolved
-
-- None for this comparison.
+- Gravity-compensation total-torque RMS was [12.869362, 2.194443] N-m, so total effort did not fall in the same way as the feedback residual.
 
 ## A — Action
 
@@ -129,68 +171,9 @@ The visual “easier” interpretation is quantitatively supported. The result d
 
 Related: #4
 
-## AI-20260809-005 — Mathematical interpretation
+## AI-20260809-005 — Visual comparison observation
 
 id: AI-20260809-005
-date: 2026-08-09
-agent: Codex
-status: acted
-evaluation: unconfirmed
-repo_state:
-  repository: robotics-test-bench
-  branch: main
-  commit: eff6885
-  changed_files:
-    - experiments/2026-08-09-model-based-control/agent-log.md
-related:
-  experiment: experiments/2026-08-09-model-based-control
-  issues: [4]
-objects:
-  question: Q-20260809-005
-  response: R-20260809-005
-  evaluation: E-20260809-005
-  action: A-20260809-005
-  outcome: O-20260809-005
-librarian:
-  status: pending
-  record_ids: []
-
-## Q — Question
-
-Why might the gravity-compensation arm look more coordinated or fluid?
-
-## R — Response summary
-
-For manipulator dynamics M(q)qdd + C(q,qdot)qdot + g(q) = tau, baseline PD leaves g(q) as a disturbance. PD plus gravity compensation adds an estimate of g(q), so the feedback loop handles mainly tracking error and residual dynamic terms.
-
-## E — Human evaluation
-
-### Accepted
-
-- The hypothesis is mathematically plausible: removing the configuration-dependent gravity forcing can reduce uneven corrective errors between joints.
-
-### Unresolved
-
-- The total torque command need not be smaller because it includes the explicit gravity torque.
-- The current visual impression still needs a split between feedback torque and gravity torque to test “easier” directly.
-
-## A — Action
-
-Derived the error dynamics and evaluated the initial gravity-torque vector numerically at the experiment's starting pose.
-
-## O — Outcome
-
-At q=(0.35,-0.70), the model's gravity torque is approximately (13.64, 2.58) N·m. A static PD-only balance estimate with Kp=18 is approximately (0.758, 0.143) radians of position error; this is a nonlinear, moving-target comparison aid, not an observed trajectory result.
-
-### Effect on current belief
-
-The fluid-motion observation is consistent with gravity compensation removing a large configuration-dependent forcing term, but visual smoothness alone does not establish lower total control effort.
-
-Related: #4
-
-## AI-20260809-004 — Visual comparison observation
-
-id: AI-20260809-004
 date: 2026-08-09
 agent: Codex
 status: acted
@@ -205,11 +188,11 @@ related:
   experiment: experiments/2026-08-09-model-based-control
   issues: [4]
 objects:
-  question: Q-20260809-004
-  response: R-20260809-004
-  evaluation: E-20260809-004
-  action: A-20260809-004
-  outcome: O-20260809-004
+  question: Q-20260809-005
+  response: R-20260809-005
+  evaluation: E-20260809-005
+  action: A-20260809-005
+  outcome: O-20260809-005
 librarian:
   status: pending
   record_ids: []
@@ -243,5 +226,157 @@ Pending telemetry comparison.
 ### Effect on current belief
 
 The prediction that gravity compensation may make the control job easier is qualitatively supported by the visual impression, but the mechanism remains unconfirmed.
+
+## Librarian update
+
+```yaml
+source:
+  repository: robotics-test-bench
+  path: experiments/2026-08-09-model-based-control/agent-log.md
+  commit:
+objects:
+  - id: Q-20260809-005
+    type: Question
+    summary: What visible difference does gravity compensation produce relative to baseline PD?
+    status: answered-by-observation
+  - id: R-20260809-005
+    type: Response
+    summary: The compensated arm looked more fluid and coordinated.
+    status: observed
+  - id: E-20260809-005
+    type: Evaluation
+    summary: The visual difference is real, but its mechanism is not established.
+    status: unconfirmed
+  - id: A-20260809-005
+    type: Action
+    summary: Recorded the visual observation without causal overclaiming.
+    status: completed
+  - id: O-20260809-005
+    type: Outcome
+    summary: Telemetry comparison remains pending.
+    status: pending
+relations:
+  - subject: Q-20260809-005
+    predicate: receives
+    object: R-20260809-005
+  - subject: R-20260809-005
+    predicate: receives
+    object: E-20260809-005
+  - subject: E-20260809-005
+    predicate: causes
+    object: A-20260809-005
+  - subject: A-20260809-005
+    predicate: produces
+    object: O-20260809-005
+unresolved_questions:
+  - Does the visual difference correspond to lower feedback effort or tracking error?
+superseded_claims: []
+```
+
+Related: #4
+
+## AI-20260809-006 — Mathematical interpretation
+
+id: AI-20260809-006
+date: 2026-08-09
+agent: Codex
+status: acted
+evaluation: unconfirmed
+repo_state:
+  repository: robotics-test-bench
+  branch: main
+  commit: eff6885
+  changed_files:
+    - experiments/2026-08-09-model-based-control/agent-log.md
+related:
+  experiment: experiments/2026-08-09-model-based-control
+  issues: [4]
+objects:
+  question: Q-20260809-006
+  response: R-20260809-006
+  evaluation: E-20260809-006
+  action: A-20260809-006
+  outcome: O-20260809-006
+librarian:
+  status: pending
+  record_ids: []
+
+## Q — Question
+
+Why might the gravity-compensation arm look more coordinated or fluid?
+
+## R — Response summary
+
+For manipulator dynamics M(q)qdd + C(q,qdot)qdot + g(q) = tau, baseline PD leaves g(q) as a disturbance. PD plus gravity compensation adds an estimate of g(q), so the feedback loop handles mainly tracking error and residual dynamic terms.
+
+## E — Human evaluation
+
+### Accepted
+
+- The hypothesis is mathematically plausible: removing the configuration-dependent gravity forcing can reduce uneven corrective errors between joints.
+
+### Unresolved
+
+- The total torque command need not be smaller because it includes the explicit gravity torque.
+- The current visual impression still needs a split between feedback torque and gravity torque to test “easier” directly.
+
+## A — Action
+
+Derived the error dynamics and evaluated the initial gravity-torque vector numerically at the experiment's starting pose.
+
+## O — Outcome
+
+At q=(0.35,-0.70), the model's gravity torque is approximately (13.64, 2.58) N·m. A static PD-only balance estimate with Kp=18 is approximately (0.758, 0.143) radians of position error; this is a nonlinear, moving-target comparison aid, not an observed trajectory result.
+
+### Effect on current belief
+
+The fluid-motion observation is consistent with gravity compensation removing a large configuration-dependent forcing term, but visual smoothness alone does not establish lower feedback effort or lower total control effort.
+
+## Librarian update
+
+```yaml
+source:
+  repository: robotics-test-bench
+  path: experiments/2026-08-09-model-based-control/agent-log.md
+  commit:
+objects:
+  - id: Q-20260809-006
+    type: Question
+    summary: Why might gravity compensation make the arm look more coordinated or fluid?
+    status: answered-as-hypothesis
+  - id: R-20260809-006
+    type: Response
+    summary: Gravity compensation removes g(q) from the feedback loop's apparent disturbance when the model is accurate.
+    status: mathematically-supported
+  - id: E-20260809-006
+    type: Evaluation
+    summary: The explanation is plausible, but telemetry must separate feedback, gravity, and total torque.
+    status: unconfirmed
+  - id: A-20260809-006
+    type: Action
+    summary: Derived the error dynamics and evaluated gravity torque at the starting pose.
+    status: completed
+  - id: O-20260809-006
+    type: Outcome
+    summary: The explanation predicts lower feedback burden, not necessarily lower total torque.
+    status: hypothesis-refined
+relations:
+  - subject: Q-20260809-006
+    predicate: receives
+    object: R-20260809-006
+  - subject: R-20260809-006
+    predicate: receives
+    object: E-20260809-006
+  - subject: E-20260809-006
+    predicate: causes
+    object: A-20260809-006
+  - subject: A-20260809-006
+    predicate: produces
+    object: O-20260809-006
+unresolved_questions:
+  - Does measured feedback torque decrease under gravity compensation while tracking error improves or stays comparable?
+superseded_claims:
+  - Treating lower total actuator torque as the direct meaning of “easier” for the feedback controller.
+```
 
 Related: #4
