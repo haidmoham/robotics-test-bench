@@ -1,27 +1,27 @@
-# PD and gravity compensation
+# Model-based control: exploit dynamics, then break the model
 
-Question: With the existing two-link arm, pose, target, and PD gains held fixed, how does adding gravity compensation change periodic steady-state tracking error and the burden on PD feedback?
+Status: resolved on 2026-08-09.
 
-## Iteration 0 — make a prediction first
+Question: What does knowing the robot dynamics buy, and what breaks when that knowledge is wrong?
 
-Before either run, write down:
+## Learning progression
 
-- What difference, if any, will you expect in the arm's visual motion?
-- What difference, if any, will you expect in tracking error?
-- What difference, if any, will you expect in feedback torque versus total torque?
+The experiment started with a narrower gravity-compensation question and advanced only after that comparison was resolved:
 
-Do not run the comparison until this prediction is recorded.
+1. `pd` — joint-space feedback only.
+2. `gravity-comp` — the same feedback controller plus model-predicted gravity torque.
+3. `computed-torque` — the same feedback controller plus inverse dynamics evaluated at desired position, velocity, and acceleration.
+4. `computed-torque-wrong-mass` — the same computed-torque controller, but its private model assumes a 0.35 kg link-2 mass while the simulated plant remains 0.7 kg.
 
-## Smallest useful experiment
+The plant, initial pose, target, PD gains, and timestep stay fixed across conditions. The wrong-mass condition changes only the controller model.
 
-`model_based_control.py` has four controller modes:
+## Predictions recorded before execution
 
-1. `pd` — the existing joint-space PD controller.
-2. `gravity-comp` — the same target and PD gains with an added model-predicted gravity torque.
-3. `computed-torque` — the same PD controller plus inverse dynamics evaluated at the desired position, velocity, and acceleration.
-4. `computed-torque-wrong-mass` — the same computed-torque controller, but its private model assumes a 0.35 kg link-2 mass. The simulated plant remains 0.7 kg.
+The initial prediction was that gravity compensation would reduce the burden on feedback. After that was supported by telemetry, the experiment advanced to the prediction that accurate inverse dynamics would reduce the remaining tracking residual, while an underestimated controller mass would under-supply feedforward torque and restore a feedback correction.
 
-Run both visually, one at a time:
+See `agent-log.md` for the full Q/R/E/A/O record and source provenance.
+
+## Run visually
 
 ```powershell
 pythonw model_based_control.py --controller pd
@@ -30,17 +30,17 @@ pythonw model_based_control.py --controller computed-torque
 pythonw model_based_control.py --controller computed-torque-wrong-mass
 ```
 
-`pythonw` keeps the terminal hidden while leaving the MuJoCo viewer open. The baseline PD arm is blue. The gravity-compensation arm is orange.
+The controller colors are blue for PD, orange for gravity compensation, green for accurate computed torque, and red for computed torque with the wrong controller mass.
 
-To compare their states visually without combining their physics, run:
+For a visualization-only comparison of PD and gravity compensation, run:
 
 ```powershell
 pythonw model_based_control.py --controller overlay
 ```
 
-This viewer advances the two controllers in separate `MjData` objects. It renders the gray target arm, the blue PD arm, and the orange gravity-compensation arm in one scene. Its live right-side plots show each controller's two-joint applied torque, its first numerical derivative, and its second numerical derivative over the latest six simulated seconds. `P` is PD and `G` is gravity compensation. It is a visual aid only. Use the headless telemetry below for evidence.
+The overlay advances controllers in separate `MjData` objects. It is an inspection aid, not experiment evidence.
 
-For telemetry, run the same conditions headless so the target follows MuJoCo simulation time and the output is easy to capture:
+## Run telemetry
 
 ```powershell
 python model_based_control.py --controller pd --headless --duration 16
@@ -49,19 +49,36 @@ python model_based_control.py --controller computed-torque --headless --duration
 python model_based_control.py --controller computed-torque-wrong-mass --headless --duration 16
 ```
 
-Every 0.25 simulation seconds, the script reports target position, actual position, tracking error, and three torque terms:
+The script reports target state, actual state, tracking error, and decomposed torque terms:
 
-- `tau_fb` — the PD feedback command.
-- `tau_g` — the model-predicted gravity torque at the current pose.
-- `tau_total` — the actuator command actually applied. For baseline PD, this equals `tau_fb`; for gravity compensation, this equals `tau_fb + tau_g`.
-- `tau_ff` — the applied model-based feedforward torque. For computed torque, it includes gravity, motion-coupling, and desired-acceleration terms.
+- `tau_fb` — PD feedback torque.
+- `tau_g` — model-predicted gravity torque.
+- `tau_ff` — model-based feedforward torque.
+- `tau_total` — actuator torque actually applied.
 
-The target period is about 7.85 seconds, so a 16-second headless run covers about two cycles. Compare late-run samples rather than the startup transient. The next learning question is whether compensation reduces tracking error and/or `tau_fb`; lower `tau_total` is not required by the hypothesis.
+The headless summary also reports final-cycle tracking error, feedback effort, acceleration error, turnaround-window error, and target-frequency phase offset.
 
-The headless summary also reports tracking and acceleration-error RMS near target turnarounds, where desired acceleration is large, plus a signed target-frequency phase offset for each joint. These metrics operationalize the visual comparison. They do not by themselves establish a causal explanation.
+## Result
 
-## Boundaries
+Over the final full target cycle:
 
-Do not change the plant, initial pose, target, PD gains, timestep, or any other physical parameter between conditions. In the wrong-mass condition, change only the controller's private link-2 mass.
+- Gravity compensation reduced RMS position error from `[0.679127, 0.082077]` rad to `[0.019344, 0.004964]` rad. The gravity-shaped burden moved from feedback into an explicit model term; total applied torque did not disappear.
+- Accurate computed torque reduced RMS position error to `[0.000414, 0.000519]` rad and feedback-torque RMS to `[0.000536, 0.000149]` N-m.
+- With only the controller mass wrong, RMS position error rose to `[0.268017, 0.053296]` rad and feedback-torque RMS rose to `[4.826850, 0.962259]` N-m.
+- At a target reversal, the wrong model supplied `3.644697` N-m too little joint-1 feedforward torque and `1.166463` N-m too little joint-2 feedforward torque.
+
+## Model update
+
+Higher feedback gain reacts after error. Gravity compensation supplies pose-dependent support before that error must grow. Computed torque also includes desired acceleration and motion-dependent terms, so it can supply torque implied by the planned motion rather than waiting for tracking error.
+
+A wrong model creates a structured feedforward shortfall and restores a feedback residual. That is different from merely poor gain tuning.
+
+## Stop boundary
+
+The experiment answered its question. A later corrective-acceleration or overshoot event was predicted but not isolated as a time-resolved trace. Do not extend this experiment only to chase that event.
+
+## Next node
+
+Move to issue #5, trajectory tracking, when starting the next experiment. Carry forward the distinction among desired position, velocity, and acceleration, and treat the next test as a rollout through time.
 
 Related: #4
