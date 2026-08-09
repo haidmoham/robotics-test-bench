@@ -66,6 +66,69 @@ The belief that compensation makes the control job easier is retained, while “
 
 Related: #4
 
+## AI-20260809-006 — Final-cycle telemetry comparison
+
+id: AI-20260809-006
+date: 2026-08-09
+agent: Codex
+status: acted
+evaluation: confirmed
+repo_state:
+  repository: robotics-test-bench
+  branch: main
+  commit: 0166d66
+  changed_files:
+    - experiments/2026-08-09-model-based-control/model_based_control.py
+    - experiments/2026-08-09-model-based-control/agent-log.md
+related:
+  experiment: experiments/2026-08-09-model-based-control
+  issues: [4]
+objects:
+  question: Q-20260809-006
+  response: R-20260809-006
+  evaluation: E-20260809-006
+  action: A-20260809-006
+  outcome: O-20260809-006
+librarian:
+  status: pending
+  record_ids: []
+
+## Q — Question
+
+Does the final full target cycle show the gravity-shaped burden moving from baseline feedback torque into an explicit gravity term under compensation?
+
+## R — Response summary
+
+Both modes were run headlessly for 16 simulated seconds with identical model, target, initial pose, timestep, and gains. RMS values were computed over the final complete target cycle, 7.853982 to 15.707963 seconds. The projection coefficient tests whether baseline feedback is aligned with the model gravity term.
+
+## E — Human evaluation
+
+### Accepted
+
+- Baseline PD RMS tracking error was [0.679127, 0.082077] radians; gravity compensation was [0.019344, 0.004964].
+- Baseline PD feedback-torque RMS was [12.226788, 1.485622] N·m; gravity compensation feedback-torque RMS was [0.356078, 0.093290].
+- The model gravity-torque RMS was [12.255165, 1.534452] N·m in the baseline comparison and [12.846722, 2.229886] N·m under compensation.
+- Baseline feedback projected onto the model gravity term with coefficients [0.997479, 0.967702] per joint.
+- Gravity-compensation total-torque RMS was [12.869362, 2.194443] N·m, so total effort did not fall in the same way as the feedback residual.
+
+### Unresolved
+
+- None for this comparison.
+
+## A — Action
+
+Added deterministic 16-second headless execution and telemetry decomposition for target error, feedback torque, model gravity torque, and applied total torque. Summarized the final complete target cycle and recorded the baseline feedback-to-gravity projection.
+
+## O — Outcome
+
+The telemetry supports the existing error-dynamics explanation. Baseline feedback torque was almost one-for-one aligned with the model gravity term, while gravity compensation made the feedback residual and tracking error much smaller. The explicit gravity term carried the burden in the compensated run; total applied torque remained similar rather than disappearing.
+
+### Effect on current belief
+
+The visual “easier” interpretation is quantitatively supported. The result does not support a claim that total torque is lower; it supports a claim that gravity-shaped load is moved out of error-driven feedback.
+
+Related: #4
+
 ## AI-20260809-005 — Mathematical interpretation
 
 id: AI-20260809-005
