@@ -380,3 +380,152 @@ superseded_claims:
 ```
 
 Related: #4
+
+## AI-20260809-008 — Prescriptive vs descriptive dynamics repair
+
+```yaml
+id: AI-20260809-008
+date: 2026-08-09
+sources:
+  - kind: chat
+    system: ChatGPT
+    reference: conversation-local: sinusoid-gravity-compensation
+status: resolved
+evaluation: confirmed
+repo_state:
+  repository: robotics-test-bench
+  branch: main
+  commit:
+  changed_files:
+    - AGENTS.md
+    - templates/agent-interaction.md
+    - experiments/2026-08-09-model-based-control/agent-log.md
+related:
+  experiment: experiments/2026-08-09-model-based-control
+  hypotheses: []
+  experiments: []
+  claims: []
+  decisions: []
+  issues: [4]
+  files:
+    - experiments/2026-08-09-model-based-control/model_based_control.py
+objects:
+  question: Q-20260809-008
+  response: R-20260809-008
+  evaluation: E-20260809-008
+  action: A-20260809-008
+  outcome: O-20260809-008
+librarian:
+  status: pending
+  record_ids: []
+```
+
+## Q — Question
+
+How should the sinusoidal target, gravity term, and gravity compensation be distinguished conceptually, and what knowledge gap was blocking the current interpretation?
+
+### Human prediction
+
+A useful distinction might be that the sinusoidal trajectory is prescriptive while the gravity function is descriptive. Better physics intuition might make the relationship easier to understand.
+
+### Purpose
+
+Repair the smallest conceptual gap blocking interpretation of the current model-based-control experiment without leaving the experiment for a broad prerequisite study.
+
+### Context supplied
+
+- The current sinusoidal joint target.
+- The existing gravity-compensation comparison and telemetry decomposition.
+- The observed result that baseline feedback torque is strongly aligned with the model gravity term.
+
+## R — Response summary
+
+The useful abstraction is the role of each function. The target trajectory specifies desired motion. The gravity term describes configuration-dependent torque. Evaluating the gravity model along a moving trajectory can make that descriptive term vary sinusoidally in time. Gravity compensation then uses the descriptive model to prescribe an explicit compensating torque.
+
+## E — Human evaluation
+
+### Accepted
+
+- Prescriptive versus descriptive is a useful distinction for reading the dynamics.
+- The missing knowledge was narrower than “learn more physics”: the blocker was knowing which abstraction mattered in the current equation.
+- The repair made the surrounding mechanics easier to interpret in context.
+- This interaction is evidence that local knowledge gaps can be identified and repaired while continuing robotics work.
+
+### Rejected
+
+- A broad physics course is required before the current MuJoCo work can be understood.
+
+### Unresolved
+
+- Future mechanics gaps still need their own local repair or experiment; this interaction does not establish that every conceptual explanation is correct without verification.
+
+### Verification required
+
+- No new experiment is required to record the epistemic change itself.
+- Physical claims should continue to be checked against model inspection or telemetry when they become decision-relevant.
+
+## A — Action
+
+Extended the repository interaction convention to require explicit source provenance and explicit before -> after belief updates. Recorded this conversation as the first `chat`-sourced interaction under the existing Q/R/E/A/O ontology. No controller code changed.
+
+## O — Outcome
+
+The current gravity-compensation telemetry can now be read through a cleaner mental model: desired trajectory is an instruction, gravity is a modeled physical effect, and compensation turns that model into a control action. The conversation produced a durable epistemic repair without becoming a transcript or being mislabeled as experimental evidence.
+
+### Effect on current belief
+
+- Before: The relationship among sinusoidal motion, gravity, and compensation felt like evidence of a broad physics-intuition gap.
+- After: The blocking gap is better described as an abstraction-role gap: distinguish desired motion from modeled dynamics, then use the model to reason about control.
+- Evidence status: This is a human-accepted conceptual repair from a ChatGPT conversation, consistent with the already recorded MuJoCo telemetry. It is not new experimental evidence.
+
+## Librarian update
+
+```yaml
+source:
+  repository: robotics-test-bench
+  path: experiments/2026-08-09-model-based-control/agent-log.md
+  commit:
+provenance:
+  - kind: chat
+    system: ChatGPT
+    reference: conversation-local: sinusoid-gravity-compensation
+objects:
+  - id: Q-20260809-008
+    type: Question
+    summary: Which abstraction distinguishes sinusoidal target motion, gravity, and gravity compensation?
+    status: resolved
+  - id: R-20260809-008
+    type: Response
+    summary: Desired trajectory is prescriptive, gravity is descriptive, and compensation uses the descriptive model to prescribe control torque.
+    status: accepted
+  - id: E-20260809-008
+    type: Evaluation
+    summary: The blocker was narrowed from broad physics knowledge to the role of each function in the dynamics.
+    status: confirmed
+  - id: A-20260809-008
+    type: Action
+    summary: Extended source-provenance conventions and recorded the conversation as a structured epistemic repair.
+    status: completed
+  - id: O-20260809-008
+    type: Outcome
+    summary: The model-based-control experiment is easier to interpret without pausing for broad prerequisite study.
+    status: resolved
+relations:
+  - subject: Q-20260809-008
+    predicate: receives
+    object: R-20260809-008
+  - subject: R-20260809-008
+    predicate: receives
+    object: E-20260809-008
+  - subject: E-20260809-008
+    predicate: causes
+    object: A-20260809-008
+  - subject: A-20260809-008
+    predicate: produces
+    object: O-20260809-008
+unresolved_questions: []
+superseded_claims:
+  - Broad physics study is required before the current model-based-control experiment can be understood.
+```
+
+Related: #4
