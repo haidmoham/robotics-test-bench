@@ -67,6 +67,14 @@ Over the final full target cycle:
 - With only the controller mass wrong, RMS position error rose to `[0.268017, 0.053296]` rad and feedback-torque RMS rose to `[4.826850, 0.962259]` N-m.
 - At a target reversal, the wrong model supplied `3.644697` N-m too little joint-1 feedforward torque and `1.166463` N-m too little joint-2 feedforward torque.
 
+### Measurement interpretation note
+
+The position-error vectors above are per-joint RMS values `[joint 1, joint 2]`, not confidence intervals. This experiment also has no sensor-noise or state-estimation model: the controller reads MuJoCo state directly.
+
+The current headless loop computes position error after `mj_step()` against the desired position evaluated before that step. With a 2 ms timestep, that timing convention is on the same scale as the reported matched-model residual. Therefore `[0.000414, 0.000519]` rad should not be interpreted as a physical sensing-precision limit or as a confidence bound.
+
+This narrows only the interpretation of the tiny matched-model residual. The main comparison is unchanged: accurate model feedforward leaves almost no feedback burden, while the controller-only mass error restores a large structured residual.
+
 ## Model update
 
 Higher feedback gain reacts after error. Gravity compensation supplies pose-dependent support before that error must grow. Computed torque also includes desired acceleration and motion-dependent terms, so it can supply torque implied by the planned motion rather than waiting for tracking error.
