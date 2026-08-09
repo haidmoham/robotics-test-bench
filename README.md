@@ -37,6 +37,25 @@ GitHub issues are concept nodes, not a fixed syllabus. Node numbers below match 
 
 Choose the next node from the evidence produced by the current experiment. Branch, repeat, skip, or insert a smaller local question when the observations justify it.
 
+### Active evidence route
+
+The current model-based-control work has exposed a useful route toward differentiable dynamics. Follow it only while each experiment keeps producing the next question shown here.
+
+```mermaid
+flowchart LR
+    R04["#4 Model-based control<br/>gravity → computed torque → wrong mass"]
+    R05["#5 Trajectory tracking<br/>reason over a rollout"]
+    R12["#12 System identification<br/>infer one mass without autodiff"]
+    R16["#16 Differentiable dynamics<br/>backprop through the rollout"]
+    R13["#13 Numerical sensitivity<br/>stress the trajectory and gradient"]
+
+    R04 --> R05 --> R12 --> R16 --> R13
+```
+
+The first stop is still the current #4 experiment. Close the gravity-compensation telemetry question before moving forward. The route becomes invalid as soon as stronger evidence points elsewhere.
+
+### Full map
+
 ```mermaid
 flowchart TD
     C01["#1 Feedback fundamentals"]
@@ -54,6 +73,7 @@ flowchart TD
     C13["#13 Numerical sensitivity"]
     C14["#14 Robustness & uncertainty"]
     C15["#15 Diagnosis by experiment"]
+    C16["#16 Differentiable dynamics"]
 
     C01 --> C02
     C01 --> C03
@@ -74,6 +94,7 @@ flowchart TD
 
     C05 --> C07
     C05 --> C11
+    C05 --> C12
     C05 --> C13
 
     C06 --> C08
@@ -91,11 +112,18 @@ flowchart TD
 
     C12 --> C14
     C12 --> C15
+    C12 --> C16
+
+    C16 --> C13
+    C16 --> C14
 
     C13 --> C14
     C13 --> C15
 
     C14 --> C15
+
+    classDef active stroke-width:3px
+    class C04,C05,C12,C16,C13 active
 ```
 
 The map is intentionally incomplete as a path planner. The core loop remains authoritative: an experiment should end by producing the next question, even when that question points sideways or backward in the graph.
@@ -122,7 +150,9 @@ Use [`templates/agent-interaction.md`](templates/agent-interaction.md) for the c
 
 ## Current experiment
 
-[`experiments/2026-08-08-pendulum-control`](experiments/2026-08-08-pendulum-control)
+[`experiments/2026-08-09-model-based-control`](experiments/2026-08-09-model-based-control)
+
+Current learning boundary: connect the gravity-compensation error-dynamics explanation to measured `tau_g`, `tau_fb`, tracking error, and total torque. Do not add computed torque until that evidence is recorded.
 
 MuJoCo mental model:
 - `mjModel` = what the simulated system is.
