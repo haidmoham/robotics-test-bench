@@ -74,10 +74,7 @@ def wave_targets(elapsed, joint1_start, control_coupling):
     joint1_target = joint1_start + JOINT1_AMPLITUDE * math.sin(
         WAVE_FREQUENCY * elapsed
     )
-    joint2_wave_amplitude = JOINT2_TARGET_LIMIT + (
-        control_coupling * JOINT1_AMPLITUDE
-    )
-    joint2_wave_target = joint2_wave_amplitude * math.sin(
+    joint2_wave_target = JOINT2_TARGET_LIMIT * math.sin(
         WAVE_FREQUENCY * elapsed + WAVE_PHASE
     )
     joint2_target = joint2_wave_target + control_coupling * (

@@ -14,7 +14,7 @@ Do not read a dynamics explanation before you have a prediction.
 
 ## Smallest useful experiment
 
-`two_link_coupling.py` creates a two-link arm in the vertical x-z plane. Joint 1 follows a slow sinusoidal target. Joint 2 can be left passive, lightly held at its initial angle, or given a phase-shifted sinusoidal target for a continuous waving motion. The terminal prints a compact state sample every 0.25 seconds:
+`two_link_coupling.py` creates a two-link arm in the vertical x-z plane. Joint 1 follows a sinusoidal target. Joint 2 can stay passive, hold its initial angle, or follow a phase-shifted sinusoid for continuous waving. The terminal reports a compact state sample every 0.25 seconds:
 
 The shoulder base is at `z=2.5 m`, leaving the elbow-down arm above the floor while you inspect joint coordination. The arm is rotated `90°` within its motion plane (about the hinge axis), and a small sphere marks the link tip as a hand proxy. In `wave` mode, the target is staged as ready → wave → smooth return → hold. The current wave frequency, `-1.2` to `+1.2 rad` joint-2 target range, and tracking gains are exposed as constants near the top of the script for speed tuning.
 
@@ -38,7 +38,7 @@ python two_link_coupling.py --joint2-mode wave --configuration elbow-down
 
 In `wave` mode, the joint targets are control-coupled: joint 2's target includes `control_coupling * (joint1_target - joint1_start)`. Set `--control-coupling 0` to remove that cross-feed, or increase it to make joint 2 follow more of joint 1's desired motion.
 
-Then repeat with one discriminating change:
+For one-variable comparisons, repeat with one change at a time:
 
 ```powershell
 python two_link_coupling.py --joint2-mode passive --configuration elbow-up
@@ -55,10 +55,10 @@ Record an observation before explaining it:
 - Did disabling gravity remove all of the effect, or only part of it?
 - Was joint 2's behavior predicted by treating the arm as two independent pendulums?
 
-The current `agent-log.md` intentionally leaves the result pending. Update it after a run with the observed behavior and your interpretation.
+Update `agent-log.md` after each meaningful run with the observation and your interpretation.
 
 ## Boundaries
 
-This is direct joint-space PD control, deliberately kept simple. Do not add computed-torque control yet; first use the observations to decide whether model-based control is the next question.
+This is deliberately simple, direct joint-space PD control. Do not add computed torque yet. Let the observations decide whether model-based control is the next question.
 
 Related: #2

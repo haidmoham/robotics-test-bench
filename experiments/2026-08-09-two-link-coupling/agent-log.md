@@ -157,3 +157,135 @@ superseded_claims:
 ```
 
 Related: #2
+
+## AI-20260809-003 — Wave coupling audit
+
+```yaml
+id: AI-20260809-003
+date: 2026-08-09
+agent: Codex
+status: acted
+evaluation: unconfirmed
+repo_state:
+  repository: robotics-test-bench
+  branch: main
+  commit:
+  changed_files:
+    - experiments/2026-08-09-two-link-coupling/two_link_coupling.py
+    - experiments/2026-08-09-two-link-coupling/agent-log.md
+related:
+  experiment: experiments/2026-08-09-two-link-coupling
+  hypotheses: []
+  experiments: []
+  claims: []
+  decisions: []
+  issues: [2]
+  files:
+    - experiments/2026-08-09-two-link-coupling/two_link_coupling.py
+objects:
+  question: Q-20260809-003
+  response: R-20260809-003
+  evaluation: E-20260809-003
+  action: A-20260809-003
+  outcome: O-20260809-003
+librarian:
+  status: pending
+  record_ids: []
+```
+
+## Q — Question
+
+Does `--control-coupling` change the joint-2 wave target at the configured phase?
+
+### Human prediction
+
+Not recorded. This was a code-level audit, not a physics interpretation.
+
+### Purpose
+
+Ensure the documented coupling comparison changes its stated input.
+
+### Context supplied
+
+- `experiments/2026-08-09-two-link-coupling/two_link_coupling.py`
+- The README claim that `--control-coupling 0` removes cross-feed.
+
+## R — Response summary
+
+At `WAVE_PHASE = pi`, the former base-wave amplitude term cancelled the cross-feed. The target was therefore independent of `control_coupling`.
+
+## E — Human evaluation
+
+### Accepted
+
+- Pending human review.
+
+### Rejected
+
+- None.
+
+### Unresolved
+
+- None for the resolved Issue #2 learning target.
+
+### Verification required
+
+- Direct target calculation after the correction.
+
+## A — Action
+
+Removed the cancelling amplitude term. Joint 2 now uses a fixed phase-shifted wave plus the documented cross-feed term.
+
+## O — Outcome
+
+The direct target calculation changes with `control_coupling`. This corrects the optional wave mode without reopening the resolved physical-coupling question.
+
+### Effect on current belief
+
+No change to Issue #2's recorded learning outcome.
+
+## Librarian update
+
+```yaml
+source:
+  repository: robotics-test-bench
+  path: experiments/2026-08-09-two-link-coupling/agent-log.md
+  commit:
+objects:
+  - id: Q-20260809-003
+    type: Question
+    summary: Does the documented control-coupling flag change the joint-2 target?
+    status: resolved
+  - id: R-20260809-003
+    type: Response
+    summary: The prior phase and amplitude terms cancelled the coupling effect.
+    status: verified-by-inspection
+  - id: E-20260809-003
+    type: Evaluation
+    summary: Awaiting human review; the resolved Issue #2 conclusion is unchanged.
+    status: unconfirmed
+  - id: A-20260809-003
+    type: Action
+    summary: Removed the cancelling base-wave amplitude term.
+    status: completed
+  - id: O-20260809-003
+    type: Outcome
+    summary: The target now varies with the coupling value.
+    status: observed
+relations:
+  - subject: Q-20260809-003
+    predicate: receives
+    object: R-20260809-003
+  - subject: R-20260809-003
+    predicate: receives
+    object: E-20260809-003
+  - subject: E-20260809-003
+    predicate: causes
+    object: A-20260809-003
+  - subject: A-20260809-003
+    predicate: produces
+    object: O-20260809-003
+unresolved_questions: []
+superseded_claims:
+  - The prior implementation exposed tunable cross-feed, but its wave-target algebra cancelled it at the configured phase.
+```
