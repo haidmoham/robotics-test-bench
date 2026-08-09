@@ -39,11 +39,11 @@ Choose the next node from the evidence produced by the current experiment. Branc
 
 ### Active evidence route
 
-The current model-based-control work has exposed a useful route toward differentiable dynamics. Follow it only while each experiment keeps producing the next question shown here.
+The resolved model-based-control work exposed a useful route toward differentiable dynamics. Follow it only while each experiment keeps producing the next question shown here.
 
 ```mermaid
 flowchart LR
-    R04["#4 Model-based control<br/>gravity → computed torque → wrong mass"]
+    R04["#4 Model-based control<br/>resolved: gravity → computed torque → wrong mass"]
     R05["#5 Trajectory tracking<br/>reason over a rollout"]
     R12["#12 System identification<br/>infer one mass without autodiff"]
     R16["#16 Differentiable dynamics<br/>backprop through the rollout"]
@@ -52,7 +52,7 @@ flowchart LR
     R04 --> R05 --> R12 --> R16 --> R13
 ```
 
-The first stop is still the current #4 experiment. Close the gravity-compensation telemetry question before moving forward. The route becomes invalid as soon as stronger evidence points elsewhere.
+The next open stop is #5. The route becomes invalid as soon as stronger evidence points elsewhere.
 
 ### Full map
 
@@ -123,7 +123,7 @@ flowchart TD
     C14 --> C15
 
     classDef active stroke-width:3px
-    class C04,C05,C12,C16,C13 active
+    class C05,C12,C16,C13 active
 ```
 
 The map is intentionally incomplete as a path planner. The core loop remains authoritative: an experiment should end by producing the next question, even when that question points sideways or backward in the graph.
@@ -150,9 +150,16 @@ Use [`templates/agent-interaction.md`](templates/agent-interaction.md) for the c
 
 ## Current experiment
 
-[`experiments/2026-08-09-model-based-control`](experiments/2026-08-09-model-based-control)
+None. Issue #4 is resolved. The next open concept node is #5, trajectory tracking.
 
-Current learning boundary: connect the gravity-compensation error-dynamics explanation to measured `tau_g`, `tau_fb`, tracking error, and total torque. Do not add computed torque until that evidence is recorded.
+Before creating the next experiment directory, make the Iteration 0 prediction for how changing trajectory speed should change tracking error with controller and model held fixed.
+
+Current bridge toward differentiable dynamics:
+- keep desired position, velocity, and acceleration distinct;
+- compare at least two trajectory speeds with controller and model fixed;
+- reason over the rollout as repeated `x[t] -> x[t+1]` transitions;
+- accumulate trajectory error over time;
+- do not optimize the wrong mass yet.
 
 MuJoCo mental model:
 - `mjModel` = what the simulated system is.
