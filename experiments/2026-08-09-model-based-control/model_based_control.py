@@ -36,6 +36,7 @@ KP = 18.0
 KD = 4.0
 AMPLITUDE = (0.35, 0.45)
 FREQUENCY = 0.8
+REPORT_INTERVAL = 0.25
 COLORS = {
     "pd": ("pd_blue", "0.15 0.40 0.95 1"),
     "gravity-comp": ("gravity_orange", "0.95 0.45 0.08 1"),
@@ -49,7 +50,21 @@ def parse_args():
         choices=("pd", "gravity-comp"),
         default="pd",
     )
-    return parser.parse_args()
+    parser.add_argument(
+        "--headless",
+        action="store_true",
+        help="Run without the viewer for deterministic telemetry collection.",
+    )
+    parser.add_argument(
+        "--duration",
+        type=float,
+        default=16.0,
+        help="Headless simulation duration in seconds.",
+    )
+    args = parser.parse_args()
+    if args.duration <= 0:
+        parser.error("--duration must be positive")
+    return args
 
 
 def make_model(controller):
@@ -59,8 +74,8 @@ def make_model(controller):
     )
 
 
-def desired_state(elapsed):
-    phase = FREQUENCY * elapsed
+def desired_state(sim_time):
+    phase = FREQUENCY * sim_time
     q_des = np.array([START[i] + AMPLITUDE[i] * math.sin(phase) for i in range(2)])
     qvel_des = np.array(
         [AMPLITUDE[i] * FREQUENCY * math.cos(phase) for i in range(2)]
@@ -71,37 +86,70 @@ def desired_state(elapsed):
     return q_des, qvel_des, qacc_des
 
 
-def gravity_torque(model, data):
-    saved_qvel = data.qvel.copy()
-    data.qvel[:] = 0.0
-    data.qacc[:] = 0.0
-    mujoco.mj_inverse(model, data)
-    torque = data.qfrc_inverse.copy()
-    data.qvel[:] = saved_qvel
-    return torque
+def gravity_torque(model, gravity_data, qpos):
+    gravity_data.qpos[:] = qpos
+    gravity_data.qvel[:] = 0.0
+    gravity_data.qacc[:] = 0.0
+    mujoco.mj_inverse(model, gravity_data)
+    return gravity_data.qfrc_inverse.copy()
 
 
-def step_controller(args, model, data, elapsed):
-    q_des, qvel_des, _ = desired_state(elapsed)
-    tracking = KP * (q_des - data.qpos) + KD * (
+def step_controller(args, model, data, gravity_data, sim_time):
+    q_des, qvel_des, _ = desired_state(sim_time)
+    tau_feedback = KP * (q_des - data.qpos) + KD * (
         qvel_des - data.qvel
     )
+    tau_gravity = gravity_torque(model, gravity_data, data.qpos)
 
     if args.controller == "pd":
-        data.ctrl[:] = tracking
+        tau_total = tau_feedback
     else:
-        data.ctrl[:] = tracking + gravity_torque(model, data)
+        tau_total = tau_feedback + tau_gravity
 
+    data.ctrl[:] = tau_total
     mujoco.mj_step(model, data)
-    return q_des, data.qpos - q_des
+    error = data.qpos - q_des
+    return q_des, error, tau_feedback, tau_gravity, tau_total
 
 
-def report(elapsed, data, target, error):
+def report(sim_time, data, target, error, tau_feedback, tau_gravity, tau_total):
     print(
-        f"t={elapsed:5.2f} target={target} qpos={data.qpos[:2]} "
-        f"error={error[:2]} ctrl={data.ctrl[:2]} "
-        f"|error|={np.linalg.norm(error):.4f} |ctrl|={np.linalg.norm(data.ctrl):.4f}"
+        f"t={sim_time:5.2f} target={target} qpos={data.qpos[:2]} "
+        f"error={error[:2]} tau_fb={tau_feedback[:2]} "
+        f"tau_g={tau_gravity[:2]} tau_total={tau_total[:2]} "
+        f"|error|={np.linalg.norm(error):.4f} "
+        f"|tau_fb|={np.linalg.norm(tau_feedback):.4f} "
+        f"|tau_g|={np.linalg.norm(tau_gravity):.4f} "
+        f"|tau_total|={np.linalg.norm(tau_total):.4f}"
     )
+
+
+def run_headless(args, model, data, gravity_data):
+    next_report = 0.0
+    while data.time < args.duration:
+        sim_time = data.time
+        metrics = step_controller(args, model, data, gravity_data, sim_time)
+        if sim_time >= next_report:
+            report(sim_time, data, *metrics)
+            next_report += REPORT_INTERVAL
+
+
+def run_viewer(args, model, data, gravity_data):
+    next_report = 0.0
+    with mujoco.viewer.launch_passive(model, data) as viewer:
+        while viewer.is_running():
+            wall_start = time.time()
+            sim_time = data.time
+            metrics = step_controller(args, model, data, gravity_data, sim_time)
+            viewer.sync()
+
+            if sim_time >= next_report:
+                report(sim_time, data, *metrics)
+                next_report += REPORT_INTERVAL
+
+            remaining = model.opt.timestep - (time.time() - wall_start)
+            if remaining > 0:
+                time.sleep(remaining)
 
 
 def main():
@@ -109,27 +157,15 @@ def main():
 
     model = make_model(args.controller)
     data = mujoco.MjData(model)
+    gravity_data = mujoco.MjData(model)
     data.qpos[:] = START
     mujoco.mj_forward(model, data)
 
     print(f"controller={args.controller} color={COLORS[args.controller][0]}")
-    next_report = 0.0
-
-    start_time = time.time()
-    with mujoco.viewer.launch_passive(model, data) as viewer:
-        while viewer.is_running():
-            wall_start = time.time()
-            elapsed = wall_start - start_time
-            target, error = step_controller(args, model, data, elapsed)
-            viewer.sync()
-
-            if elapsed >= next_report:
-                report(elapsed, data, target, error)
-                next_report += 0.25
-
-            remaining = model.opt.timestep - (time.time() - wall_start)
-            if remaining > 0:
-                time.sleep(remaining)
+    if args.headless:
+        run_headless(args, model, data, gravity_data)
+    else:
+        run_viewer(args, model, data, gravity_data)
 
 
 if __name__ == "__main__":
