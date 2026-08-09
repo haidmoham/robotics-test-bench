@@ -53,6 +53,10 @@ The elbow motor never drives in passive mode, so the observed flopping should be
 
 With joint 2 switched to `hold` while keeping elbow-down configuration and normal gravity, expect a more distinctive, intentional-looking motion—possibly not a wave, but more recognizable than the passive flopping.
 
+### Gravity-off prediction
+
+With gravity disabled, expect the staged coupled motion to look cleaner and more recognizable because the motors do not need to oppose the gravitational load.
+
 ### Purpose
 
 Move beyond one-joint control intuition with the smallest experiment that can expose state-dependent multi-joint dynamics.
@@ -75,6 +79,7 @@ A two-link vertical-plane MuJoCo arm was scaffolded. It drives only joint 1, let
 - The motion was not exactly the predicted janky wave, but it was qualitatively close enough to support the expectation of uncommanded elbow movement.
 - With the same configuration and gravity but `joint2_mode=hold`, the motion looked more organized and wave-like than the passive run.
 - The faster, in-plane rotated, control-coupled run produced an unmistakable wave; from the user's forward viewpoint, it appeared upside down.
+- With gravity disabled, the staged coupled wave looked cleaner and more recognizable, matching the gravity-off prediction.
 
 ### Rejected
 
@@ -87,6 +92,7 @@ A two-link vertical-plane MuJoCo arm was scaffolded. It drives only joint 1, let
 - Does the observed motion resemble the predicted janky, loosely waving arm?
 - Does changing joint 2 to `hold` materially change the elbow behavior now that the passive motor command is explicit?
 - Does the held-elbow run produce the predicted more intentional-looking motion?
+- Does the gravity-off run look cleaner and more recognizable than the normal-gravity run?
 
 ### Verification required
 
@@ -117,7 +123,7 @@ Observed two runs with the same elbow-down configuration and normal Earth gravit
 
 ### Effect on current belief
 
-The prediction that shoulder-driven motion would produce uncommanded elbow motion is supported, and the held-elbow comparison changed the visible behavior. The control-coupled trajectory now produces the intended qualitative wave; orientation remains a presentation variable.
+The prediction that shoulder-driven motion would produce uncommanded elbow motion is supported, and the held-elbow comparison changed the visible behavior. The gravity-off result strengthens the belief that removing gravitational load makes this simple controller track the intended qualitative wave more cleanly; orientation remains a presentation variable.
 
 ## Librarian update
 
@@ -137,7 +143,7 @@ objects:
     status: proposed
   - id: E-20260809-001
     type: Evaluation
-    summary: Passive elbow flopped while joint 1 was driven; motion was qualitatively close to the predicted janky wave, with a refined distinction between an unpowered elbow and an underpowered motor.
+    summary: Passive elbow flopped while joint 1 was driven; the gravity-off staged wave was cleaner and more recognizable, matching the prediction.
     status: confirmed
   - id: A-20260809-001
     type: Action
@@ -145,7 +151,7 @@ objects:
     status: completed
   - id: O-20260809-001
     type: Outcome
-    summary: With normal Earth gravity enabled, passive joint 2 flopped while the held-joint-2 run looked more organized; the faster, rotated, coupled run produced a recognizable but upside-down wave from the user's viewpoint.
+    summary: With normal Earth gravity enabled, passive joint 2 flopped while the held-joint-2 run looked more organized; with gravity off, the staged coupled run produced a cleaner, recognizable wave.
     status: observed
 relations:
   - subject: Q-20260809-001
