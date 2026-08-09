@@ -1,6 +1,7 @@
 """Compare joint PD with the same controller plus gravity compensation."""
 
 import argparse
+from collections import deque
 import math
 import time
 
@@ -20,7 +21,7 @@ XML_TEMPLATE = """
       <geom name="link1" type="capsule" fromto="0 0 0 0 0 -1" size="0.05" mass="1" rgba="{rgba}"/>
       <body name="elbow" pos="0 0 -1">
         <joint name="joint2" type="hinge" axis="0 1 0" damping="0.02"/>
-        <geom name="link2" type="capsule" fromto="0 0 0 0 0 -0.8" size="0.045" mass="0.7" rgba="{rgba}"/>
+      <geom name="link2" type="capsule" fromto="0 0 0 0 0 -0.8" size="0.045" mass="{link2_mass}" rgba="{rgba}"/>
       </body>
     </body>
   </worldbody>
@@ -37,17 +38,45 @@ KD = 4.0
 AMPLITUDE = (0.35, 0.45)
 FREQUENCY = 0.8
 REPORT_INTERVAL = 0.25
+PLANT_LINK2_MASS = 0.7
+WRONG_CONTROL_LINK2_MASS = 0.35
 COLORS = {
     "pd": ("pd_blue", "0.15 0.40 0.95 1"),
     "gravity-comp": ("gravity_orange", "0.95 0.45 0.08 1"),
+    "computed-torque": ("computed_green", "0.10 0.75 0.35 1"),
+    "computed-torque-wrong-mass": ("wrong_mass_red", "0.90 0.20 0.25 1"),
 }
+OVERLAY_ALPHA = 0.5
+PLOT_INTERVAL = 0.02
+PLOT_HISTORY_SECONDS = 6.0
+TURNAROUND_HALF_WIDTH = 0.4
+PLOT_SERIES = (
+    ("P1", "pd", 0),
+    ("P2", "pd", 1),
+    ("G1", "gravity-comp", 0),
+    ("G2", "gravity-comp", 1),
+)
+PLOT_COLORS = np.array(
+    (
+        (0.15, 0.40, 0.95),
+        (0.45, 0.65, 1.00),
+        (0.95, 0.45, 0.08),
+        (1.00, 0.72, 0.35),
+    )
+)
 
 
 def parse_args():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         "--controller",
-        choices=("pd", "gravity-comp"),
+        choices=(
+            "pd",
+            "gravity-comp",
+            "computed-torque",
+            "computed-torque-wrong-mass",
+            "overlay",
+        ),
         default="pd",
     )
     parser.add_argument(
@@ -67,10 +96,14 @@ def parse_args():
     return args
 
 
-def make_model(controller):
+def make_model(controller, link2_mass=PLANT_LINK2_MASS):
     model_name, rgba = COLORS[controller]
     return mujoco.MjModel.from_xml_string(
-        XML_TEMPLATE.format(model_name=model_name, rgba=rgba)
+        XML_TEMPLATE.format(
+            model_name=model_name,
+            rgba=rgba,
+            link2_mass=link2_mass,
+        )
     )
 
 
@@ -86,36 +119,84 @@ def desired_state(sim_time):
     return q_des, qvel_des, qacc_des
 
 
-def gravity_torque(model, gravity_data, qpos):
-    gravity_data.qpos[:] = qpos
-    gravity_data.qvel[:] = 0.0
-    gravity_data.qacc[:] = 0.0
-    mujoco.mj_inverse(model, gravity_data)
-    return gravity_data.qfrc_inverse.copy()
+def inverse_dynamics_torque(model, work_data, qpos, qvel, qacc):
+    work_data.qpos[:] = qpos
+    work_data.qvel[:] = qvel
+    work_data.qacc[:] = qacc
+    mujoco.mj_inverse(model, work_data)
+    return work_data.qfrc_inverse.copy()
 
 
-def step_controller(args, model, data, gravity_data, sim_time):
-    q_des, qvel_des, _ = desired_state(sim_time)
+def gravity_torque(model, work_data, qpos):
+    return inverse_dynamics_torque(
+        model,
+        work_data,
+        qpos,
+        np.zeros_like(qpos),
+        np.zeros_like(qpos),
+    )
+
+
+def step_controller(
+    controller,
+    plant_model,
+    data,
+    plant_gravity_data,
+    control_model,
+    control_work_data,
+    sim_time,
+):
+    q_des, qvel_des, qacc_des = desired_state(sim_time)
     tau_feedback = KP * (q_des - data.qpos) + KD * (
         qvel_des - data.qvel
     )
-    tau_gravity = gravity_torque(model, gravity_data, data.qpos)
-    tau_total = (
-        tau_feedback + tau_gravity
-        if args.controller == "gravity-comp"
-        else tau_feedback
-    )
+    tau_gravity = gravity_torque(plant_model, plant_gravity_data, data.qpos)
+    if controller == "gravity-comp":
+        tau_feedforward = gravity_torque(control_model, control_work_data, data.qpos)
+    elif controller in ("computed-torque", "computed-torque-wrong-mass"):
+        tau_feedforward = inverse_dynamics_torque(
+            control_model,
+            control_work_data,
+            q_des,
+            qvel_des,
+            qacc_des,
+        )
+    else:
+        tau_feedforward = np.zeros_like(tau_feedback)
+    tau_total = tau_feedback + tau_feedforward
     data.ctrl[:] = tau_total
-    mujoco.mj_step(model, data)
+    mujoco.mj_step(plant_model, data)
     error = data.qpos - q_des
-    return q_des, error, tau_feedback, tau_gravity, tau_total
+    acceleration_error = data.qacc - qacc_des
+    return (
+        q_des,
+        qacc_des,
+        error,
+        acceleration_error,
+        tau_feedback,
+        tau_gravity,
+        tau_feedforward,
+        tau_total,
+    )
 
 
-def report(sim_time, data, target, error, tau_feedback, tau_gravity, tau_total):
+def report(
+    sim_time,
+    data,
+    target,
+    qacc_des,
+    error,
+    acceleration_error,
+    tau_feedback,
+    tau_gravity,
+    tau_feedforward,
+    tau_total,
+):
     print(
         f"t={sim_time:5.2f} target={target} qpos={data.qpos[:2]} "
-        f"error={error[:2]} tau_fb={tau_feedback[:2]} "
-        f"tau_g={tau_gravity[:2]} tau_total={tau_total[:2]} "
+        f"error={error[:2]} qacc_error={acceleration_error[:2]} "
+        f"tau_fb={tau_feedback[:2]} tau_g={tau_gravity[:2]} "
+        f"tau_ff={tau_feedforward[:2]} tau_total={tau_total[:2]} "
         f"|error|={np.linalg.norm(error):.4f} "
         f"|tau_fb|={np.linalg.norm(tau_feedback):.4f} "
         f"|tau_g|={np.linalg.norm(tau_gravity):.4f} "
@@ -133,30 +214,105 @@ def projection_coefficients(feedback, gravity):
     return np.sum(feedback * gravity, axis=0) / np.sum(gravity * gravity, axis=0)
 
 
-def run_headless(args, model, data, gravity_data):
+def phase_offset_seconds(times, positions):
+    """Fit a signed target-frequency phase offset for each joint."""
+    phase = FREQUENCY * np.asarray(times)
+    basis = np.column_stack((np.sin(phase), np.cos(phase), np.ones_like(phase)))
+    coefficients, _, _, _ = np.linalg.lstsq(basis, positions, rcond=None)
+    phase_offset = np.arctan2(coefficients[1], coefficients[0])
+    return -phase_offset / FREQUENCY
+
+
+def turnaround_rms(times, values):
+    """Return error RMS near target reversals, where desired acceleration is large."""
+    phase = FREQUENCY * np.asarray(times)
+    mask = np.abs(np.cos(phase)) <= math.sin(TURNAROUND_HALF_WIDTH)
+    return rms(np.asarray(values)[mask])
+
+
+def run_headless(
+    args, model, data, plant_gravity_data, control_model, control_work_data
+):
+    if args.controller == "overlay":
+        raise ValueError("--controller overlay is a viewer-only comparison aid")
     period = 2 * math.pi / FREQUENCY
     if args.duration < period:
         raise ValueError("--duration must include at least one full target cycle")
     cycle_start = (math.floor(args.duration / period) - 1) * period
     cycle_end = cycle_start + period
-    samples = {"error": [], "tau_fb": [], "tau_g": [], "tau_total": []}
+    samples = {
+        "time": [],
+        "target": [],
+        "qpos": [],
+        "error": [],
+        "qacc_des": [],
+        "qacc": [],
+        "acceleration_error": [],
+        "tau_fb": [],
+        "tau_g": [],
+        "tau_ff": [],
+        "tau_total": [],
+    }
 
     while data.time < args.duration:
         sim_time = data.time
-        metrics = step_controller(args, model, data, gravity_data, sim_time)
+        metrics = step_controller(
+            args.controller,
+            model,
+            data,
+            plant_gravity_data,
+            control_model,
+            control_work_data,
+            sim_time,
+        )
         if cycle_start <= data.time <= cycle_end + 1e-12:
-            _, error, tau_feedback, tau_gravity, tau_total = metrics
+            (
+                target,
+                qacc_des,
+                error,
+                acceleration_error,
+                tau_feedback,
+                tau_gravity,
+                tau_feedforward,
+                tau_total,
+            ) = metrics
+            samples["time"].append(sim_time)
+            samples["target"].append(target)
+            samples["qpos"].append(data.qpos.copy())
             samples["error"].append(error)
+            samples["qacc_des"].append(qacc_des)
+            samples["qacc"].append(data.qacc.copy())
+            samples["acceleration_error"].append(acceleration_error)
             samples["tau_fb"].append(tau_feedback)
             samples["tau_g"].append(tau_gravity)
+            samples["tau_ff"].append(tau_feedforward)
             samples["tau_total"].append(tau_total)
 
     print(
         f"controller={args.controller} duration={args.duration:g} "
         f"final_cycle=[{cycle_start:.6f}, {cycle_end:.6f}]"
     )
-    for name in ("error", "tau_fb", "tau_g", "tau_total"):
+    for name in (
+        "error",
+        "acceleration_error",
+        "tau_fb",
+        "tau_g",
+        "tau_ff",
+        "tau_total",
+    ):
         print(f"{name}_rms={rms(samples[name])}")
+    print(
+        "turnaround_error_rms="
+        f"{turnaround_rms(samples['time'], samples['error'])}"
+    )
+    print(
+        "turnaround_acceleration_error_rms="
+        f"{turnaround_rms(samples['time'], samples['acceleration_error'])}"
+    )
+    print(
+        "phase_offset_seconds="
+        f"{phase_offset_seconds(samples['time'], np.asarray(samples['qpos']))}"
+    )
     if args.controller == "pd":
         print(
             "tau_fb_projection_onto_tau_g="
@@ -164,13 +320,23 @@ def run_headless(args, model, data, gravity_data):
         )
 
 
-def run_viewer(args, model, data, gravity_data):
+def run_viewer(
+    args, model, data, plant_gravity_data, control_model, control_work_data
+):
     next_report = 0.0
     with mujoco.viewer.launch_passive(model, data) as viewer:
         while viewer.is_running():
             wall_start = time.time()
             sim_time = data.time
-            metrics = step_controller(args, model, data, gravity_data, sim_time)
+            metrics = step_controller(
+                args.controller,
+                model,
+                data,
+                plant_gravity_data,
+                control_model,
+                control_work_data,
+                sim_time,
+            )
             viewer.sync()
 
             if sim_time >= next_report:
@@ -182,19 +348,209 @@ def run_viewer(args, model, data, gravity_data):
                 time.sleep(remaining)
 
 
+def add_arm_geoms(scene, model, data, rgba):
+    """Add a dynamic arm state to a viewer scene without changing physics."""
+    for geom_id in range(model.ngeom):
+        if model.geom_bodyid[geom_id] == 0:
+            continue
+        geom = scene.geoms[scene.ngeom]
+        mujoco.mjv_initGeom(
+            geom,
+            model.geom_type[geom_id],
+            model.geom_size[geom_id],
+            data.geom_xpos[geom_id],
+            data.geom_xmat[geom_id],
+            rgba,
+        )
+        scene.ngeom += 1
+
+
+def make_torque_figure(title):
+    figure = mujoco.MjvFigure()
+    figure.title = title
+    figure.xlabel = "simulation time (s)"
+    figure.flg_extend = 0
+    figure.flg_legend = 1
+    figure.flg_ticklabel[:] = 1
+    figure.linewidth = 2.0
+    figure.figurergba = np.array([0.05, 0.05, 0.05, 0.32])
+    figure.panergba = np.array([0.12, 0.12, 0.12, 0.48])
+    figure.gridrgb = np.array([0.35, 0.35, 0.35])
+    for index, (name, _, _) in enumerate(PLOT_SERIES):
+        figure.linename[index] = name
+        figure.linergb[index] = PLOT_COLORS[index]
+    return figure
+
+
+def update_torque_figure(figure, samples, value_index):
+    if not samples:
+        return
+    times = np.array([sample[0] for sample in samples])
+    values = np.array([sample[value_index] for sample in samples])
+    figure.linepnt[:] = 0
+    for index in range(values.shape[1]):
+        figure.linepnt[index] = len(times)
+        figure.linedata[index, : 2 * len(times)] = np.column_stack(
+            (times, values[:, index])
+        ).reshape(-1)
+
+    figure.range[0] = (times[0], max(times[-1], times[0] + PLOT_INTERVAL))
+    lower = float(np.min(values))
+    upper = float(np.max(values))
+    padding = max((upper - lower) * 0.12, 0.01)
+    figure.range[1] = (lower - padding, upper + padding)
+
+
+def update_overlay_figures(viewer, figures, samples):
+    for figure, value_index in zip(figures, (1, 2, 3)):
+        update_torque_figure(figure, samples, value_index)
+    viewport = viewer.viewport
+    width = min(360, max(285, viewport.width // 4))
+    height = 118
+    margin = 10
+    gap = 6
+    left = max(0, viewport.width - width - margin)
+    viewports = [
+        mujoco.MjrRect(
+            left,
+            viewport.height - margin - height * (index + 1) - gap * index,
+            width,
+            height,
+        )
+        for index in range(len(figures))
+    ]
+    viewer.set_figures(list(zip(viewports, figures)))
+
+
+def run_overlay_viewer():
+    """Render synchronized PD and gravity-compensation rollouts together.
+
+    The two data objects advance independently. The added orange geoms are a
+    visualization layer only; they do not add bodies, contacts, or forces to
+    the blue PD simulation rendered by the viewer.
+    """
+    pd_model = make_model("pd")
+    gravity_model = make_model("gravity-comp")
+    pd_data = mujoco.MjData(pd_model)
+    gravity_data = mujoco.MjData(gravity_model)
+    target_data = mujoco.MjData(pd_model)
+    pd_gravity_data = mujoco.MjData(pd_model)
+    gravity_gravity_data = mujoco.MjData(gravity_model)
+    pd_control_data = mujoco.MjData(pd_model)
+    gravity_control_data = mujoco.MjData(gravity_model)
+    for data, model in ((pd_data, pd_model), (gravity_data, gravity_model)):
+        data.qpos[:] = START
+        mujoco.mj_forward(model, data)
+
+    for geom_id in range(pd_model.ngeom):
+        if pd_model.geom_bodyid[geom_id] != 0:
+            pd_model.geom_rgba[geom_id, 3] = OVERLAY_ALPHA
+    orange = np.array([0.95, 0.45, 0.08, OVERLAY_ALPHA])
+    figures = (
+        make_torque_figure("Applied torque (N-m)  P=PD, G=gravity-comp"),
+        make_torque_figure("Torque rate (N-m/s)"),
+        make_torque_figure("Torque acceleration (N-m/s^2)"),
+    )
+    samples = deque(maxlen=round(PLOT_HISTORY_SECONDS / PLOT_INTERVAL))
+    previous_torque = None
+    previous_rate = None
+    next_plot = 0.0
+    with mujoco.viewer.launch_passive(pd_model, pd_data) as viewer:
+        while viewer.is_running():
+            wall_start = time.time()
+            sim_time = pd_data.time
+            *_, pd_total = step_controller(
+                "pd",
+                pd_model,
+                pd_data,
+                pd_gravity_data,
+                pd_model,
+                pd_control_data,
+                sim_time,
+            )
+            *_, gravity_total = step_controller(
+                "gravity-comp",
+                gravity_model,
+                gravity_data,
+                gravity_gravity_data,
+                gravity_model,
+                gravity_control_data,
+                sim_time,
+            )
+            target_data.qpos[:] = desired_state(sim_time)[0]
+            mujoco.mj_forward(pd_model, target_data)
+            applied_torque = np.array(
+                [pd_total[0], pd_total[1], gravity_total[0], gravity_total[1]]
+            )
+            if previous_torque is None:
+                rate = np.zeros_like(applied_torque)
+                acceleration = np.zeros_like(applied_torque)
+            else:
+                rate = (applied_torque - previous_torque) / pd_model.opt.timestep
+                acceleration = (rate - previous_rate) / pd_model.opt.timestep
+            previous_torque = applied_torque
+            previous_rate = rate
+            if sim_time >= next_plot:
+                samples.append((sim_time, applied_torque, rate, acceleration))
+                next_plot += PLOT_INTERVAL
+            viewer.user_scn.ngeom = 0
+            add_arm_geoms(
+                viewer.user_scn,
+                pd_model,
+                target_data,
+                np.array([0.75, 0.75, 0.75, 0.22]),
+            )
+            add_arm_geoms(viewer.user_scn, gravity_model, gravity_data, orange)
+            update_overlay_figures(viewer, figures, samples)
+            viewer.sync()
+
+            remaining = pd_model.opt.timestep - (time.time() - wall_start)
+            if remaining > 0:
+                time.sleep(remaining)
+
+
 def main():
     args = parse_args()
+    if args.controller == "overlay":
+        if args.headless:
+            raise ValueError("--controller overlay cannot run headless")
+        print("overlay: blue=PD, orange=gravity-compensation")
+        run_overlay_viewer()
+        return
     model = make_model(args.controller)
     data = mujoco.MjData(model)
-    gravity_data = mujoco.MjData(model)
+    plant_gravity_data = mujoco.MjData(model)
+    control_model = make_model(
+        args.controller,
+        link2_mass=(
+            WRONG_CONTROL_LINK2_MASS
+            if args.controller == "computed-torque-wrong-mass"
+            else PLANT_LINK2_MASS
+        ),
+    )
+    control_work_data = mujoco.MjData(control_model)
     data.qpos[:] = START
     mujoco.mj_forward(model, data)
 
     print(f"controller={args.controller} color={COLORS[args.controller][0]}")
     if args.headless:
-        run_headless(args, model, data, gravity_data)
+        run_headless(
+            args,
+            model,
+            data,
+            plant_gravity_data,
+            control_model,
+            control_work_data,
+        )
     else:
-        run_viewer(args, model, data, gravity_data)
+        run_viewer(
+            args,
+            model,
+            data,
+            plant_gravity_data,
+            control_model,
+            control_work_data,
+        )
 
 
 if __name__ == "__main__":

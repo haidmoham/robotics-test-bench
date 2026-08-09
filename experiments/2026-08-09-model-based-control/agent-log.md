@@ -1,5 +1,112 @@
 # Agent log
 
+## AI-20260809-009 — Computed-torque mismatch prediction
+
+id: AI-20260809-009
+date: 2026-08-09
+agent: Codex
+status: acted
+evaluation: partially-confirmed
+repo_state:
+  repository: robotics-test-bench
+  branch: main
+  commit:
+  changed_files:
+    - experiments/2026-08-09-model-based-control/model_based_control.py
+    - experiments/2026-08-09-model-based-control/agent-log.md
+related:
+  experiment: experiments/2026-08-09-model-based-control
+  issues: [4]
+objects:
+  question: Q-20260809-009
+  response: R-20260809-009
+  evaluation: E-20260809-009
+  action: A-20260809-009
+  outcome: O-20260809-009
+librarian:
+  status: pending
+  record_ids: []
+
+## Q — Question
+
+With the plant, trajectory, feedback gains, and timestep fixed, what changes when inverse dynamics supplies the desired motion torque? What changes if the controller alone assumes link 2 has half its real mass?
+
+## R — Response summary
+
+The human prediction is two-stage. Accurate feedforward should be most useful near target reversals, where desired acceleration magnitude is largest. With an underestimated controller mass, the initial feedforward torque should be too weak. Error should then grow until feedback applies a larger correction, which can create a larger acceleration magnitude or overshoot.
+
+## E — Human evaluation
+
+### Accepted
+
+- The physical plant remains unchanged at a 0.7 kg link-2 mass.
+- The mismatch is only in the controller's 0.35 kg inverse-dynamics model.
+- The test must distinguish initial under-acceleration from any later, larger corrective acceleration.
+
+## A — Action
+
+Add accurate computed torque and controller-only wrong-mass conditions. Record tracking error, acceleration error, feedback torque, feedforward torque, and turnaround-window RMS values over the final complete trajectory cycle.
+
+## O — Outcome
+
+The final complete cycle, 7.853982 to 15.707963 seconds, was simulated headlessly for all four conditions.
+
+- Accurate computed torque reduced position-error RMS to [0.000414, 0.000519] rad and feedback-torque RMS to [0.000536, 0.000149] N-m. Its turnaround position-error RMS was [0.000154, 0.000178] rad.
+- The controller-only wrong-mass condition increased position-error RMS to [0.268017, 0.053296] rad, acceleration-error RMS to [0.035255, 0.018318] rad/s², and feedback-torque RMS to [4.826850, 0.962259] N-m.
+- At the target reversal with desired acceleration [-0.224, -0.288] rad/s², the wrong-mass feedforward torque was [7.318840, 1.166463] N-m instead of [10.963537, 2.332925] N-m. Its shortfall was [3.644697, 1.166463] N-m.
+
+The run confirms that the inaccurate model leaves a large residual that feedback must correct. It does not yet isolate a time-resolved overshoot event, so the predicted later higher acceleration magnitude remains unconfirmed.
+
+### Effect on current belief
+
+Accurate desired-state inverse dynamics greatly reduces the residual in this model. A controller-only mass error restores a measurable residual and feedback burden. The separate claim about later corrective acceleration needs a trace-level check.
+
+## Librarian update
+
+```yaml
+source:
+  repository: robotics-test-bench
+  path: experiments/2026-08-09-model-based-control/agent-log.md
+  commit:
+objects:
+  - id: Q-20260809-009
+    type: Question
+    summary: What does desired-state inverse dynamics change, and what does a controller-only mass error reveal?
+    status: open
+  - id: R-20260809-009
+    type: Response
+    summary: Accurate feedforward should help near acceleration extrema; an underestimated mass should first under-accelerate, then require stronger feedback correction.
+    status: recorded-as-prediction
+  - id: E-20260809-009
+    type: Evaluation
+    summary: The test design holds plant, target, gains, and timestep fixed while changing only the controller model.
+    status: unconfirmed
+  - id: A-20260809-009
+    type: Action
+    summary: Run accurate and wrong-mass computed-torque conditions with position, acceleration, and torque telemetry.
+    status: completed
+  - id: O-20260809-009
+    type: Outcome
+    summary: Accurate feedforward nearly eliminated the residual; a controller-only wrong mass restored position, acceleration, and feedback residuals.
+    status: partially-confirmed
+relations:
+  - subject: Q-20260809-009
+    predicate: receives
+    object: R-20260809-009
+  - subject: R-20260809-009
+    predicate: receives
+    object: E-20260809-009
+  - subject: E-20260809-009
+    predicate: causes
+    object: A-20260809-009
+  - subject: A-20260809-009
+    predicate: produces
+    object: O-20260809-009
+unresolved_questions:
+  - Does the wrong-mass trace show initial under-acceleration followed by a larger correction at a resolved time point?
+superseded_claims: []
+```
+
 ## AI-20260809-004 — Iteration 0 prediction
 
 id: AI-20260809-004
@@ -111,6 +218,110 @@ superseded_claims: []
 ```
 
 Related: #4
+
+## AI-20260809-008 — Overlay comparison aid
+
+id: AI-20260809-008
+date: 2026-08-09
+agent: Codex
+status: acted
+evaluation: unconfirmed
+repo_state:
+  repository: robotics-test-bench
+  branch: main
+  commit:
+  changed_files:
+    - experiments/2026-08-09-model-based-control/model_based_control.py
+    - experiments/2026-08-09-model-based-control/README.md
+    - experiments/2026-08-09-model-based-control/agent-log.md
+related:
+  experiment: experiments/2026-08-09-model-based-control
+  issues: [4]
+objects:
+  question: Q-20260809-008
+  response: R-20260809-008
+  evaluation: E-20260809-008
+  action: A-20260809-008
+  outcome: O-20260809-008
+librarian:
+  status: pending
+  record_ids: []
+
+## Q — Question
+
+Can the two controller states be compared visually without placing them in one physical simulation?
+
+## R — Response summary
+
+Run the PD and gravity-compensation controllers in separate MuJoCo data objects. Render a target-pose ghost plus the two controller states, and show live rolling plots at the viewer edge as visual aids. Add phase-lag and turnaround-window metrics to the headless summary.
+
+## E — Human evaluation
+
+### Accepted
+
+- The overlay is for visual comparison only.
+
+### Verification required
+
+- Confirm that the two arms render together and that existing headless telemetry is unchanged.
+
+## A — Action
+
+Added `--controller overlay`. It advances both controllers independently, adds a gray target ghost and the orange arm as user-scene geoms over the translucent blue PD arm, and shows right-side live plots for the latest six seconds of applied torque plus its first and second numerical derivatives. The headless comparison now reports phase lag and turnaround-window error.
+
+## O — Outcome
+
+Pending visual inspection. The overlay is not experiment evidence and does not change the controller comparison.
+
+### Effect on current belief
+
+None. This is instrumentation for inspection, not a result.
+
+## Librarian update
+
+```yaml
+source:
+  repository: robotics-test-bench
+  path: experiments/2026-08-09-model-based-control/agent-log.md
+  commit:
+objects:
+  - id: Q-20260809-008
+    type: Question
+    summary: Can two controller states be compared in one viewer without sharing physics?
+    status: answered-by-design
+  - id: R-20260809-008
+    type: Response
+    summary: Use independent data objects and a visualization-only overlay with compact rolling plots.
+    status: implemented
+  - id: E-20260809-008
+    type: Evaluation
+    summary: Visual inspection and telemetry-preservation checks remain required.
+    status: unconfirmed
+  - id: A-20260809-008
+    type: Action
+    summary: Added a viewer-only overlay mode with compact derivative plots for the PD and gravity-compensation states.
+    status: completed
+  - id: O-20260809-008
+    type: Outcome
+    summary: Pending visual inspection; not experiment evidence.
+    status: pending
+relations:
+  - subject: Q-20260809-008
+    predicate: receives
+    object: R-20260809-008
+  - subject: R-20260809-008
+    predicate: receives
+    object: E-20260809-008
+  - subject: E-20260809-008
+    predicate: causes
+    object: A-20260809-008
+  - subject: A-20260809-008
+    predicate: produces
+    object: O-20260809-008
+unresolved_questions:
+  - Does the overlay make the controller-state difference easier to inspect?
+superseded_claims: []
+```
 
 ## AI-20260809-007 — Final-cycle telemetry comparison
 
