@@ -3,7 +3,10 @@
 ```yaml
 id: AI-YYYYMMDD-NNN
 date: YYYY-MM-DD
-agent: Codex
+sources:
+  - kind: coding-agent # coding-agent | chat | human-observation | external-reference
+    system: Codex
+    reference: # URL, issue/comment, session label, or blank when unavailable
 status: open # open | acted | resolved | abandoned
 evaluation: unconfirmed # unconfirmed | confirmed
 repo_state:
@@ -31,6 +34,8 @@ librarian:
 ```
 
 `NNN` is repository-wide for that date, not experiment-local. Allocate the next unused suffix across all experiment logs. Never reuse an `AI/Q/R/E/A/O` ID in another experiment. Preserve an allocated ID across later updates. Keep interaction entries in causal order so prediction -> observation -> interpretation can be reconstructed from the file as well as Git history.
+
+Every new entry records provenance in `sources`. Keep distinct sources distinct. A chat explanation, a coding-agent inspection, a human observation, and an external reference can support the same belief change, but they are not interchangeable evidence. Use multiple `sources` items when required rather than collapsing them into one unattributed response. Existing entries that use the legacy `agent:` field remain valid.
 
 ## Q — Question
 
@@ -82,17 +87,25 @@ Record the observed result, or write `Pending` until it is known.
 
 ### Effect on current belief
 
-State which prediction, hypothesis, claim, interpretation, or decision became stronger, weaker, rejected, or superseded.
+- Before: State the prior working model or uncertainty.
+- After: State the repaired, weakened, strengthened, rejected, or superseded model.
+- Evidence status: State whether the change is a human interpretation, agent explanation, code inspection, external reference, or experimentally observed result. Provenance does not by itself establish truth.
+
+For conversation-derived interactions, this before -> after delta is the primary artifact. Preserve the change in the mental model, not the transcript.
 
 ## Librarian update
 
-Pass this compact payload during the next Librarian invocation. Preserve the stable IDs when updating the entry.
+Pass this compact payload during the next Librarian invocation. Preserve the stable IDs and source provenance when updating the entry.
 
 ```yaml
 source:
   repository: robotics-test-bench
   path: experiments/<date-question>/agent-log.md
   commit:
+provenance:
+  - kind: coding-agent
+    system: Codex
+    reference:
 objects:
   - id: Q-YYYYMMDD-NNN
     type: Question
