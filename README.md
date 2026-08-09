@@ -111,6 +111,8 @@ Question -> Response -> Evaluation -> Action -> Outcome
 
 Each object gets a stable ID such as `Q-20260808-001`. The experiment `agent-log.md` records the object summaries, relations, evidence status, unresolved questions, and a compact Librarian handoff. The ontology is an audit layer, not a reason to log routine syntax help or full conversations.
 
+Agent logs preserve changes in belief; Git preserves changes in code. Record implementation details in the reasoning trace only when they changed a prediction, explanation, diagnosis, decision, evidence interpretation, or next question. Do not use agent logs as implementation changelogs.
+
 Use [`templates/agent-interaction.md`](templates/agent-interaction.md) for the canonical shape.
 
 ## Current experiment
@@ -135,6 +137,7 @@ MuJoCo mental model:
 - Optimize for understanding, not elegance.
 - Ugly experiment code is acceptable.
 - Refactor only when it removes repeated friction or enables the next question.
+- Keep reasoning traces epistemic: record belief changes, not routine code chronology.
 - Do not turn this repo into a general robotics encyclopedia.
 
 ## Success metrics
