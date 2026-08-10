@@ -289,3 +289,158 @@ unresolved_questions: []
 superseded_claims:
   - The prior implementation exposed tunable cross-feed, but its wave-target algebra cancelled it at the configured phase.
 ```
+
+## AI-20260809-011 — Task-space Jacobian placement in standing control
+
+```yaml
+id: AI-20260809-011
+date: 2026-08-09
+sources:
+  - kind: chat
+    system: ChatGPT
+    reference: conversation-local: task-space-jacobians-standing
+status: acted
+evaluation: unconfirmed
+repo_state:
+  repository: robotics-test-bench
+  branch: main
+  commit:
+  changed_files:
+    - experiments/2026-08-09-two-link-coupling/agent-log.md
+related:
+  experiment: experiments/2026-08-09-two-link-coupling
+  hypotheses: []
+  experiments: []
+  claims: []
+  decisions:
+    - Preserve the Jacobian as a local task-space motion map, not as the whole feedback controller.
+  issues: [2, 6]
+  files:
+    - TODO.md
+objects:
+  question: Q-20260809-011
+  response: R-20260809-011
+  evaluation: E-20260809-011
+  action: A-20260809-011
+  outcome: O-20260809-011
+librarian:
+  status: pending
+  record_ids: []
+```
+
+## Q — Question
+
+How do task space and Jacobians relate to stable standing in C-1N, and where does the Jacobian sit in the control stack?
+
+### Human prediction
+
+The Jacobian may provide the information needed for the robot to continuously re-adjust into stable standing by translating between the current joint configuration and the corrective motion required by the task.
+
+### Purpose
+
+Connect the multi-joint coupling result to the next task-space experiment without collapsing the Jacobian into a complete standing controller.
+
+### Context supplied
+
+- Issue #2 established that synchronized or isolated joint reasoning is insufficient for a coupled mechanism.
+- `TODO.md` selects issue #6, Jacobians and task space, as the next experiment.
+- C-1N is the motivating integration target after the isolated bench experiment closes.
+
+## R — Response summary
+
+Task space is an output representation selected for the behavior of interest, such as foot position or body height. A task map `x = f(q)` maps configuration space into that representation. The Jacobian `J(q) = df/dq` is the pose-dependent local linear map that relates joint-space motion to task-space motion through `xdot = J(q) qdot`.
+
+For standing, the full loop is broader: estimate state, measure task error, choose a correction, map that correction through the current mechanism, command joints, then observe the new state. The Jacobian occupies the local motion-mapping part of that loop. It can support conversion between desired body or foot corrections and joint corrections, but it does not define stability, estimate state, model contact, or close the controller by itself.
+
+The door-hinge example repaired the local-map intuition: as the hinge angle changes, the same angular motion maps to a task-space velocity whose direction changes because `J(q)` changes with configuration.
+
+## E — Human evaluation
+
+### Accepted
+
+- Task space is not a subspace or normalization of joint space. It is a task-selected output representation of robot configuration.
+- The Jacobian is well understood as a localized, pose-dependent generalization of a gradient for a vector-valued task map.
+- `J(q)` changes as the robot traverses configuration space.
+- In `xdot = J(q) qdot`, a fixed joint velocity can produce changing task-space velocity because the local map changes with pose.
+- The Jacobian belongs in the translation layer of a feedback stack; it is one tool in that layer rather than the full loop.
+
+### Rejected
+
+- Treating the Jacobian itself as the complete feedback loop.
+- Treating task space as a collection, normalization, or linear-algebra subspace of joint spaces.
+
+### Unresolved
+
+- Which task variables are sufficient for C-1N standing.
+- Which additional models are required once contact, center of mass, forces, and stability margins matter.
+
+### Verification required
+
+- Issue #6 must verify the local joint-to-task mapping experimentally before this conversation-derived model is treated as bench evidence.
+
+## A — Action
+
+Preserve this belief update as the conceptual bridge from issue #2 to issue #6. Do not change the issue #6 experiment design or skip its Iteration 0 prediction. Use the bench experiment to test the pose-dependent mapping before applying task-space telemetry to C-1N.
+
+## O — Outcome
+
+The conceptual stack is now separated cleanly: feedback supplies the repeated correction loop, while the Jacobian supplies a local geometry-aware map inside that loop.
+
+### Effect on current belief
+
+- Before: The relationship among joint space, task space, Jacobians, and standing was unclear; the Jacobian was tentatively treated as the information feedback loop required for continuous stabilization.
+- After: Task space is a task-specific output representation `x = f(q)`. The Jacobian is the pose-dependent local derivative of that map and sits inside a larger feedback architecture as a joint-motion-to-task-motion translation layer.
+- Evidence status: Conversation-derived human understanding supported by mathematical explanation. Not yet experimentally verified in issue #6.
+
+## Librarian update
+
+```yaml
+source:
+  repository: robotics-test-bench
+  path: experiments/2026-08-09-two-link-coupling/agent-log.md
+  commit:
+provenance:
+  - kind: chat
+    system: ChatGPT
+    reference: conversation-local: task-space-jacobians-standing
+objects:
+  - id: Q-20260809-011
+    type: Question
+    summary: Where does the Jacobian sit between joint-space coupling and stable task-space standing?
+    status: resolved-conceptually
+  - id: R-20260809-011
+    type: Response
+    summary: The Jacobian is the pose-dependent local map from joint-space motion to task-space motion inside a broader feedback loop.
+    status: explanation
+  - id: E-20260809-011
+    type: Evaluation
+    summary: The human accepted the local-map model and rejected both the full-feedback-loop and task-space-as-subspace models.
+    status: accepted-unverified
+  - id: A-20260809-011
+    type: Action
+    summary: Preserve the belief update as the bridge into issue #6 without replacing its required prediction or experiment.
+    status: completed
+  - id: O-20260809-011
+    type: Outcome
+    summary: Joint space, task space, Jacobian, and feedback now occupy distinct logical layers; issue #6 remains the required verification step.
+    status: conceptually-resolved
+relations:
+  - subject: Q-20260809-011
+    predicate: receives
+    object: R-20260809-011
+  - subject: R-20260809-011
+    predicate: receives
+    object: E-20260809-011
+  - subject: E-20260809-011
+    predicate: causes
+    object: A-20260809-011
+  - subject: A-20260809-011
+    predicate: produces
+    object: O-20260809-011
+unresolved_questions:
+  - Which task variables are sufficient for stable C-1N standing?
+  - Which contact, force, center-of-mass, or stability models become necessary after the kinematic mapping is verified?
+superseded_claims:
+  - The Jacobian itself is the feedback loop required for stable standing.
+  - Task space is a normalized or linear-algebra subspace of joint space.
+```
