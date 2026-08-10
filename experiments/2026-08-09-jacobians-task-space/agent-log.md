@@ -430,6 +430,121 @@ superseded_claims:
 
 Related: #6, #20
 
+## AI-20260810-016 — Intentional stop before the combined orientation probe
+
+```yaml
+id: AI-20260810-016
+date: 2026-08-10
+sources:
+  - kind: human-observation
+    system: Codex
+    reference: current task
+status: decided
+evaluation: accepted
+repo_state:
+  repository: robotics-test-bench
+  branch: codex/responsive-jacobian-overlay
+  commit:
+  changed_files:
+    - experiments/2026-08-09-jacobians-task-space/agent-log.md
+related:
+  experiment: experiments/2026-08-09-jacobians-task-space
+  hypotheses: []
+  experiments: []
+  claims: []
+  decisions: []
+  issues: [6]
+  files:
+    - experiments/2026-08-09-jacobians-task-space/README.md
+objects:
+  question: Q-20260810-016
+  response: R-20260810-016
+  evaluation: E-20260810-016
+  action: A-20260810-016
+  outcome: O-20260810-016
+librarian:
+  status: not-needed
+  record_ids: []
+```
+
+## Q — Question
+
+Must the remaining combined two-DOF, three-orientation static probe run before the existing #6 evidence can be projected publicly?
+
+## R — Response summary
+
+The remaining probe is a useful coverage check, but it does not add a new learning target after the learner has independently verified the orientation finite difference, the full two-joint velocity map, and the pose-dependent force-to-torque bridge.
+
+## E — Human evaluation
+
+The human intentionally skipped the remaining combined probe after demonstrating the required physical model in a cold explanation. This is a stop decision, not a claim that the issue's implementation checklist is complete.
+
+## A — Action
+
+Preserve the evidence gap in the experiment README. Project only the verified observations and explicit stop boundary into the portfolio Working Notes page.
+
+## O — Outcome
+
+The experiment has a public-facing stop boundary while GitHub issue #6 remains open. The skipped probe remains available if a later task needs the combined local-versus-shared-frame static check.
+
+### Effect on current belief
+
+- Before: completion was tied to one unrun combined probe.
+- After: the learner has enough verified evidence to state the local-map model; the unrun probe is documented as an intentional scope stop rather than erased.
+- Evidence status: Human decision accepted. The skipped probe is unverified by design.
+
+## Librarian update
+
+```yaml
+source:
+  repository: robotics-test-bench
+  path: experiments/2026-08-09-jacobians-task-space/agent-log.md
+  commit:
+provenance:
+  - kind: human-observation
+    system: Codex
+    reference: current task
+objects:
+  - id: Q-20260810-016
+    type: Question
+    summary: Decide whether to run the remaining combined probe before public projection.
+    status: resolved
+  - id: R-20260810-016
+    type: Response
+    summary: Treat the remaining probe as an explicit stop boundary, not hidden missing evidence.
+    status: acted
+  - id: E-20260810-016
+    type: Evaluation
+    summary: The human accepted the intentional skip after a successful cold explanation.
+    status: confirmed
+  - id: A-20260810-016
+    type: Action
+    summary: Keep the gap visible and project only verified evidence.
+    status: completed
+  - id: O-20260810-016
+    type: Outcome
+    summary: #6 remains open; its documented evidence is eligible for a bounded public note.
+    status: confirmed
+relations:
+  - subject: Q-20260810-016
+    predicate: receives
+    object: R-20260810-016
+  - subject: R-20260810-016
+    predicate: receives
+    object: E-20260810-016
+  - subject: E-20260810-016
+    predicate: causes
+    object: A-20260810-016
+  - subject: A-20260810-016
+    predicate: produces
+    object: O-20260810-016
+unresolved_questions:
+  - When needed, what does the combined two-DOF three-orientation static probe add beyond the recorded separate checks?
+superseded_claims: []
+```
+
+Related: #6
+
 ## AI-20260810-015 — #6 closure and portfolio visual requirements
 
 ```yaml
