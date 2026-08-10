@@ -40,7 +40,7 @@ Choose the next node from the evidence produced by the current experiment. Branc
 
 ### Deferred differentiable-dynamics route
 
-The resolved model-based-control work exposed a useful route toward differentiable dynamics. It remains available, but it is currently deferred because Spider exposed a more immediate task-space question captured by #6.
+The resolved model-based-control work exposed a useful route toward differentiable dynamics. It remains available, but it is currently deferred because C-1N exposed a more immediate task-space question captured by #6.
 
 ```mermaid
 flowchart LR
@@ -149,19 +149,30 @@ Record implementation details in the reasoning trace only when they changed a pr
 
 Use [`templates/agent-interaction.md`](templates/agent-interaction.md) for the canonical shape.
 
+## C-1N integration target
+
+The longitudinal robot formerly referred to generically as Spider is now **C-1N**. Its public checkpoint grammar is:
+
+```text
+C-1N // NN · CODENAME
+```
+
+The current integrated behavior is `C-1N // 01 · SHUFFLE`. Bench experiments can create optional integration hooks, but they do not require C-1N work for completion. See [`integrations/c1n.md`](integrations/c1n.md).
+
 ## Current experiment
 
-None. `TODO.md` selects issue #6, Jacobians & task space, as the next experiment because Spider exposed a joint-space versus task-space mismatch.
+None. `TODO.md` selects issue #6, Jacobians & task space, as the next experiment because C-1N exposed a joint-space versus task-space mismatch.
 
 Before creating the experiment directory, make the Iteration 0 prediction for the sign and rough relative size of shared-frame end-effector X motion produced by the same small positive first-joint perturbation at three different base orientations.
 
 Current bridge into task space:
-- keep the mechanism isolated from Spider;
+- keep the mechanism isolated from C-1N;
 - hold geometry, joint configuration, perturbation size, controller, and timestep fixed while changing base orientation;
 - compare joint-space position, velocity, and acceleration with shared-frame end-effector X position, velocity, and acceleration;
 - verify at least one Jacobian column by finite difference or geometry;
 - do not implement IK, RL, or a task-space controller yet;
-- after closure, use the #6 Spider hook to instrument torso-frame foot motion before changing the gait.
+- after closure, use the #6 C-1N hook to instrument torso-frame foot motion before changing the gait;
+- when that integration is preserved as a checkpoint, call it `C-1N // 02 · FRAME`.
 
 MuJoCo mental model:
 - `mjModel` = what the simulated system is.
