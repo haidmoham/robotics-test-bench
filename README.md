@@ -166,9 +166,9 @@ The current integrated behavior is `C-1N // 01 · SHUFFLE`. Bench experiments ca
 
 ## Current experiment
 
-None. `TODO.md` selects issue #6, Jacobians & task space, as the next experiment because C-1N exposed a joint-space versus task-space mismatch.
+[`experiments/2026-08-09-jacobians-task-space/`](experiments/2026-08-09-jacobians-task-space/) is the active experiment. `TODO.md` selects issue #6, Jacobians & task space, because C-1N exposed a joint-space versus task-space mismatch.
 
-Before creating the experiment directory, make the Iteration 0 prediction for the sign and rough relative size of shared-frame end-effector X motion produced by the same small positive first-joint perturbation at three different base orientations.
+Its Iteration 0 prediction concerns the sign and rough relative size of shared-frame end-effector X motion produced by the same small positive first-joint perturbation at three different base orientations.
 
 Current bridge into task space:
 - keep the mechanism isolated from C-1N;
