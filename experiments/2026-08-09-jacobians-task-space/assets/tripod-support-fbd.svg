@@ -1,47 +1,41 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="680" viewBox="0 0 1200 680" role="img" aria-labelledby="title desc">
-  <title id="title">Tripod support free-body diagrams</title>
-  <desc id="desc">The left diagram shows gravity and ground reactions as the whole robot's external forces. The right diagram isolates one leg, where actuator torques produce an assigned foot force.</desc>
+  <title id="title">Tripod support: forces on the robot, torques in one leg</title>
+  <desc id="desc">A quiet blue engineering diagram. The left side is the whole robot free-body diagram: gravity down and ground forces up. The right side isolates one leg: an assigned ground force maps through the Jacobian transpose to hip and knee torques.</desc>
   <defs>
-    <marker id="arrow-red" markerWidth="12" markerHeight="12" refX="9" refY="4" orient="auto"><path d="M0 0L10 4L0 8Z" fill="#B5423F"/></marker>
-    <marker id="arrow-green" markerWidth="12" markerHeight="12" refX="9" refY="4" orient="auto"><path d="M0 0L10 4L0 8Z" fill="#238A4A"/></marker>
-    <marker id="arrow-blue" markerWidth="12" markerHeight="12" refX="9" refY="4" orient="auto"><path d="M0 0L10 4L0 8Z" fill="#2E69AD"/></marker>
-    <marker id="arrow-orange" markerWidth="12" markerHeight="12" refX="9" refY="4" orient="auto"><path d="M0 0L10 4L0 8Z" fill="#D87B16"/></marker>
+    <pattern id="grid" width="30" height="30" patternUnits="userSpaceOnUse"><path d="M30 0H0V30" fill="none" stroke="#b9cce0" stroke-opacity=".34"/></pattern>
+    <marker id="arrow-navy" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto"><path d="M0 0L9 4L0 8Z" fill="#153350"/></marker>
+    <marker id="arrow-blue" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto"><path d="M0 0L9 4L0 8Z" fill="#3266d6"/></marker>
+    <marker id="arrow-orange" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto"><path d="M0 0L9 4L0 8Z" fill="#c46a30"/></marker>
     <style>
-      .frame{fill:#F5F7FA;stroke:#AAB3BF;stroke-width:2}.robot{fill:#252A31;stroke:#101216;stroke-width:3}.leg{fill:none;stroke:#252A31;stroke-width:13;stroke-linecap:round;stroke-linejoin:round}.ground{stroke:#697386;stroke-width:4}.label{font-family:Arial,sans-serif;fill:#15181D;font-size:23px}.small{font-family:Arial,sans-serif;fill:#454E5C;font-size:19px}.red{fill:#B5423F;font-weight:bold}.green{fill:#238A4A;font-weight:bold}.blue{fill:#2E69AD;font-weight:bold}.orange{fill:#D87B16;font-weight:bold}.force{stroke:#238A4A;stroke-width:6;marker-end:url(#arrow-green)}.friction{stroke:#2E69AD;stroke-width:6;marker-end:url(#arrow-blue)}.weight{stroke:#B5423F;stroke-width:6;marker-end:url(#arrow-red)}.torque{stroke:#D87B16;stroke-width:6;fill:none;marker-end:url(#arrow-orange)}
+      .ink{stroke:#153350}.robot{fill:#153350}.link{fill:none;stroke:#153350;stroke-width:14;stroke-linecap:round;stroke-linejoin:round}.ground{stroke:#6f8eaa;stroke-width:3}.divider{stroke:#9cb6ce;stroke-width:2}.label{font-family:'JetBrains Mono',monospace;fill:#153350;font-size:20px}.small{font-family:'JetBrains Mono',monospace;fill:#466583;font-size:16px}.heading{font-family:'JetBrains Mono',monospace;fill:#153350;font-size:23px;font-weight:600}.force{stroke:#3266d6;stroke-width:6;marker-end:url(#arrow-blue)}.weight{stroke:#153350;stroke-width:6;marker-end:url(#arrow-navy)}.moment{stroke:#c46a30;stroke-width:6;fill:none;marker-end:url(#arrow-orange)}.joint{fill:#e5f0f9;stroke:#153350;stroke-width:4}.force-label{font-family:'JetBrains Mono',monospace;fill:#3266d6;font-size:18px;font-weight:600}.moment-label{font-family:'JetBrains Mono',monospace;fill:#c46a30;font-size:18px;font-weight:600}
     </style>
   </defs>
-  <rect class="frame" x="15" y="15" width="1170" height="650" rx="16"/>
-  <text class="label" x="50" y="60" font-weight="bold">Whole robot — external forces only</text>
-  <line class="ground" x1="50" y1="500" x2="540" y2="500"/>
-  <rect class="robot" x="190" y="150" width="210" height="78" rx="14"/>
-  <text class="label" x="265" y="198" fill="#FFF">body</text>
-  <circle cx="295" cy="189" r="10" fill="#B5423F"/>
-  <text class="label red" x="314" y="178">COM</text>
-  <path class="leg" d="M225 228 L137 350 L96 490"/>
-  <path class="leg" d="M295 228 L295 365 L295 490"/>
-  <path class="leg" d="M365 228 L460 350 L510 490"/>
-  <line class="weight" x1="295" y1="200" x2="295" y2="330"/>
-  <text class="label red" x="314" y="310">mg</text>
-  <line class="force" x1="96" y1="485" x2="96" y2="370"/><text class="label green" x="55" y="360">f₁z</text>
-  <line class="force" x1="295" y1="485" x2="295" y2="370"/><text class="label green" x="310" y="360">f₂z</text>
-  <line class="force" x1="510" y1="485" x2="510" y2="315"/><text class="label green" x="466" y="305">f₃z</text>
-  <line class="friction" x1="96" y1="475" x2="150" y2="475"/><text class="label blue" x="108" y="460">f₁x</text>
-  <line class="friction" x1="295" y1="475" x2="345" y2="475"/><text class="label blue" x="307" y="460">f₂x</text>
-  <line class="friction" x1="510" y1="475" x2="458" y2="475"/><text class="label blue" x="420" y="460">f₃x</text>
-  <text class="small" x="50" y="570">Static balance: Σf = 0 and Σmoment = 0.</text>
-  <text class="small" x="50" y="602">Joint torques are internal; they do not appear in this whole-robot diagram.</text>
-  <line x1="590" y1="45" x2="590" y2="625" stroke="#AAB3BF" stroke-width="2"/>
-  <text class="label" x="630" y="60" font-weight="bold">One leg — force plus actuator torques</text>
-  <line class="ground" x1="630" y1="500" x2="1130" y2="500"/>
-  <rect class="robot" x="770" y="150" width="190" height="70" rx="14"/>
-  <text class="label" x="833" y="195" fill="#FFF">body</text>
-  <path class="leg" d="M875 220 L975 350 L1025 490"/>
-  <circle cx="875" cy="220" r="10" fill="#D87B16"/><text class="label orange" x="895" y="212">hip</text>
-  <circle cx="975" cy="350" r="10" fill="#D87B16"/><text class="label orange" x="995" y="342">knee</text>
-  <line class="force" x1="1025" y1="485" x2="1025" y2="315"/><text class="label green" x="1040" y="330">assigned f₃z</text>
-  <line class="friction" x1="1020" y1="475" x2="945" y2="475"/><text class="label blue" x="862" y="460">f₃x</text>
-  <path class="torque" d="M854 260 Q810 220 844 185"/><text class="label orange" x="640" y="210">tau hip</text>
-  <path class="torque" d="M950 392 Q905 355 940 320"/><text class="label orange" x="760" y="350">tau knee</text>
-  <text class="small" x="630" y="570">Choose the foot force from the whole-robot balance problem.</text>
-  <text class="label orange" x="630" y="612">tau leg = J(q) transpose f</text>
+  <rect width="1200" height="680" fill="#edf4fa"/>
+  <rect width="1200" height="680" fill="url(#grid)"/>
+  <text class="heading" x="56" y="66">WHOLE ROBOT · external forces</text>
+  <text class="small" x="56" y="96">Forces from the ground balance gravity.</text>
+  <text class="heading" x="656" y="66">ONE LEG · actuator torques</text>
+  <text class="small" x="656" y="96">The assigned foot force becomes motor torque.</text>
+  <line class="divider" x1="600" y1="48" x2="600" y2="630"/>
+  <line class="ground" x1="62" y1="510" x2="546" y2="510"/>
+  <line class="ground" x1="654" y1="510" x2="1138" y2="510"/>
+  <rect class="robot" x="205" y="165" width="196" height="58" rx="9"/>
+  <text x="259" y="201" font-family="'JetBrains Mono',monospace" font-size="18" fill="#edf4fa">chassis</text>
+  <circle cx="303" cy="194" r="8" fill="#c46a30"/><text class="moment-label" x="318" y="185">COM</text>
+  <path class="link" d="M244 223L151 355L111 498"/><path class="link" d="M303 223L303 372L303 498"/><path class="link" d="M362 223L458 355L502 498"/>
+  <circle class="joint" cx="111" cy="498" r="7"/><circle class="joint" cx="303" cy="498" r="7"/><circle class="joint" cx="502" cy="498" r="7"/>
+  <line class="weight" x1="303" y1="205" x2="303" y2="328"/><text class="label" x="318" y="306">mg</text>
+  <line class="force" x1="111" y1="493" x2="111" y2="374"/><text class="force-label" x="81" y="359">f₁</text>
+  <line class="force" x1="303" y1="493" x2="303" y2="374"/><text class="force-label" x="273" y="359">f₂</text>
+  <line class="force" x1="502" y1="493" x2="502" y2="338"/><text class="force-label" x="472" y="323">f₃</text>
+  <text class="small" x="62" y="566">external balance</text><text class="label" x="62" y="598">Σf = 0   ·   Σmoment = 0</text>
+  <text class="small" x="62" y="629">Joint torque is internal to this diagram.</text>
+  <rect class="robot" x="811" y="165" width="174" height="58" rx="9"/><text x="859" y="201" font-family="'JetBrains Mono',monospace" font-size="18" fill="#edf4fa">chassis</text>
+  <path class="link" d="M900 223L981 352L1030 498"/><circle class="joint" cx="900" cy="223" r="10"/><circle class="joint" cx="981" cy="352" r="10"/><circle class="joint" cx="1030" cy="498" r="7"/>
+  <text class="label" x="920" y="217">hip</text><text class="label" x="997" y="347">knee</text>
+  <line class="force" x1="1030" y1="493" x2="1030" y2="338"/><text class="force-label" x="1044" y="359">assigned f</text>
+  <path class="moment" d="M875 274Q830 225 870 187"/><text class="moment-label" x="680" y="235">τ hip</text>
+  <path class="moment" d="M957 408Q916 354 954 315"/><text class="moment-label" x="700" y="375">τ knee</text>
+  <text class="small" x="654" y="566">current pose sets the lever geometry</text><text class="label" x="654" y="598">τ = J(q)ᵀ f</text>
+  <text class="small" x="654" y="629">Same foot force, new pose → new torque demand.</text>
 </svg>
