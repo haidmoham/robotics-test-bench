@@ -14,7 +14,9 @@ This file is the authoritative selector for the next robotics test-bench experim
 
 **Status:** NEXT
 
-#6 established the task-space model needed to stop treating a standing-looking pose as only a joint-position problem. Its remaining combined two-DOF orientation check is now isolated in `experiments/2026-08-09-jacobians-task-space/two_joint_orientation_probe.py`. Run and record that check as residual #6 coverage, but do not let it expand into standing control.
+#6 established the task-space model needed to stop treating a standing-looking pose as only a joint-position problem.
+
+The gap intentionally left in #6 today is still explicit: one combined planar 2-DOF mechanism across 0, 90, and 180 degrees, comparing local/base and shared-frame static foot displacement. Preserve that as unfinished #6 coverage. Do not implement it now unless later evidence makes it useful, and do not let it block the learning frontier.
 
 The next learning target is:
 
@@ -33,10 +35,6 @@ For each case, predict whether the body holds attitude or tips, which supports c
 After #20 closes, return to C-1N for a stance-only integration with the gait clock and swing phase disabled. Expose active support geometry, center-of-mass projection, foot contact/load evidence, and torso roll/pitch. If that integration demonstrates understood support-aware stable equilibrium, preserve it as `C-1N // 02 · STAND`.
 
 Do not improve the walking gait as part of #20 or the standing checkpoint.
-
-## Residual #6 coverage
-
-Issue #6 remains open until the combined two-DOF orientation probe is run and its local/base versus shared-frame `Δx`/`Δz` evidence is recorded. Support-force feasibility, load allocation, and balance feedback belong to #20.
 
 ## Deferred route
 
