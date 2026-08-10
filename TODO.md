@@ -22,9 +22,27 @@ First isolate static support in the bench. Make this chain physical and measurab
 
 Define standing as reproducible rollout behavior, not a visually plausible pose.
 
-After #24 closes, transfer the measurement model to C-1N. Build a stance-only integration with the gait clock disabled. Expose support geometry, center-of-mass projection, contact/load evidence, and torso attitude. If the robot demonstrates support-aware stable equilibrium under a fixed evaluation, preserve that boundary as `C-1N // 02 · STAND`.
-
 Do not improve walking as part of the standing experiment.
+
+## Before C-1N STAND
+
+### #31 Foundation — leg workspace: separate reachability from gravity compensation
+
+Run #31 after #24 and before the C-1N standing integration.
+
+#24 establishes what support geometry C-1N needs and how to measure it. #31 then asks whether the current leg joint axes and DOFs can physically realize that geometry. Test one fixed-body leg first. Compare the current reachable workspace against one outward-and-down spider-like target. Add an orthogonal proximal hip DOF only if the existing morphology cannot reach the target.
+
+Keep the distinction explicit:
+
+`joint axes + joint limits -> reachable workspace -> available support geometry`
+
+then, only after the pose is reachable:
+
+`reachable pose + gravity/contact -> required joint torque`
+
+Do not modify all six legs until the one-leg experiment provides evidence that the extra DOF is required.
+
+After #31 closes, transfer #24's measurement model and any evidence-backed morphology change to C-1N. Build a stance-only integration with the gait clock disabled. Expose support geometry, center-of-mass projection, contact/load evidence, and torso attitude. If the robot demonstrates support-aware stable equilibrium under a fixed evaluation, preserve that boundary as `C-1N // 02 · STAND`.
 
 ## After STAND
 
@@ -43,6 +61,6 @@ Controls, contact mechanics, actuator limits, state estimation, numerical method
 
 The intended direction is:
 
-`physical intuition -> STAND -> learned locomotion -> statistical simulation / model inference / uncertainty / differentiable dynamics / scale`
+`physical intuition -> support mechanics -> leg reachability -> STAND -> learned locomotion -> statistical simulation / model inference / uncertainty / differentiable dynamics / scale`
 
 Hardware is not a graduation requirement for this bench.
