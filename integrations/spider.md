@@ -21,6 +21,7 @@ The spider is a longitudinal integration project. It consumes robotics concepts 
 | --- | --- |
 | #2 Multi-DOF dynamics | Build or revise one articulated leg so its joints are treated as a coupled mechanism rather than independent pendulums. |
 | #5 Trajectory tracking | Replace hand-staged leg poses with time-indexed joint trajectories and explicit phase relationships. |
+| #6 Jacobians & task space | Add torso-frame foot X position, velocity, and acceleration beside the existing joint-space telemetry, align contact state with the traces, and use the mapping to explain the current gait failure before changing the controller. |
 | #8 Contact & friction | Add meaningful foot-ground contact and preserve one understandable slip or stance failure. |
 | #4 Model-based control | Add a model-aware control comparison and one deliberate model mismatch to the integrated robot. |
 | #7 Actuator limits | Give the joints realizable effort limits and expose a gait failure caused by saturation. |
