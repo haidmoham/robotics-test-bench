@@ -10,25 +10,37 @@ This file is the authoritative selector for the next robotics test-bench experim
 
 ## NEXT
 
-### #6 Jacobians & task space — make joint commands physical
+### #20 Static support & equilibrium — make standing physical
 
 **Status:** NEXT
 
-C-1N exposed the motivating failure: synchronized joint-space commands do not imply synchronized foot motion in a shared torso/world frame.
+#6 established the task-space model needed to stop treating a standing-looking pose as only a joint-position problem. Its remaining combined two-DOF orientation check is now isolated in `experiments/2026-08-09-jacobians-task-space/two_joint_orientation_probe.py`. Run and record that check as residual #6 coverage, but do not let it expand into standing control.
 
-Run the isolated bench experiment defined in issue #6. The learning target is the mapping:
+The next learning target is:
 
-`joint command -> joint motion -> forward kinematics -> shared-frame end-effector motion`
+`contact geometry + center-of-mass projection -> support load -> net body force/moment -> body attitude`
 
-The experiment must compare joint-space position/velocity/acceleration with task-space end-effector X position/velocity/acceleration and verify at least one Jacobian column by finite difference or geometry.
+Run the isolated bench experiment defined in issue #20. Keep C-1N out of the bench implementation.
 
-Before code, predict the sign and rough relative size of shared-frame end-effector X motion produced by the same small positive first-joint perturbation at three different base orientations.
+Before code, use one fixed triangular foot layout and predict the three cases from issue #20:
 
-After the bench experiment closes, use its C-1N hook to add torso-frame foot task-space telemetry to the canonical robot. If that integration preserves the understood failure, it becomes the `C-1N // 02 · FRAME` checkpoint. Do not fix the C-1N gait as part of the bench experiment.
+1. center-of-mass projection clearly inside the support triangle;
+2. center-of-mass projection close to one edge;
+3. center-of-mass projection beyond that edge.
+
+For each case, predict whether the body holds attitude or tips, which supports carry more or less normal load, and the initial roll or pitch direction if equilibrium is lost.
+
+After #20 closes, return to C-1N for a stance-only integration with the gait clock and swing phase disabled. Expose active support geometry, center-of-mass projection, foot contact/load evidence, and torso roll/pitch. If that integration demonstrates understood support-aware stable equilibrium, preserve it as `C-1N // 02 · STAND`.
+
+Do not improve the walking gait as part of #20 or the standing checkpoint.
+
+## Residual #6 coverage
+
+Issue #6 remains open until the combined two-DOF orientation probe is run and its local/base versus shared-frame `Δx`/`Δz` evidence is recorded. Support-force feasibility, load allocation, and balance feedback belong to #20.
 
 ## Deferred route
 
-The prior differentiable-dynamics route remains available after #6:
+The differentiable-dynamics route remains available:
 
 `#5 trajectory tracking -> #12 system identification -> #16 differentiable dynamics -> #13 numerical sensitivity`
 
