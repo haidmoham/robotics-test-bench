@@ -1,13 +1,27 @@
 """Compare joint PD with the same controller plus gravity compensation."""
 
 import argparse
-from collections import deque
 import math
+from pathlib import Path
+import sys
 import time
 
 import mujoco
 import mujoco.viewer
 import numpy as np
+
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from telemetry import (
+    MUTED_SLATE,
+    PLOT_INTERVAL,
+    SIGNAL_BLUE,
+    WARM_ORANGE,
+    WARM_RED,
+    make_figure,
+    rolling_samples,
+    update_stacks,
+)
 
 
 XML_TEMPLATE = """
@@ -47,22 +61,12 @@ COLORS = {
     "computed-torque-wrong-mass": ("wrong_mass_red", "0.90 0.20 0.25 1"),
 }
 OVERLAY_ALPHA = 0.5
-PLOT_INTERVAL = 0.02
-PLOT_HISTORY_SECONDS = 6.0
 TURNAROUND_HALF_WIDTH = 0.4
 PLOT_SERIES = (
-    ("P1", "pd", 0),
-    ("P2", "pd", 1),
-    ("G1", "gravity-comp", 0),
-    ("G2", "gravity-comp", 1),
-)
-PLOT_COLORS = np.array(
-    (
-        (0.15, 0.40, 0.95),
-        (0.45, 0.65, 1.00),
-        (0.95, 0.45, 0.08),
-        (1.00, 0.72, 0.35),
-    )
+    ("PD joint 1", SIGNAL_BLUE),
+    ("PD joint 2", MUTED_SLATE),
+    ("gravity joint 1", WARM_ORANGE),
+    ("gravity joint 2", WARM_RED),
 )
 
 
@@ -366,60 +370,7 @@ def add_arm_geoms(scene, model, data, rgba):
 
 
 def make_torque_figure(title):
-    figure = mujoco.MjvFigure()
-    figure.title = title
-    figure.xlabel = "simulation time (s)"
-    figure.flg_extend = 0
-    figure.flg_legend = 1
-    figure.flg_ticklabel[:] = 1
-    figure.linewidth = 2.0
-    figure.figurergba = np.array([0.05, 0.05, 0.05, 0.32])
-    figure.panergba = np.array([0.12, 0.12, 0.12, 0.48])
-    figure.gridrgb = np.array([0.35, 0.35, 0.35])
-    for index, (name, _, _) in enumerate(PLOT_SERIES):
-        figure.linename[index] = name
-        figure.linergb[index] = PLOT_COLORS[index]
-    return figure
-
-
-def update_torque_figure(figure, samples, value_index):
-    if not samples:
-        return
-    times = np.array([sample[0] for sample in samples])
-    values = np.array([sample[value_index] for sample in samples])
-    figure.linepnt[:] = 0
-    for index in range(values.shape[1]):
-        figure.linepnt[index] = len(times)
-        figure.linedata[index, : 2 * len(times)] = np.column_stack(
-            (times, values[:, index])
-        ).reshape(-1)
-
-    figure.range[0] = (times[0], max(times[-1], times[0] + PLOT_INTERVAL))
-    lower = float(np.min(values))
-    upper = float(np.max(values))
-    padding = max((upper - lower) * 0.12, 0.01)
-    figure.range[1] = (lower - padding, upper + padding)
-
-
-def update_overlay_figures(viewer, figures, samples):
-    for figure, value_index in zip(figures, (1, 2, 3)):
-        update_torque_figure(figure, samples, value_index)
-    viewport = viewer.viewport
-    width = min(360, max(285, viewport.width // 4))
-    height = 118
-    margin = 10
-    gap = 6
-    left = max(0, viewport.width - width - margin)
-    viewports = [
-        mujoco.MjrRect(
-            left,
-            viewport.height - margin - height * (index + 1) - gap * index,
-            width,
-            height,
-        )
-        for index in range(len(figures))
-    ]
-    viewer.set_figures(list(zip(viewports, figures)))
+    return make_figure(title, PLOT_SERIES)
 
 
 def run_overlay_viewer():
@@ -451,7 +402,7 @@ def run_overlay_viewer():
         make_torque_figure("Torque rate (N-m/s)"),
         make_torque_figure("Torque acceleration (N-m/s^2)"),
     )
-    samples = deque(maxlen=round(PLOT_HISTORY_SECONDS / PLOT_INTERVAL))
+    samples = rolling_samples()
     previous_torque = None
     previous_rate = None
     next_plot = 0.0
@@ -501,7 +452,14 @@ def run_overlay_viewer():
                 np.array([0.75, 0.75, 0.75, 0.22]),
             )
             add_arm_geoms(viewer.user_scn, gravity_model, gravity_data, orange)
-            update_overlay_figures(viewer, figures, samples)
+            update_stacks(
+                viewer,
+                (),
+                figures,
+                samples,
+                (),
+                (1, 2, 3),
+            )
             viewer.sync()
 
             remaining = pd_model.opt.timestep - (time.time() - wall_start)

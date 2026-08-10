@@ -21,6 +21,7 @@ Agents should remove setup, API, boilerplate, and repetitive implementation fric
 ```text
 TODO.md
 experiments/
+  telemetry.py                  # canonical rolling MuJoCo viewer graph stacks
   YYYY-MM-DD-short-question/
     README.md
     <experiment code>
@@ -31,6 +32,10 @@ templates/
 ```
 
 `TODO.md` is the authoritative selector for the next experiment. It can change when new evidence makes a different question more useful. Each experiment owns its code and local evidence. Root docs contain only repo-wide conventions.
+
+## Viewer telemetry
+
+Use [`experiments/telemetry.py`](experiments/telemetry.py) for every rolling MuJoCo viewer graph in this repository. It is the canonical C-1N-derived graph stack: responsive paired three-panel layout, bounded history, adaptive ranges, and the pale-ground, near-black-mechanism, blue/slate/red signal palette. Keep experiment-specific metric selection and labels in the experiment; keep graph construction, history, layout, and shared palette in `telemetry.py`. Experiments without live telemetry do not need a graph stack.
 
 ## Concept map
 
@@ -161,9 +166,9 @@ The current integrated behavior is `C-1N // 01 · SHUFFLE`. Bench experiments ca
 
 ## Current experiment
 
-None. `TODO.md` selects issue #6, Jacobians & task space, as the next experiment because C-1N exposed a joint-space versus task-space mismatch.
+[`experiments/2026-08-09-jacobians-task-space/`](experiments/2026-08-09-jacobians-task-space/) is the active experiment. `TODO.md` selects issue #6, Jacobians & task space, because C-1N exposed a joint-space versus task-space mismatch.
 
-Before creating the experiment directory, make the Iteration 0 prediction for the sign and rough relative size of shared-frame end-effector X motion produced by the same small positive first-joint perturbation at three different base orientations.
+Its Iteration 0 prediction concerns the sign and rough relative size of shared-frame end-effector X motion produced by the same small positive first-joint perturbation at three different base orientations.
 
 Current bridge into task space:
 - keep the mechanism isolated from C-1N;
