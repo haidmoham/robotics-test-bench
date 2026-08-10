@@ -79,6 +79,29 @@ At the foot, the live arrows make the Jacobian geometric: blue is the first colu
 
 Learning target: **the Jacobian is the pose-dependent local map from joint-space motion to task-space motion.**
 
+## Verification status
+
+The recorded checks establish important parts of the #6 learning target:
+
+- At base angles 0, 90, and 180 degrees, MuJoCo's initial `Jx` matched the centered finite-difference estimate: -1, approximately 0, and +1 respectively.
+- For the two-joint leg, `J(q) @ qdot` matched MuJoCo's world X-Z foot velocity at numerical precision in both the bent and open poses.
+- The same `qdot` produced different foot velocities because the pose changed `J(q)`, not because the joint command changed.
+
+Issue #6 remains open. Its missing evidence is one planar two-DOF mechanism evaluated at 0, 90, and 180 degrees, with local/base and shared-frame position comparison plus static `Δx` and `Δy` probes. The current one-link orientation probe and two-joint velocity probe do not replace that combined check.
+
+Full standing control remains out of scope. The tripod continuation only makes the force-to-torque bridge inspectable; feasible contact-force allocation belongs to #20.
+
+## Portfolio visual brief
+
+Preserve these visual teaching beats when this experiment is projected into a portfolio post:
+
+1. **Pose-dependent motion.** Show the same joint velocity at two leg poses. Draw the two Jacobian columns as foot-velocity arrows and their weighted sum `J(q) @ qdot`. The viewer already provides this source view in `two_joint_planar_leg.py --viewer`.
+2. **Shared-frame orientation comparison.** Overlay 0, 90, and 180-degree one-link copies in the X-Z plane. Make the 90-degree case visibly move in Z while its initial world-X component is near zero. The source view is `jacobians_task_space.py --overlay`.
+3. **Full free-body diagram.** Separate the whole robot's external gravity and ground-reaction forces from one isolated leg's actuator torques. Use the checked-in PNG fallback when rich rendering is unavailable: [`assets/tripod-support-fbd.png`](assets/tripod-support-fbd.png).
+4. **Force-to-torque interaction.** Let the reader change a two-link pose while holding a desired foot-force vector fixed. The visible result should be changing hip and knee torque demands from `tau = J(q).T @ f`; this is not a coordinate conversion, but a change in physical force leverage.
+
+The visual sequence should establish geometry first, then use `J(q)` for motion and `J(q).T` for force-to-torque mapping. Do not imply that the Jacobian allocates contact forces or solves whole-body stability.
+
 ## Tripod-support visual
 
 The reusable free-body diagram for the next #6 continuation lives in [`assets/tripod-support-fbd.svg`](assets/tripod-support-fbd.svg), with [`assets/tripod-support-fbd.png`](assets/tripod-support-fbd.png) as its chat-safe rendered fallback. It separates the whole robot's external forces—gravity and three ground reactions—from an isolated leg's actuator torques. Keep this source asset local to the experiment; it is the source for a later portfolio post. When a rich inline visualization fails to render, show the checked-in PNG rather than emitting a raw visualization directive again.

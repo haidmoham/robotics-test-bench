@@ -429,3 +429,132 @@ superseded_claims:
 ```
 
 Related: #6, #20
+
+## AI-20260810-015 — #6 closure and portfolio visual requirements
+
+```yaml
+id: AI-20260810-015
+date: 2026-08-10
+sources:
+  - kind: human-observation
+    system: Codex
+    reference: current task
+  - kind: coding-agent
+    system: Codex
+    reference: headless Jacobian verification
+status: acted
+evaluation: unconfirmed
+repo_state:
+  repository: robotics-test-bench
+  branch: codex/responsive-jacobian-overlay
+  commit:
+  changed_files:
+    - experiments/2026-08-09-jacobians-task-space/README.md
+    - experiments/2026-08-09-jacobians-task-space/agent-log.md
+related:
+  experiment: experiments/2026-08-09-jacobians-task-space
+  hypotheses: []
+  experiments: []
+  claims: []
+  decisions: []
+  issues: [6, 20]
+  files:
+    - experiments/2026-08-09-jacobians-task-space/jacobians_task_space.py
+    - experiments/2026-08-09-jacobians-task-space/two_joint_planar_leg.py
+    - experiments/2026-08-09-jacobians-task-space/assets/tripod-support-fbd.png
+objects:
+  question: Q-20260810-015
+  response: R-20260810-015
+  evaluation: E-20260810-015
+  action: A-20260810-015
+  outcome: O-20260810-015
+librarian:
+  status: not-needed
+  record_ids: []
+```
+
+## Q — Question
+
+Has #6 established the pose-dependent local motion map and its limited force-to-torque use well enough to close without solving standing control?
+
+## R — Response summary
+
+Verify the one-link finite-difference comparison at 0, 90, and 180 degrees. Verify `J(q) @ qdot` against MuJoCo at two two-joint poses. Keep static support as an inspectable bridge only.
+
+## E — Human evaluation
+
+The learner distinguished a coordinate conversion from a physical force-to-torque mapping. The learner stated that a fixed desired foot force needs new joint torques after a pose change because the leg's force leverage changes.
+
+## A — Action
+
+Ran the focused headless checks. Recorded the portfolio visual requirements: pose-dependent velocity arrows, shared-frame orientation overlay, full FBD, and an interactive fixed-force / changing-torque view.
+
+## O — Outcome
+
+At the initial one-link pose, MuJoCo and centered finite differences agreed on `Jx`: -1.000000 at 0 degrees, approximately 0 at 90 degrees, and +1.000000 at 180 degrees. For the two-joint bent and open poses, `J(q) @ qdot` matched MuJoCo foot X-Z velocity with zero reported norm difference. The same `qdot` produced different task-space velocity because `q` changed the local map.
+
+This is not final #6 closure. The issue still requires one two-DOF planar mechanism across 0, 90, and 180 degrees, including local/base and shared-frame position comparison and static `Δx`/`Δy` probes.
+
+### Effect on current belief
+
+- Before: the Jacobian risked being treated as a coordinate conversion or as a force/stability solver.
+- After: `J(q)` is the current-pose local map from joint velocity to foot velocity; `J(q).T` maps a chosen foot force to joint torque through current force leverage. Force allocation and standing stability remain separate #20 work.
+- Evidence status: Headless numerical checks and human cold-rep explanation confirm the current subclaims. The issue-level combined two-DOF orientation check remains unverified.
+
+## Librarian update
+
+```yaml
+source:
+  repository: robotics-test-bench
+  path: experiments/2026-08-09-jacobians-task-space/agent-log.md
+  commit:
+provenance:
+  - kind: human-observation
+    system: Codex
+    reference: current task
+  - kind: coding-agent
+    system: Codex
+    reference: headless Jacobian verification
+objects:
+  - id: Q-20260810-015
+    type: Question
+    summary: Determine whether #6 is complete without expanding into standing control.
+    status: open
+  - id: R-20260810-015
+    type: Response
+    summary: Verify velocity and finite-difference mappings and preserve visual teaching requirements.
+    status: acted
+  - id: E-20260810-015
+    type: Evaluation
+    summary: The learner correctly separated coordinate descriptions from physical force leverage.
+    status: confirmed
+  - id: A-20260810-015
+    type: Action
+    summary: Ran focused checks and documented visual requirements for portfolio projection.
+    status: completed
+  - id: O-20260810-015
+    type: Outcome
+    summary: Numerical and conceptual subchecks passed; issue-level combined two-DOF orientation evidence remains missing.
+    status: unconfirmed
+relations:
+  - subject: Q-20260810-015
+    predicate: receives
+    object: R-20260810-015
+  - subject: R-20260810-015
+    predicate: receives
+    object: E-20260810-015
+  - subject: E-20260810-015
+    predicate: causes
+    object: A-20260810-015
+  - subject: A-20260810-015
+    predicate: produces
+    object: O-20260810-015
+unresolved_questions:
+  - Can one two-DOF planar mechanism show the required local-versus-shared-frame static probes across 0, 90, and 180 degrees?
+  - How should #20 allocate feasible contact forces and use feedback to stand?
+superseded_claims:
+  - The Jacobian is only a coordinate conversion.
+  - The Jacobian itself allocates foot forces or solves standing stability.
+```
+
+Related: #6, #20
