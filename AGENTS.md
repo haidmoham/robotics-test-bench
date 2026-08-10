@@ -21,6 +21,7 @@ This repository is a disposable robotics learning test bench. Optimize for fast 
 - Record an `agent-log.md` entry only when an interaction changes a prediction, experiment, interpretation, decision, code direction, or next meaningful action. Do not log routine syntax/API help.
 - Meaningful agent-log entries use the stable `Q/R/E/A/O` ontology from `templates/agent-interaction.md`: Question -> Response -> Evaluation -> Action -> Outcome. Preserve IDs across updates and record explicit relations and Librarian status.
 - When parallel work lands, preserve existing stable `AI/Q/R/E/A/O` entries by ID. Integrate or rebase around them; do not regenerate, renumber, or silently replace a conversation-derived entry because another branch changed the same log.
+- Before landing a commit that changes evidence state, queue state, stable IDs, provenance, experiment closure, or C-1N integration claims, use the installed `commit-boundary` skill with `.ontology/commit-rules.md`.
 - New agent-log entries must identify their source provenance. Keep coding-agent, chat, human-observation, and external-reference sources distinct; do not merge claims from different sources without attribution.
 - For conversation-derived entries, preserve the epistemic change as an explicit before -> after belief update and keep verification status separate from source provenance.
 - Use `templates/agent-interaction.md` as the canonical log shape. Do not store full chat transcripts.
