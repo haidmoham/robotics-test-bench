@@ -79,6 +79,10 @@ At the foot, the live arrows make the Jacobian geometric: blue is the first colu
 
 Learning target: **the Jacobian is the pose-dependent local map from joint-space motion to task-space motion.**
 
+## Tripod-support visual
+
+The reusable free-body diagram for the next #6 continuation lives in [`assets/tripod-support-fbd.svg`](assets/tripod-support-fbd.svg), with [`assets/tripod-support-fbd.png`](assets/tripod-support-fbd.png) as its chat-safe rendered fallback. It separates the whole robot's external forces—gravity and three ground reactions—from an isolated leg's actuator torques. Keep this source asset local to the experiment; it is the source for a later portfolio post. When a rich inline visualization fails to render, show the checked-in PNG rather than emitting a raw visualization directive again.
+
 ## What to record
 
 - Do the Jacobian and finite-difference estimates agree in sign and rough magnitude?
