@@ -2,44 +2,47 @@
 
 This file is the authoritative selector for the next robotics test-bench experiment.
 
-- Exactly one item should be marked `NEXT`.
-- The `NEXT` item overrides older route suggestions in `README.md` when they conflict.
-- GitHub issue numbers remain stable concept identities, not chronology.
-- Re-evaluate the queue when an experiment closes or produces stronger evidence.
+- Exactly one item is `NEXT`.
+- GitHub issues are active experiment lanes, not a fixed syllabus.
+- Closed legacy issues remain historical provenance only. Do not route new work through them unless a current failure explicitly revives the concept.
+- Re-evaluate the queue after each resolved experiment or integrated C-1N failure.
 - Do not create the next experiment directory until its Iteration 0 prediction exists.
 
 ## NEXT
 
-### #20 Static support & equilibrium — make standing physical
+### #24 Foundation — support state: make standing measurable
 
 **Status:** NEXT
 
-#6 established the task-space model needed to stop treating a standing-looking pose as only a joint-position problem.
+The immediate goal is still to learn what makes C-1N stand for real.
 
-The gap intentionally left in #6 today is still explicit: one combined planar 2-DOF mechanism across 0, 90, and 180 degrees, comparing local/base and shared-frame static foot displacement. Preserve that as unfinished #6 coverage. Do not implement it now unless later evidence makes it useful, and do not let it block the learning frontier.
-
-The next learning target is:
+First isolate static support in the bench. Make this chain physical and measurable:
 
 `contact geometry + center-of-mass projection -> support load -> net body force/moment -> body attitude`
 
-Run the isolated bench experiment defined in issue #20. Keep C-1N out of the bench implementation.
+Define standing as reproducible rollout behavior, not a visually plausible pose.
 
-Before code, use one fixed triangular foot layout and predict the three cases from issue #20:
+After #24 closes, transfer the measurement model to C-1N. Build a stance-only integration with the gait clock disabled. Expose support geometry, center-of-mass projection, contact/load evidence, and torso attitude. If the robot demonstrates support-aware stable equilibrium under a fixed evaluation, preserve that boundary as `C-1N // 02 · STAND`.
 
-1. center-of-mass projection clearly inside the support triangle;
-2. center-of-mass projection close to one edge;
-3. center-of-mass projection beyond that edge.
+Do not improve walking as part of the standing experiment.
 
-For each case, predict whether the body holds attitude or tips, which supports carry more or less normal load, and the initial roll or pitch direction if equilibrium is lost.
+## After STAND
 
-After #20 closes, return to C-1N for a stance-only integration with the gait clock and swing phase disabled. Expose active support geometry, center-of-mass projection, foot contact/load evidence, and torso roll/pitch. If that integration demonstrates understood support-aware stable equilibrium, preserve it as `C-1N // 02 · STAND`.
+Move directly to #25 learned locomotion. The first learned gait is allowed to be ugly. Its failure selects the next simulation lane.
 
-Do not improve the walking gait as part of #20 or the standing checkpoint.
+Primary lanes:
 
-## Deferred route
+- #25 Learn — objective -> policy -> behavior.
+- #26 Evaluate — treat behavior as a distribution.
+- #27 Model — identify and calibrate simulator parameters from rollouts.
+- #28 Uncertainty — train and test across distributions and shift.
+- #29 Differentiate — backpropagate through simulated dynamics.
+- #30 Scale — make simulation experiments reproducible, observable, and fast.
 
-The differentiable-dynamics route remains available:
+Controls, contact mechanics, actuator limits, state estimation, numerical methods, or other robotics concepts are supporting mechanisms. Pull them back in only when a concrete simulation failure makes them necessary.
 
-`#5 trajectory tracking -> #12 system identification -> #16 differentiable dynamics -> #13 numerical sensitivity`
+The intended direction is:
 
-It is not the current next experiment.
+`physical intuition -> STAND -> learned locomotion -> statistical simulation / model inference / uncertainty / differentiable dynamics / scale`
+
+Hardware is not a graduation requirement for this bench.
