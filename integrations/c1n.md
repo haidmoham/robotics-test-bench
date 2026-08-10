@@ -44,6 +44,7 @@ C-1N // 04 · STRIDE   reserved for the first materially better walk
 | #2 Multi-DOF dynamics | Build or revise one articulated leg so its joints are treated as a coupled mechanism rather than independent pendulums. |
 | #5 Trajectory tracking | Replace hand-staged leg poses with time-indexed joint trajectories and explicit phase relationships. |
 | #6 Jacobians & task space | Add torso-frame foot X position, velocity, and acceleration beside the existing joint-space telemetry, align contact state with the traces, and use the mapping to explain the current gait failure before changing the controller. Preserve that boundary as `C-1N // 02 · FRAME`. |
+| #20 Static support & equilibrium | Build a stance-only controller with the gait clock disabled. Expose active support geometry, center-of-mass projection, foot contact/load evidence, and torso attitude. Preserve the first understood support-aware stable stance as `C-1N // 03 · STAND`. |
 | #8 Contact & friction | Add meaningful foot-ground contact and preserve one understandable slip or stance failure. |
 | #4 Model-based control | Add a model-aware control comparison and one deliberate model mismatch to the integrated robot. |
 | #7 Actuator limits | Give the joints realizable effort limits and expose a gait failure caused by saturation. |
