@@ -12,14 +12,11 @@
   </defs>
   <rect width="1200" height="680" fill="#edf4fa"/>
   <rect width="1200" height="680" fill="url(#grid)"/>
+  <g id="whole-robot-fbd">
   <rect class="panel" x="30" y="28" width="540" height="620" rx="14"/>
-  <rect class="panel" x="630" y="28" width="540" height="620" rx="14"/>
   <text class="heading" x="56" y="70">WHOLE ROBOT · external forces</text>
   <text class="small" x="56" y="100">Forces from the ground balance gravity.</text>
-  <text class="heading" x="656" y="70">ONE LEG · actuator torques</text>
-  <text class="small" x="656" y="100">The assigned foot force becomes motor torque.</text>
   <line class="ground" x1="62" y1="510" x2="546" y2="510"/>
-  <line class="ground" x1="654" y1="510" x2="1138" y2="510"/>
   <rect class="robot" x="205" y="165" width="196" height="58" rx="9"/>
   <text x="259" y="201" font-family="'JetBrains Mono',monospace" font-size="18" fill="#edf4fa">chassis</text>
   <circle cx="303" cy="194" r="8" fill="#c46a30"/><rect class="moment-tag" x="318" y="130" width="74" height="32" rx="8"/><text class="moment-label" x="331" y="152">COM</text><line stroke="#c46a30" stroke-width="2" x1="337" y1="162" x2="307" y2="187"/>
@@ -30,6 +27,12 @@
   <line class="force" x1="303" y1="493" x2="303" y2="374"/><rect class="force-tag" x="259" y="329" width="50" height="31" rx="8"/><text class="force-label" x="272" y="351">f₂</text>
   <line class="force" x1="502" y1="493" x2="502" y2="338"/><rect class="force-tag" x="458" y="293" width="50" height="31" rx="8"/><text class="force-label" x="471" y="315">f₃</text>
   <rect class="tag" x="52" y="546" width="496" height="81" rx="10"/><text class="small" x="68" y="573">external balance</text><text class="label" x="68" y="603">Σf = 0   ·   Σmoment = 0</text>
+  </g>
+  <g id="isolated-leg-fbd">
+  <rect class="panel" x="630" y="28" width="540" height="620" rx="14"/>
+  <text class="heading" x="656" y="70">ONE LEG · actuator torques</text>
+  <text class="small" x="656" y="100">The assigned foot force becomes motor torque.</text>
+  <line class="ground" x1="654" y1="510" x2="1138" y2="510"/>
   <rect class="robot" x="811" y="165" width="174" height="58" rx="9"/><text x="859" y="201" font-family="'JetBrains Mono',monospace" font-size="18" fill="#edf4fa">chassis</text>
   <path class="link" d="M900 223L981 352L1030 498"/><circle class="joint" cx="900" cy="223" r="10"/><circle class="joint" cx="981" cy="352" r="10"/><circle class="joint" cx="1030" cy="498" r="7"/>
   <rect class="tag" x="1000" y="232" width="62" height="31" rx="8"/><text class="label" x="1011" y="254">hip</text><rect class="tag" x="1060" y="408" width="88" height="31" rx="8"/><text class="label" x="1071" y="430">knee</text>
@@ -37,4 +40,5 @@
   <path class="moment" d="M875 274Q830 225 870 187"/><rect class="moment-tag" x="665" y="208" width="95" height="32" rx="8"/><text class="moment-label" x="678" y="231">τ hip</text>
   <path class="moment" d="M957 408Q916 354 954 315"/><rect class="moment-tag" x="665" y="348" width="112" height="32" rx="8"/><text class="moment-label" x="678" y="371">τ knee</text>
   <rect class="tag" x="652" y="546" width="496" height="81" rx="10"/><text class="small" x="668" y="573">current pose sets the lever geometry</text><text class="label" x="668" y="603">τ = J(q)ᵀ f</text>
+  </g>
 </svg>
