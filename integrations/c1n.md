@@ -12,19 +12,18 @@ Public checkpoints use:
 C-1N // NN · CODENAME
 ```
 
-The number preserves chronology. The codename records the capability or understanding gained at that boundary.
+The number preserves chronology. The codename records the capability or understood failure gained at that boundary.
 
 Current lineage:
 
 ```text
 C-1N // 00 · POSE     motor-assisted static-pose baseline
 C-1N // 01 · SHUFFLE  current coordinated gait failure
-C-1N // 02 · FRAME    next integration boundary after task-space telemetry is understood
-C-1N // 03 · STAND    reserved for the first support-aware stable stance
-C-1N // 04 · STRIDE   reserved for the first materially better walk
+C-1N // 02 · STAND    reserved for the first support-aware stable stance
+C-1N // 03 · STRIDE   reserved for the first materially better walk
 ```
 
-`POSE` is historical and does not claim demonstrated standing. `FRAME`, `STAND`, and `STRIDE` are reserved names, not completed checkpoints.
+`POSE` is historical and does not claim demonstrated standing. `STAND` and `STRIDE` are reserved names, not completed checkpoints.
 
 ## Contract
 
@@ -36,6 +35,7 @@ C-1N // 04 · STRIDE   reserved for the first materially better walk
 - C-1N work may expose a new question, but that question returns to the bench when isolation is useful.
 - Preserve useful failures. Do not rewrite the project history into a clean final demo.
 - Keep browser and WASM work downstream of a useful simulation. The web surface should expose robotics behavior, not create the learning target.
+- Instrumentation alone does not require a public checkpoint. Cut a checkpoint only for a meaningful robot capability or understood failure.
 
 ## Hook targets
 
@@ -43,8 +43,8 @@ C-1N // 04 · STRIDE   reserved for the first materially better walk
 | --- | --- |
 | #2 Multi-DOF dynamics | Build or revise one articulated leg so its joints are treated as a coupled mechanism rather than independent pendulums. |
 | #5 Trajectory tracking | Replace hand-staged leg poses with time-indexed joint trajectories and explicit phase relationships. |
-| #6 Jacobians & task space | Add torso-frame foot X position, velocity, and acceleration beside the existing joint-space telemetry, align contact state with the traces, and use the mapping to explain the current gait failure before changing the controller. Preserve that boundary as `C-1N // 02 · FRAME`. |
-| #20 Static support & equilibrium | Build a stance-only controller with the gait clock disabled. Expose active support geometry, center-of-mass projection, foot contact/load evidence, and torso attitude. Preserve the first understood support-aware stable stance as `C-1N // 03 · STAND`. |
+| #6 Jacobians & task space | Add torso-frame foot task-space telemetry beside the existing joint-space telemetry and use it to explain the current gait failure. This integration may land without a public checkpoint. |
+| #20 Static support & equilibrium | Build a stance-only controller with the gait clock disabled. Expose active support geometry, center-of-mass projection, foot contact/load evidence, and torso attitude. Preserve the first understood support-aware stable stance as `C-1N // 02 · STAND`. |
 | #8 Contact & friction | Add meaningful foot-ground contact and preserve one understandable slip or stance failure. |
 | #4 Model-based control | Add a model-aware control comparison and one deliberate model mismatch to the integrated robot. |
 | #7 Actuator limits | Give the joints realizable effort limits and expose a gait failure caused by saturation. |
@@ -53,9 +53,15 @@ C-1N // 04 · STRIDE   reserved for the first materially better walk
 
 These are opportunities, not a release plan. C-1N can take them in any order that makes sense for its current state.
 
+The current preferred route toward standing is:
+
+`#6 Jacobians & task space -> #20 Static support & equilibrium -> C-1N // 02 · STAND`
+
+The #6 integration can remain an internal instrumentation boundary. It does not need a `FRAME` checkpoint.
+
 ## Version rule
 
-Create a new checkpoint only when a capability or understood failure is worth preserving and comparing with prior behavior. Do not increment for cleanup, presentation polish, or elapsed time.
+Create a new checkpoint only when a capability or understood failure is worth preserving and comparing with prior behavior. Do not increment for instrumentation, cleanup, presentation polish, or elapsed time.
 
 The intended evidence loop is:
 
