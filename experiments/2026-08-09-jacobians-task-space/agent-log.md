@@ -142,6 +142,150 @@ superseded_claims: []
 
 Related: #6
 
+## AI-20260809-014 — Equal-foot-force failure is evidence, not a #6 fix target
+
+```yaml
+id: AI-20260809-014
+date: 2026-08-09
+sources:
+  - kind: human-observation
+    system: Codex
+    reference: current task
+  - kind: coding-agent
+    system: Codex
+    reference: headless tripod run
+status: resolved
+evaluation: confirmed
+related:
+  experiment: experiments/2026-08-09-jacobians-task-space
+  issues: [6, 20]
+  files:
+    - experiments/2026-08-09-jacobians-task-space/tripod_static_support.py
+objects:
+  question: Q-20260809-014
+  response: R-20260809-014
+  evaluation: E-20260809-014
+  action: A-20260809-014
+  outcome: O-20260809-014
+librarian:
+  status: pending
+  record_ids: []
+```
+
+## Q — Question
+
+Should the equal-foot-force tripod experiment be extended into a standing controller when its forward request produces an impossible negative rear normal force?
+
+## R — Response summary
+
+No. Keep #6 scoped to physically inspecting the joint-motion → foot-motion → Jacobian → torque chain. Treat feasible force allocation, contact feedback, friction, and planted-foot control as #20 work.
+
+## E — Human evaluation
+
+### Accepted
+
+- The equal-force failure is useful evidence, not a defect to conceal.
+- #6 must not solve full standing control.
+
+## A — Action
+
+Marked the tripod code and local README with the #6 boundary; retained the equal-foot-force behavior unchanged.
+
+## O — Outcome
+
+The forward headless run requested negative rear vertical forces after the COM travelled forward. The request is impossible for a unilateral ground contact and is recorded as a #20 follow-up rather than repaired here.
+
+### Effect on current belief
+
+- Before: the tripod continuation risked expanding into a standing controller.
+- After: it is a bounded physical inspection of Jacobian-transpose torque mapping; contact-feasibility control is explicitly deferred to #20.
+- Evidence status: The negative request was observed in the local headless simulation; the scope decision is human-directed.
+
+Related: #6, #20
+
+## AI-20260809-013 — Static tripod support prediction
+
+```yaml
+id: AI-20260809-013
+date: 2026-08-09
+sources:
+  - kind: chat
+    system: Codex
+    reference: current task
+status: acted
+evaluation: unconfirmed
+repo_state:
+  repository: robotics-test-bench
+  branch: codex/responsive-jacobian-overlay
+  commit:
+  changed_files:
+    - experiments/2026-08-09-jacobians-task-space/tripod_static_support.py
+    - experiments/2026-08-09-jacobians-task-space/README.md
+    - experiments/2026-08-09-jacobians-task-space/agent-log.md
+related:
+  experiment: experiments/2026-08-09-jacobians-task-space
+  hypotheses: []
+  experiments: []
+  claims: []
+  decisions: []
+  issues: [6]
+  files:
+    - experiments/2026-08-09-jacobians-task-space/tripod_static_support.py
+objects:
+  question: Q-20260809-013
+  response: R-20260809-013
+  evaluation: E-20260809-013
+  action: A-20260809-013
+  outcome: O-20260809-013
+librarian:
+  status: pending
+  record_ids: []
+```
+
+## Q — Question
+
+How can three planted two-joint legs hold a free body under gravity while the body load shifts forward?
+
+### Human prediction
+
+Each leg needs a joint-space posture controller to maintain a usable bent configuration. Gravity and the body/COM position determine three ground-support forces; shifting forward increases the front force and decreases the rear forces. Each leg maps its assigned foot force into joint torques with its Jacobian transpose. If the support point reaches the triangle edge, lowering the body alone does not restore static balance: fixed feet must move the body projection back, while a walking robot can step.
+
+### Purpose
+
+Apply #6's pose-dependent foot Jacobian to the smallest physically grounded standing problem without adding gait logic.
+
+## R — Response summary
+
+Separate posture regulation from support-force allocation. Use the whole-robot free-body balance to choose foot forces, then use each leg's `J(q).T @ f` to map its assigned force into motor torques.
+
+## E — Human evaluation
+
+### Accepted
+
+- Posture torque is derived from joint configuration error, not from the foot-force allocation.
+- Ground reactions are external whole-robot forces; actuator torques appear only when isolating a leg.
+
+### Verification required
+
+- Centered run holds body height with all three positive support forces.
+- A forward load-shift run increases the front vertical allocation and decreases both rear allocations.
+
+## A — Action
+
+Added a minimal MuJoCo tripod with a free body, three planted two-joint legs, a posture PD term, and Jacobian-transpose support torques. Added the local free-body diagram asset as the visual reference for the experiment and future portfolio post.
+
+## O — Outcome
+
+Pending the centered hold and one forward-load perturbation.
+
+### Effect on current belief
+
+- Before: the Jacobian was understood as a local motion map but not yet connected to static foot support.
+- After: standing is modeled as posture regulation plus a force allocation whose per-leg forces become motor torques through `J(q).T @ f`.
+- Evidence status: Human prediction accepted; physical simulation observation is pending.
+
+Related: #6
+
 ## AI-20260809-012 — Two-joint velocity-map continuation
 
 ```yaml

@@ -83,6 +83,44 @@ Learning target: **the Jacobian is the pose-dependent local map from joint-space
 
 The reusable free-body diagram for the next #6 continuation lives in [`assets/tripod-support-fbd.svg`](assets/tripod-support-fbd.svg), with [`assets/tripod-support-fbd.png`](assets/tripod-support-fbd.png) as its chat-safe rendered fallback. It separates the whole robot's external forces—gravity and three ground reactions—from an isolated leg's actuator torques. Keep this source asset local to the experiment; it is the source for a later portfolio post. When a rich inline visualization fails to render, show the checked-in PNG rather than emitting a raw visualization directive again.
 
+## Continuation: static tripod support
+
+`tripod_static_support.py` is the first #6 application. A free body rests on three bent, two-joint legs with planted feet. Every control step has two deliberately separate torque terms:
+
+```text
+posture torque:  Kp * (q_ref - q) - Kd * qvel
+support torque:  J_foot(q).T @ desired_foot_force
+total torque:    posture torque + support torque
+```
+
+### Scope boundary
+
+This continuation exists only to make the physical chain inspectable: joint posture change → foot task-space motion → pose-dependent foot Jacobian → motor torque. Its equal-foot-force rule is deliberately incomplete. In the forward run it can request negative rear normal forces, which is physically impossible because the ground cannot pull on a foot. Preserve that as observed #6 evidence; do not add wrench allocation, friction constraints, contact-force feedback, or planted-foot control here. Those belong to [#20 static support & equilibrium](../../integrations/c1n.md).
+
+Gravity and the body position determine a three-foot vertical-force allocation: the force sum equals the model weight, while its X and Y moments balance the requested support point. Each leg then maps its own assigned foot force into two motor torques with its current foot Jacobian transpose.
+
+Run the centered hold first:
+
+```bash
+python tripod_static_support.py --headless --duration 2
+mjpython tripod_static_support.py
+```
+
+Then change only the desired center-of-mass X position:
+
+```bash
+python tripod_static_support.py --headless --duration 2 --body-shift 0.08
+mjpython tripod_static_support.py --body-shift 0.08
+```
+
+For a visible combined perturbation, lower the desired center of mass while requesting forward motion:
+
+```bash
+mjpython tripod_static_support.py --squat-drop 0.12 --body-shift 0.60
+```
+
+The squat changes the shared two-joint posture reference to shorten every planted leg, physically lowering the rigid chassis box and its COM. Center-of-mass feedback then makes the desired COM-X error into a desired net horizontal force and the desired COM-Z error into a requested upward ground force. The allocator distributes those forces across the planted feet while its vertical-force moments follow the current COM projection; each leg maps its full assigned foot force through `-J(q).T @ f`. Prediction recorded before this run: the posture term keeps a useful bent leg shape; with the forward shift, the front foot's vertical support force rises and the rear two decrease. This is not a stepping controller yet. If a requested support point makes a foot's required normal force negative, a fixed-foot controller must move the body projection back inside the support triangle; a walking controller would instead take a step.
+
 ## What to record
 
 - Do the Jacobian and finite-difference estimates agree in sign and rough magnitude?
