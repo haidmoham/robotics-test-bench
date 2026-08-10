@@ -8,8 +8,11 @@ This repository is a disposable robotics learning test bench. Optimize for fast 
 - Root docs contain only repo-wide conventions. Keep experiment-specific findings inside the experiment.
 - Prefer the smallest change that answers the current question. Keep experiments easy to inspect, revert, and compare.
 - Do not assume formal physics coursework. Build new physical mechanisms from a concrete force picture before notation. Name forces and contacts. State the motion or rotation each force tends to cause. State what resists or constrains that motion. Show how geometry or leverage changes the effect. Introduce the equation last.
-- Treat physics and controls as enabling literacy for simulation. Do not route the user toward controls specialization, ROS 2, embedded work, or hardware integration by default.
+- Treat physics and controls as enabling literacy for simulation. Do not route the user toward controls specialization or low-level hardware work by default.
+- C++ is in scope when it improves robotics employability, simulator performance, autonomy software, numerical code, or integration with robotics libraries. Do not treat C++ as evidence that the user should become an embedded or firmware engineer.
+- ROS 2 is in scope when a simulator, autonomy stack, or target robotics role needs it. Do not make ROS 2, device drivers, microcontrollers, board-level electronics, firmware, or motor electronics the learning destination.
 - Hardware is not a graduation requirement. Physical-system knowledge matters because simulator assumptions need interpretation and eventual external validation, not because the learning path must terminate in hardware.
+- Prefer work that exploits the user's statistics background: inference, uncertainty, experiment design, evaluation, stochastic modeling, system identification, calibration, optimization, and learned behavior.
 - Preserve Iteration 0: ask for or respect the human prediction before revealing a non-trivial mechanism or diagnosis when learning is the target.
 - Automate setup, API lookup, boilerplate, repetitive edits, plotting, batch execution, and experiment plumbing aggressively.
 - Do not outsource the learning target. Leave hypotheses, physical interpretation, objective design, architecture tradeoffs, and diagnosis with the human unless explicitly asked to solve them.
@@ -37,7 +40,7 @@ This repository is a disposable robotics learning test bench. Optimize for fast 
 
 ## Current conventions
 
-- Python + MuJoCo are the current default tools.
+- Python + MuJoCo are the current default tools. Introduce C++ when a concrete simulator, performance, interoperability, or target-role need justifies it.
 - Prefer direct MuJoCo concepts (`mjModel`, `mjData`, `qpos`, `qvel`, `ctrl`, contacts, timestep) while physical intuition is still the learning target.
 - Default experiment loop: predict -> change -> run -> explain -> challenge -> record next question.
 - Preserve the immediate foundation: learn static support well enough to establish `C-1N // 02 · STAND` from reproducible rollout evidence.
