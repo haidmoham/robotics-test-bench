@@ -2,7 +2,7 @@
 
 Target repository: `haidmoham/spider` (legacy repository slug; public robot identity: **C-1N**)
 
-C-1N is the longitudinal integration robot. It consumes robotics concepts after the test bench makes them concrete.
+C-1N is the longitudinal simulation robot. It integrates bench concepts and preserves visible checkpoints as the simulation becomes more physically grounded, statistically evaluated, and increasingly learned.
 
 ## Identity and checkpoint grammar
 
@@ -12,57 +12,73 @@ Public checkpoints use:
 C-1N // NN · CODENAME
 ```
 
-The number preserves chronology. The codename records the capability or understood failure gained at that boundary.
+The number preserves chronology. The codename records a capability or understood failure worth comparing with prior behavior.
 
 Current lineage:
 
 ```text
-C-1N // 00 · POSE     motor-assisted static-pose baseline
+C-1N // 00 · POSE     historical motor-assisted static-pose baseline
 C-1N // 01 · SHUFFLE  current coordinated gait failure
-C-1N // 02 · STAND    reserved for the first support-aware stable stance
-C-1N // 03 · STRIDE   reserved for the first materially better walk
+C-1N // 02 · STAND    reserved for first support-aware stable stance
+C-1N // 03 · STRIDE   reserved for first materially better sustained walk
 ```
 
-`POSE` is historical and does not claim demonstrated standing. `STAND` and `STRIDE` are reserved names, not completed checkpoints.
+`POSE` does not demonstrate standing. `STAND` and `STRIDE` are reserved names, not completed capabilities.
 
 ## Contract
 
-- The test bench remains the place to isolate questions and repair mental models.
-- C-1N remains the place to integrate mechanisms into one robot.
-- A bench issue never requires C-1N work for completion.
-- A C-1N hook is a post-experiment suggestion, not a dependency or next-node requirement.
-- Hooks should appear only as: now that this experiment is closed, this may be a good time to improve C-1N in one targeted way that uses the mechanism just learned.
-- C-1N work may expose a new question, but that question returns to the bench when isolation is useful.
+- The test bench isolates questions and repairs mental models.
+- C-1N integrates learned mechanisms into one evolving robot.
 - Preserve useful failures. Do not rewrite the project history into a clean final demo.
-- Keep browser and WASM work downstream of a useful simulation. The web surface should expose robotics behavior, not create the learning target.
-- Instrumentation alone does not require a public checkpoint. Cut a checkpoint only for a meaningful robot capability or understood failure.
+- C-1N is simulation-first. Hardware integration is not a required checkpoint or graduation step.
+- Physics and controls remain necessary because learned and simulated behavior must be physically interpretable.
+- After the standing foundation, prefer integrations that deepen simulation, statistics, optimization, evaluation, model inference, uncertainty, or learned behavior.
+- A bench issue never requires C-1N work for closure unless its own contract explicitly defines a post-close integration checkpoint.
+- Instrumentation alone does not require a public checkpoint.
+- Keep browser and WASM work downstream of useful simulation behavior. The web surface exposes evidence; it does not create the learning target.
 
-## Hook targets
+## Required standing bridge
 
-| Bench evidence | Targeted C-1N improvement after closure |
+Issue #24 is the current foundation.
+
+First isolate static support in the bench. Define standing through contact geometry, center-of-mass projection, support load, body moment, and reproducible rollout behavior.
+
+Then transfer that measurement model to C-1N with the gait clock disabled.
+
+The `C-1N // 02 · STAND` checkpoint requires:
+
+- support-aware contact evidence;
+- center-of-mass/support geometry in a shared frame;
+- torso attitude over a fixed rollout;
+- a stated success tolerance or failure condition;
+- repeatable evidence that the robot maintains stable support rather than only initializing into a plausible pose.
+
+Standing is required because later locomotion objectives and evaluation need a physically meaningful baseline. It is not a commitment to a controls or hardware career path.
+
+## Simulation-first hook targets
+
+| Bench lane | C-1N integration |
 | --- | --- |
-| #2 Multi-DOF dynamics | Build or revise one articulated leg so its joints are treated as a coupled mechanism rather than independent pendulums. |
-| #5 Trajectory tracking | Replace hand-staged leg poses with time-indexed joint trajectories and explicit phase relationships. |
-| #6 Jacobians & task space | Add torso-frame foot task-space telemetry beside the existing joint-space telemetry and use it to explain the current gait failure. This integration may land without a public checkpoint. |
-| #20 Static support & equilibrium | Build a stance-only controller with the gait clock disabled. Expose active support geometry, center-of-mass projection, foot contact/load evidence, and torso attitude. Preserve the first understood support-aware stable stance as `C-1N // 02 · STAND`. |
-| #8 Contact & friction | Add meaningful foot-ground contact and preserve one understandable slip or stance failure. |
-| #4 Model-based control | Add a model-aware control comparison and one deliberate model mismatch to the integrated robot. |
-| #7 Actuator limits | Give the joints realizable effort limits and expose a gait failure caused by saturation. |
-| #12 System identification | Hide one interpretable C-1N parameter, infer it from one motion, and validate it on another. |
-| #16 Differentiable dynamics | Backpropagate rollout loss to one interpretable C-1N parameter and verify the gradient numerically. |
+| #24 Foundation — support state | Establish the first support-aware stable stance and preserve it as `C-1N // 02 · STAND`. |
+| #25 Learn — learned locomotion | Train a locomotion policy. Preserve objective exploits and the first understandable learned failure. `STRIDE` requires materially better sustained locomotion under fixed evaluation. |
+| #26 Evaluate — behavior as a distribution | Evaluate C-1N across fixed seeds, initial conditions, and scenarios. Compare distributions, not cherry-picked rollouts. |
+| #27 Model — simulator calibration | Hide one interpretable C-1N model parameter, estimate it from one rollout set, and validate it on another. |
+| #28 Uncertainty — distributions and shift | Randomize a small set of understood physical or sensing parameters and measure in-distribution and held-out degradation. |
+| #29 Differentiate — differentiable dynamics | Propagate rollout loss to one interpretable simulated quantity and verify the gradient numerically. |
+| #30 Scale — simulation systems | Make C-1N rollouts reproducible, batchable, observable, and fast enough for population-level experiments. |
 
-These are opportunities, not a release plan. C-1N can take them in any order that makes sense for its current state.
+These are lanes, not a fixed order after `STAND`. Learned locomotion is the first forcing function. Its failures choose which lane becomes useful next.
 
-The current preferred route toward standing is:
+## Supporting mechanisms
 
-`#6 Jacobians & task space -> #20 Static support & equilibrium -> C-1N // 02 · STAND`
+Legacy topics such as trajectory tracking, contact mechanics, actuator limits, state estimation, or numerical sensitivity are not deleted knowledge. They are no longer permanent open routes.
 
-The #6 integration can remain an internal instrumentation boundary. It does not need a `FRAME` checkpoint.
+Bring one back when a current C-1N or bench failure makes it causally necessary. Create a focused experiment for the actual failure instead of restoring the old concept graph.
 
 ## Version rule
 
-Create a new checkpoint only when a capability or understood failure is worth preserving and comparing with prior behavior. Do not increment for instrumentation, cleanup, presentation polish, or elapsed time.
+Create a new checkpoint only when a capability or understood failure is worth preserving and comparing with prior behavior. Do not increment for instrumentation, cleanup, presentation polish, a new training run, or elapsed time.
 
 The intended evidence loop is:
 
-`bench observation -> model update -> optional C-1N integration -> integrated failure -> new bench question when useful`
+`bench question -> prediction -> simulation evidence -> model update -> C-1N integration -> population evaluation -> new failure -> next bench question`
