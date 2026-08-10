@@ -19,6 +19,7 @@ Agents should remove setup, API, boilerplate, and repetitive implementation fric
 ## Structure
 
 ```text
+TODO.md
 experiments/
   YYYY-MM-DD-short-question/
     README.md
@@ -29,17 +30,17 @@ templates/
   agent-interaction.md
 ```
 
-Each experiment owns its code and local evidence. Root docs contain only repo-wide conventions.
+`TODO.md` is the authoritative selector for the next experiment. It can change when new evidence makes a different question more useful. Each experiment owns its code and local evidence. Root docs contain only repo-wide conventions.
 
 ## Concept map
 
 GitHub issues are concept nodes, not a fixed syllabus. Node numbers below match issue numbers. Arrows mean that one concept can make another experiment more meaningful; they do **not** mean that the nodes must be completed in order.
 
-Choose the next node from the evidence produced by the current experiment. Branch, repeat, skip, or insert a smaller local question when the observations justify it.
+Choose the next node from the evidence produced by the current experiment. Branch, repeat, skip, or insert a smaller local question when the observations justify it. `TODO.md` records that current choice.
 
-### Active evidence route
+### Deferred differentiable-dynamics route
 
-The resolved model-based-control work exposed a useful route toward differentiable dynamics. Follow it only while each experiment keeps producing the next question shown here.
+The resolved model-based-control work exposed a useful route toward differentiable dynamics. It remains available, but it is currently deferred because Spider exposed a more immediate task-space question captured by #6.
 
 ```mermaid
 flowchart LR
@@ -52,7 +53,7 @@ flowchart LR
     R04 --> R05 --> R12 --> R16 --> R13
 ```
 
-The next open stop is #5. The route becomes invalid as soon as stronger evidence points elsewhere.
+The first open stop on this deferred route is #5. It is not the current next experiment while `TODO.md` selects #6.
 
 ### Full map
 
@@ -123,7 +124,7 @@ flowchart TD
     C14 --> C15
 
     classDef active stroke-width:3px
-    class C05,C12,C16,C13 active
+    class C06 active
 ```
 
 The map is intentionally incomplete as a path planner. The core loop remains authoritative: an experiment should end by producing the next question, even when that question points sideways or backward in the graph.
@@ -150,16 +151,17 @@ Use [`templates/agent-interaction.md`](templates/agent-interaction.md) for the c
 
 ## Current experiment
 
-None. Issue #4 is resolved. The next open concept node is #5, trajectory tracking.
+None. `TODO.md` selects issue #6, Jacobians & task space, as the next experiment because Spider exposed a joint-space versus task-space mismatch.
 
-Before creating the next experiment directory, make the Iteration 0 prediction for how changing trajectory speed should change tracking error with controller and model held fixed.
+Before creating the experiment directory, make the Iteration 0 prediction for the sign and rough relative size of shared-frame end-effector X motion produced by the same small positive first-joint perturbation at three different base orientations.
 
-Current bridge toward differentiable dynamics:
-- keep desired position, velocity, and acceleration distinct;
-- compare at least two trajectory speeds with controller and model fixed;
-- reason over the rollout as repeated `x[t] -> x[t+1]` transitions;
-- accumulate trajectory error over time;
-- do not optimize the wrong mass yet.
+Current bridge into task space:
+- keep the mechanism isolated from Spider;
+- hold geometry, joint configuration, perturbation size, controller, and timestep fixed while changing base orientation;
+- compare joint-space position, velocity, and acceleration with shared-frame end-effector X position, velocity, and acceleration;
+- verify at least one Jacobian column by finite difference or geometry;
+- do not implement IK, RL, or a task-space controller yet;
+- after closure, use the #6 Spider hook to instrument torso-frame foot motion before changing the gait.
 
 MuJoCo mental model:
 - `mjModel` = what the simulated system is.
