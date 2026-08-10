@@ -2,7 +2,8 @@
 
 This repository is a disposable robotics learning test bench. Optimize for fast experiments that build physical intuition, not framework complexity.
 
-- Read the root `README.md`, then the current experiment README and code before changing anything.
+- Read the root `README.md` and `TODO.md`, then the current experiment README and code before changing anything.
+- `TODO.md` is the authoritative selector for the next experiment. Treat its single `NEXT` item as current even when an older route suggestion elsewhere conflicts.
 - New experiments belong in `experiments/YYYY-MM-DD-short-question/` and should keep their code, README, and meaningful agent log local to that directory.
 - Root docs contain only repo-wide conventions. Keep experiment-specific findings inside the experiment.
 - Prefer the smallest change that answers the current question. Keep experiments easy to inspect, revert, and compare.
