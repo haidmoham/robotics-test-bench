@@ -10,6 +10,10 @@ This repository is a disposable robotics learning test bench. Optimize for fast 
 - Preserve Iteration 0: ask for or respect the human prediction before revealing a non-trivial mechanism or diagnosis when learning is the target.
 - Automate setup, API lookup, boilerplate, repetitive edits, plotting, and other implementation friction aggressively.
 - Do not outsource the learning target. Leave hypotheses, physical interpretation, architecture tradeoffs, and diagnosis with the human unless explicitly asked to solve them.
+- Before giving a conceptual explanation for a surprising result, let the human state a first diagnosis and, when practical, one observation that could falsify it.
+- Use chat or stronger reasoning to challenge, falsify, or verify a stated human model. Do not use stronger reasoning as the default first-pass diagnosis when the mechanism itself is the learning target.
+- Prefer delaying conceptual help over deliberately using an unreliable model. Preserve reasoning friction, not information-quality friction.
+- Periodically test transfer with a cold rep: explain, predict, or implement a familiar mechanism without conceptual AI help. Routine syntax, API, and boilerplate help can remain automated.
 - Change one physical or numerical variable at a time when causality matters.
 - When behavior is surprising, consider model parameters, contacts, actuators, controller logic, and numerical integration before assuming one cause.
 - Verify important claims with the cheapest reliable check: inspect MuJoCo state, run the experiment, print a focused value, or use a minimal test.
@@ -29,5 +33,5 @@ This repository is a disposable robotics learning test bench. Optimize for fast 
 
 - Python + MuJoCo.
 - Prefer direct MuJoCo concepts (`mjModel`, `mjData`, `qpos`, `qvel`, `ctrl`, contacts, timestep) while learning.
-- Default experiment loop: predict -> change -> run -> explain -> record next question.
+- Default experiment loop: predict -> change -> run -> explain -> challenge -> record next question.
 - Do not polish an experiment after its learning value is exhausted; move to the next mechanism.
