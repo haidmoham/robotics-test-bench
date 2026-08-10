@@ -7,6 +7,8 @@ This repository is a disposable robotics learning test bench. Optimize for fast 
 - New experiments belong in `experiments/YYYY-MM-DD-short-question/` and should keep their code, README, and meaningful agent log local to that directory.
 - Root docs contain only repo-wide conventions. Keep experiment-specific findings inside the experiment.
 - Prefer the smallest change that answers the current question. Keep experiments easy to inspect, revert, and compare.
+- Do not assume formal physics coursework. Build new physical mechanisms from a concrete force picture before notation. Name the forces and contacts. State the motion or rotation each force tends to cause. State what resists or constrains that motion. Show how geometry or leverage changes the effect. Introduce the equation last.
+- Connect controller math to the physical chain it represents. Prefer `force -> torque -> compensation -> control` or the equivalent mechanism before matrix notation when that chain is the learning target.
 - Preserve Iteration 0: ask for or respect the human prediction before revealing a non-trivial mechanism or diagnosis when learning is the target.
 - Automate setup, API lookup, boilerplate, repetitive edits, plotting, and other implementation friction aggressively.
 - Do not outsource the learning target. Leave hypotheses, physical interpretation, architecture tradeoffs, and diagnosis with the human unless explicitly asked to solve them.
