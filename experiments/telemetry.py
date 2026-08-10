@@ -77,7 +77,7 @@ def update_stacks(
     left_ranges=None,
     right_ranges=None,
 ):
-    """Place two three-panel stacks in the viewer, following C-1N's layout."""
+    """Place up to two three-panel stacks in the viewer, following C-1N's layout."""
     left_ranges = left_ranges or (None,) * len(left_figures)
     right_ranges = right_ranges or (None,) * len(right_figures)
     for figure, field, value_range in zip(left_figures, left_fields, left_ranges):

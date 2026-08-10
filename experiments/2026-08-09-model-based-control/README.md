@@ -38,7 +38,7 @@ For a visualization-only comparison of PD and gravity compensation, run:
 pythonw model_based_control.py --controller overlay
 ```
 
-The overlay advances controllers in separate `MjData` objects. It is an inspection aid, not experiment evidence.
+The overlay advances controllers in separate `MjData` objects. It is an inspection aid, not experiment evidence. Its rolling torque, rate, and acceleration graphs use the repository's canonical responsive viewer telemetry stack.
 
 ## Run telemetry
 

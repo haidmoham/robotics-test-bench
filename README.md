@@ -35,7 +35,7 @@ templates/
 
 ## Viewer telemetry
 
-Use [`experiments/telemetry.py`](experiments/telemetry.py) for rolling MuJoCo viewer graphs. It provides C-1N's paired three-panel stack: position, velocity, and acceleration on each side, plus its pale-ground, near-black-mechanism, blue/slate/red signal palette. Keep experiment-specific metric selection in the experiment; keep shared graph styling, history, layout, and palette there.
+Use [`experiments/telemetry.py`](experiments/telemetry.py) for every rolling MuJoCo viewer graph in this repository. It is the canonical C-1N-derived graph stack: responsive paired three-panel layout, bounded history, adaptive ranges, and the pale-ground, near-black-mechanism, blue/slate/red signal palette. Keep experiment-specific metric selection and labels in the experiment; keep graph construction, history, layout, and shared palette in `telemetry.py`. Experiments without live telemetry do not need a graph stack.
 
 ## Concept map
 
