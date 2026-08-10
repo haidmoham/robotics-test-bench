@@ -1,8 +1,8 @@
 # Robotics Test Bench
 
-A disposable laboratory for building robotics intuition through small simulation experiments.
+A disposable laboratory for learning robotics through small simulation experiments.
 
-The goal is to shorten the distance between a physical question and an observation. This is not a polished robotics project.
+The goal is to shorten the distance between a physical question and evidence, then use that understanding to move deeper into simulation, statistical modeling, robot learning, and evaluation.
 
 ## Core loop
 
@@ -12,127 +12,114 @@ The goal is to shorten the distance between a physical question and an observati
 4. Run it.
 5. Observe the result.
 6. Update the mental model.
-7. Record the next question.
+7. Let the failure choose the next question.
 
-Agents should remove setup, API, boilerplate, and repetitive implementation friction. The human should own prediction, physical interpretation, and diagnosis when those are the learning target.
+Agents should remove setup, API, boilerplate, repetitive implementation, plotting, and experiment plumbing. The human should own prediction, physical interpretation, objective design, and diagnosis when those are the learning target.
+
+## Direction
+
+This bench is simulation-first.
+
+Physics and controls are required literacy because the simulator must represent a physical system. They are not the assumed professional endpoint. Hardware is useful external ground truth when available, but owning hardware or routing into hardware work is not a graduation requirement.
+
+The long-term technical center is:
+
+`software systems + statistics + physical simulation + optimization + robot learning`
+
+The bench should increasingly lean into:
+
+- measurable task definitions;
+- rollout distributions and uncertainty;
+- system identification and simulator calibration;
+- policy optimization and learned behavior;
+- distribution shift and robustness;
+- differentiable dynamics;
+- numerical fidelity;
+- reproducible and scalable simulation infrastructure.
+
+## Active frontier
+
+`TODO.md` is authoritative. The current route is:
+
+```mermaid
+flowchart LR
+    S["#24 Support state<br/>make standing measurable"]
+    C["C-1N // 02 · STAND<br/>support-aware standing"]
+    L["#25 Learned locomotion<br/>objective becomes behavior"]
+    E["#26 Evaluation<br/>behavior as a distribution"]
+    M["#27 Model calibration<br/>infer simulator parameters"]
+    U["#28 Uncertainty<br/>distributions and shift"]
+    D["#29 Differentiate<br/>backprop through dynamics"]
+    X["#30 Scale<br/>reproducible fast simulation"]
+
+    S --> C --> L
+    L --> E
+    L --> M
+    L --> U
+    L --> D
+    L --> X
+    M --> D
+    E --> U
+```
+
+This is not a fixed syllabus after `STAND`. Learned locomotion is a forcing function. Its failures should pull in the next useful lane.
+
+Controls, contact mechanics, actuator limits, estimation, numerical integration, or other mechanics topics can re-enter when a concrete simulation failure requires them. Do not maintain speculative prerequisite paths.
+
+## Issue policy
+
+Open GitHub issues represent the current frontier only.
+
+Legacy concept issues are closed and remain historical provenance. Do not reopen or reproduce the old concept graph by default. Create or revive a focused issue only when current evidence exposes a real blocker.
+
+Issue numbers are stable identities, not chronology. Dated experiment directories and commits preserve chronology.
 
 ## Structure
 
 ```text
 TODO.md
 experiments/
-  telemetry.py                  # canonical rolling MuJoCo viewer graph stacks
+  telemetry.py
   YYYY-MM-DD-short-question/
     README.md
     <experiment code>
     agent-log.md
-
+integrations/
+  c1n.md
 templates/
   agent-interaction.md
 ```
 
-`TODO.md` is the authoritative selector for the next experiment. It can change when new evidence makes a different question more useful. Each experiment owns its code and local evidence. Root docs contain only repo-wide conventions.
+Each experiment owns its code and local evidence. Root docs contain only repo-wide conventions.
 
 ## Viewer telemetry
 
-Use [`experiments/telemetry.py`](experiments/telemetry.py) for every rolling MuJoCo viewer graph in this repository. It is the canonical C-1N-derived graph stack: responsive paired three-panel layout, bounded history, adaptive ranges, and the pale-ground, near-black-mechanism, blue/slate/red signal palette. Keep experiment-specific metric selection and labels in the experiment; keep graph construction, history, layout, and shared palette in `telemetry.py`. Experiments without live telemetry do not need a graph stack.
+Use [`experiments/telemetry.py`](experiments/telemetry.py) for rolling MuJoCo viewer graphs. Keep experiment-specific metrics and labels in the experiment. Keep shared graph construction, history, layout, and palette in `telemetry.py`.
 
-## Concept map
+As the frontier moves into statistical simulation, prefer structured metrics that can also be consumed headlessly across seeds, scenarios, parameter draws, and policy checkpoints. A viewer is evidence for mechanism inspection, not the only evaluation surface.
 
-GitHub issues are concept nodes, not a fixed syllabus. Node numbers below match issue numbers. Arrows mean that one concept can make another experiment more meaningful; they do **not** mean that the nodes must be completed in order.
+## C-1N
 
-Choose the next node from the evidence produced by the current experiment. Branch, repeat, skip, or insert a smaller local question when the observations justify it. `TODO.md` records that current choice.
+C-1N is the longitudinal integration robot in `haidmoham/spider`.
 
-### Deferred differentiable-dynamics route
+Public checkpoints use:
 
-The resolved model-based-control work exposed a useful route toward differentiable dynamics. It remains available, but it is currently deferred because C-1N exposed a more immediate task-space question captured by #6.
-
-```mermaid
-flowchart LR
-    R04["#4 Model-based control<br/>resolved: gravity → computed torque → wrong mass"]
-    R05["#5 Trajectory tracking<br/>reason over a rollout"]
-    R12["#12 System identification<br/>infer one mass without autodiff"]
-    R16["#16 Differentiable dynamics<br/>backprop through the rollout"]
-    R13["#13 Numerical sensitivity<br/>stress the trajectory and gradient"]
-
-    R04 --> R05 --> R12 --> R16 --> R13
+```text
+C-1N // NN · CODENAME
 ```
 
-The first open stop on this deferred route is #5. It is not the current next experiment while `TODO.md` selects #6.
+Current lineage:
 
-### Full map
-
-```mermaid
-flowchart TD
-    C01["#1 Feedback fundamentals"]
-    C02["#2 Multi-DOF dynamics"]
-    C03["#3 Robot kinematics"]
-    C04["#4 Model-based control"]
-    C05["#5 Trajectory tracking"]
-    C06["#6 Jacobians & task space"]
-    C07["#7 Actuator limits"]
-    C08["#8 Contact & friction"]
-    C09["#9 IK vs dynamic feasibility"]
-    C10["#10 Underactuation"]
-    C11["#11 State estimation"]
-    C12["#12 System identification"]
-    C13["#13 Numerical sensitivity"]
-    C14["#14 Robustness & uncertainty"]
-    C15["#15 Diagnosis by experiment"]
-    C16["#16 Differentiable dynamics"]
-
-    C01 --> C02
-    C01 --> C03
-    C01 --> C05
-    C01 --> C11
-
-    C02 --> C04
-    C02 --> C05
-    C02 --> C10
-    C02 --> C12
-
-    C03 --> C06
-    C03 --> C09
-
-    C04 --> C05
-    C04 --> C12
-    C04 --> C14
-
-    C05 --> C07
-    C05 --> C11
-    C05 --> C12
-    C05 --> C13
-
-    C06 --> C08
-    C06 --> C09
-
-    C07 --> C08
-    C07 --> C14
-
-    C08 --> C14
-    C09 --> C14
-    C10 --> C14
-
-    C11 --> C14
-    C11 --> C15
-
-    C12 --> C14
-    C12 --> C15
-    C12 --> C16
-
-    C16 --> C13
-    C16 --> C14
-
-    C13 --> C14
-    C13 --> C15
-
-    C14 --> C15
-
-    classDef active stroke-width:3px
-    class C06 active
+```text
+C-1N // 00 · POSE     historical motor-assisted static-pose baseline
+C-1N // 01 · SHUFFLE  current coordinated gait failure
+C-1N // 02 · STAND    reserved: first support-aware stable stance
+C-1N // 03 · STRIDE   reserved: first materially better sustained walk
 ```
 
-The map is intentionally incomplete as a path planner. The core loop remains authoritative: an experiment should end by producing the next question, even when that question points sideways or backward in the graph.
+The immediate foundation is still standing. Issue #24 isolates support and turns standing into a measurable rollout condition. After that concept closes, transfer it to C-1N and earn `STAND` before learned locomotion becomes the main forcing function.
+
+After `STAND`, C-1N becomes primarily a simulation subject for policy learning, evaluation, calibration, uncertainty, differentiable dynamics, and experiment scaling. See [`integrations/c1n.md`](integrations/c1n.md).
 
 ## Small ontology
 
@@ -143,64 +130,42 @@ Question -> Response -> Evaluation -> Action -> Outcome
    Q          R           E           A          O
 ```
 
-Each object gets a stable ID such as `Q-20260808-001`. The experiment `agent-log.md` records the object summaries, relations, evidence status, unresolved questions, and a compact Librarian handoff. The ontology is an audit layer, not a reason to log routine syntax help or full conversations.
+Use `agent-log.md` only for interactions that change a prediction, interpretation, decision, experiment, or next action. Preserve stable IDs and source provenance. Do not store full chat transcripts.
 
 Use three layers for reconstruction:
-- `agent-log.md` preserves changes in belief.
-- commit messages translate the belief, evidence, or decision into the reason for a code change.
-- the Git diff preserves the exact implementation.
 
-Record implementation details in the reasoning trace only when they changed a prediction, explanation, diagnosis, decision, evidence interpretation, or next question. Do not use agent logs as implementation changelogs. Commit messages should explain why a code change follows from the current evidence, not merely restate the files changed.
+- `agent-log.md` preserves changes in belief;
+- commit messages explain why evidence or a decision caused a code change;
+- the Git diff preserves the implementation.
 
-Use [`templates/agent-interaction.md`](templates/agent-interaction.md) for the canonical shape.
+Use [`templates/agent-interaction.md`](templates/agent-interaction.md) for the canonical record shape.
 
-## C-1N integration target
+## MuJoCo mental model
 
-The longitudinal robot formerly referred to generically as Spider is now **C-1N**. Its public checkpoint grammar is:
-
-```text
-C-1N // NN · CODENAME
-```
-
-The current integrated behavior is `C-1N // 01 · SHUFFLE`. Bench experiments can create optional integration hooks, but they do not require C-1N work for completion. See [`integrations/c1n.md`](integrations/c1n.md).
-
-## Current experiment
-
-[`experiments/2026-08-09-jacobians-task-space/`](experiments/2026-08-09-jacobians-task-space/) is the active experiment. `TODO.md` selects issue #6, Jacobians & task space, because C-1N exposed a joint-space versus task-space mismatch.
-
-Its Iteration 0 prediction concerns the sign and rough relative size of shared-frame end-effector X motion produced by the same small positive first-joint perturbation at three different base orientations.
-
-Current bridge into task space:
-- keep the mechanism isolated from C-1N;
-- hold geometry, joint configuration, perturbation size, controller, and timestep fixed while changing base orientation;
-- compare joint-space position, velocity, and acceleration with shared-frame end-effector X position, velocity, and acceleration;
-- verify at least one Jacobian column by finite difference or geometry;
-- do not implement IK, RL, or a task-space controller yet;
-- after closure, use the #6 C-1N hook to instrument torso-frame foot motion before changing the gait;
-- when that integration is preserved as a checkpoint, call it `C-1N // 02 · FRAME`.
-
-MuJoCo mental model:
 - `mjModel` = what the simulated system is.
 - `mjData` = what the system is doing now.
 - `worldbody` = fixed global frame.
-- bodies form a tree; contacts and constraints add relationships beyond that tree.
 - `qpos` = generalized configuration.
 - `qvel` = generalized velocity.
 - `ctrl` = actuator command, not necessarily joint torque.
+- contacts and constraints add relationships beyond the body tree.
 - `mj_step()` advances kinematics, contact/constraints, forces, acceleration, and integration.
 
 ## Rules
 
 - Run something quickly.
+- Predict before executing when the mechanism is the learning target.
 - Change one meaningful variable at a time when causality matters.
-- Predict before executing.
+- Define objectives and evaluation conditions explicitly.
+- Prefer distributions over cherry-picked rollouts when comparing behavior.
+- Validate fitted or learned quantities on behavior not used to fit them.
+- Preserve useful failures.
 - Optimize for understanding, not elegance.
-- Ugly experiment code is acceptable.
-- Refactor only when it removes repeated friction or enables the next question.
-- Keep reasoning traces epistemic: record belief changes, not routine code chronology.
-- Write commit messages as the bridge from belief or evidence to the resulting code change.
-- Do not turn this repo into a general robotics encyclopedia.
+- Add infrastructure only when a real experiment needs it.
+- Do not polish an experiment after its learning value is exhausted.
 
 ## Success metrics
 
-Measure questions tested, predictions made, surprising failures, observations, and updated beliefs. Do not optimize for lines of code or production polish.
+Measure questions tested, predictions made, surprising failures, updated beliefs, reproducibility, validation quality, and increasingly strong simulation experiments.
+
+Do not optimize for lines of code, visual polish, or proximity to hardware.
