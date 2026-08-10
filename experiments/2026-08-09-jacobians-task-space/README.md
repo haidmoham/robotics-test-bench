@@ -95,7 +95,7 @@ total torque:    posture torque + support torque
 
 ### Scope boundary
 
-This continuation exists only to make the physical chain inspectable: joint posture change → foot task-space motion → pose-dependent foot Jacobian → motor torque. Its equal-foot-force rule is deliberately incomplete. In the forward run it can request negative rear normal forces, which is physically impossible because the ground cannot pull on a foot. Preserve that as observed #6 evidence; do not add wrench allocation, friction constraints, contact-force feedback, or planted-foot control here. Those belong to [#20 static support & equilibrium](../../integrations/c1n.md).
+This continuation exists only to make the physical chain inspectable: joint posture change → foot task-space motion → pose-dependent foot Jacobian → motor torque. Its equal-foot-force rule is deliberately incomplete. A negative rear normal-force request would be physically impossible because the ground cannot pull on a foot, but the current checked forward run does not reproduce one. Do not add wrench allocation, friction constraints, contact-force feedback, or planted-foot control here; those belong to [#20 static support & equilibrium](../../integrations/c1n.md).
 
 Gravity and the body position determine a three-foot vertical-force allocation: the force sum equals the model weight, while its X and Y moments balance the requested support point. Each leg then maps its own assigned foot force into two motor torques with its current foot Jacobian transpose.
 

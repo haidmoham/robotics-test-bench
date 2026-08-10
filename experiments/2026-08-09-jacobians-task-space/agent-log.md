@@ -154,8 +154,8 @@ sources:
   - kind: coding-agent
     system: Codex
     reference: headless tripod run
-status: resolved
-evaluation: confirmed
+status: acted
+evaluation: unconfirmed
 related:
   experiment: experiments/2026-08-09-jacobians-task-space
   issues: [6, 20]
@@ -174,7 +174,7 @@ librarian:
 
 ## Q — Question
 
-Should the equal-foot-force tripod experiment be extended into a standing controller when its forward request produces an impossible negative rear normal force?
+Should the equal-foot-force tripod experiment be extended into a standing controller, or should any impossible negative rear normal-force request be deferred to #20 if it is observed?
 
 ## R — Response summary
 
@@ -193,13 +193,13 @@ Marked the tripod code and local README with the #6 boundary; retained the equal
 
 ## O — Outcome
 
-The forward headless run requested negative rear vertical forces after the COM travelled forward. The request is impossible for a unilateral ground contact and is recorded as a #20 follow-up rather than repaired here.
+The checked 2 s and 8 s forward headless runs kept rear vertical allocations positive. A negative normal-force request remains an unverified diagnostic condition for #20, not evidence from the current run.
 
 ### Effect on current belief
 
 - Before: the tripod continuation risked expanding into a standing controller.
 - After: it is a bounded physical inspection of Jacobian-transpose torque mapping; contact-feasibility control is explicitly deferred to #20.
-- Evidence status: The negative request was observed in the local headless simulation; the scope decision is human-directed.
+- Evidence status: The scoped force-mapping behavior was run locally; the negative-normal condition is not yet reproduced. The scope decision is human-directed.
 
 Related: #6, #20
 
