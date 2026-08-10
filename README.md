@@ -21,6 +21,7 @@ Agents should remove setup, API, boilerplate, and repetitive implementation fric
 ```text
 TODO.md
 experiments/
+  telemetry.py                  # canonical rolling MuJoCo viewer graph stacks
   YYYY-MM-DD-short-question/
     README.md
     <experiment code>
@@ -31,6 +32,10 @@ templates/
 ```
 
 `TODO.md` is the authoritative selector for the next experiment. It can change when new evidence makes a different question more useful. Each experiment owns its code and local evidence. Root docs contain only repo-wide conventions.
+
+## Viewer telemetry
+
+Use [`experiments/telemetry.py`](experiments/telemetry.py) for rolling MuJoCo viewer graphs. It provides C-1N's paired three-panel stack: position, velocity, and acceleration on each side, plus its pale-ground, near-black-mechanism, blue/slate/red signal palette. Keep experiment-specific metric selection in the experiment; keep shared graph styling, history, layout, and palette there.
 
 ## Concept map
 
