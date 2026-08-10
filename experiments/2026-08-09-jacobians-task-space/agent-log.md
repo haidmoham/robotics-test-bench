@@ -142,67 +142,6 @@ superseded_claims: []
 
 Related: #6
 
-## AI-20260809-014 — Equal-foot-force failure is evidence, not a #6 fix target
-
-```yaml
-id: AI-20260809-014
-date: 2026-08-09
-sources:
-  - kind: human-observation
-    system: Codex
-    reference: current task
-  - kind: coding-agent
-    system: Codex
-    reference: headless tripod run
-status: acted
-evaluation: unconfirmed
-related:
-  experiment: experiments/2026-08-09-jacobians-task-space
-  issues: [6, 20]
-  files:
-    - experiments/2026-08-09-jacobians-task-space/tripod_static_support.py
-objects:
-  question: Q-20260809-014
-  response: R-20260809-014
-  evaluation: E-20260809-014
-  action: A-20260809-014
-  outcome: O-20260809-014
-librarian:
-  status: pending
-  record_ids: []
-```
-
-## Q — Question
-
-Should the equal-foot-force tripod experiment be extended into a standing controller, or should any impossible negative rear normal-force request be deferred to #20 if it is observed?
-
-## R — Response summary
-
-No. Keep #6 scoped to physically inspecting the joint-motion → foot-motion → Jacobian → torque chain. Treat feasible force allocation, contact feedback, friction, and planted-foot control as #20 work.
-
-## E — Human evaluation
-
-### Accepted
-
-- The equal-force failure is useful evidence, not a defect to conceal.
-- #6 must not solve full standing control.
-
-## A — Action
-
-Marked the tripod code and local README with the #6 boundary; retained the equal-foot-force behavior unchanged.
-
-## O — Outcome
-
-The checked 2 s and 8 s forward headless runs kept rear vertical allocations positive. A negative normal-force request remains an unverified diagnostic condition for #20, not evidence from the current run.
-
-### Effect on current belief
-
-- Before: the tripod continuation risked expanding into a standing controller.
-- After: it is a bounded physical inspection of Jacobian-transpose torque mapping; contact-feasibility control is explicitly deferred to #20.
-- Evidence status: The scoped force-mapping behavior was run locally; the negative-normal condition is not yet reproduced. The scope decision is human-directed.
-
-Related: #6, #20
-
 ## AI-20260809-013 — Static tripod support prediction
 
 ```yaml
@@ -363,3 +302,130 @@ Pending the learner's prediction and observation.
 - Evidence status: Experiment scaffold only; no learner interpretation is recorded.
 
 Related: #6
+
+## AI-20260809-014 — Equal-foot-force failure is evidence, not a #6 fix target
+
+```yaml
+id: AI-20260809-014
+date: 2026-08-09
+sources:
+  - kind: human-observation
+    system: Codex
+    reference: current task
+  - kind: coding-agent
+    system: Codex
+    reference: headless tripod runs
+status: acted
+evaluation: unconfirmed
+repo_state:
+  repository: robotics-test-bench
+  branch: codex/responsive-jacobian-overlay
+  commit: 60af8d5
+  changed_files:
+    - experiments/2026-08-09-jacobians-task-space/tripod_static_support.py
+    - experiments/2026-08-09-jacobians-task-space/README.md
+    - experiments/2026-08-09-jacobians-task-space/agent-log.md
+related:
+  experiment: experiments/2026-08-09-jacobians-task-space
+  hypotheses: []
+  experiments: []
+  claims: []
+  decisions: []
+  issues: [6, 20]
+  files:
+    - experiments/2026-08-09-jacobians-task-space/tripod_static_support.py
+objects:
+  question: Q-20260809-014
+  response: R-20260809-014
+  evaluation: E-20260809-014
+  action: A-20260809-014
+  outcome: O-20260809-014
+librarian:
+  status: not-needed
+  record_ids: []
+```
+
+## Q — Question
+
+Should the equal-foot-force tripod experiment become a standing controller, or should an impossible negative rear normal-force request go to #20 if observed?
+
+## R — Response summary
+
+Keep #6 scoped to the joint-motion → foot-motion → Jacobian → torque chain. Defer feasible allocation, contact feedback, friction, and planted-foot control to #20.
+
+## E — Human evaluation
+
+### Accepted
+
+- The equal-force failure is useful evidence, not a defect to conceal.
+- #6 must not solve full standing control.
+
+## A — Action
+
+Marked the code and README with the #6 scope boundary. Left the equal-foot-force behavior unchanged.
+
+## O — Outcome
+
+The checked 2 s and 8 s forward headless runs kept rear vertical allocations positive. A negative normal-force request is an unverified #20 diagnostic, not evidence from the current run.
+
+### Effect on current belief
+
+- Before: the tripod continuation risked expanding into a standing controller.
+- After: it is a bounded inspection of Jacobian-transpose torque mapping. Contact-feasibility control is deferred to #20.
+- Evidence status: The force-mapping behavior was run locally. The negative-normal condition is not reproduced. The scope decision is human-directed.
+
+## Librarian update
+
+```yaml
+source:
+  repository: robotics-test-bench
+  path: experiments/2026-08-09-jacobians-task-space/agent-log.md
+  commit: 60af8d5
+provenance:
+  - kind: human-observation
+    system: Codex
+    reference: current task
+  - kind: coding-agent
+    system: Codex
+    reference: headless tripod runs
+objects:
+  - id: Q-20260809-014
+    type: Question
+    summary: Keep #6 bounded when force feasibility becomes relevant.
+    status: resolved
+  - id: R-20260809-014
+    type: Response
+    summary: Defer standing-control mechanisms to #20.
+    status: acted
+  - id: E-20260809-014
+    type: Evaluation
+    summary: The human accepted preserving the equal-force failure as evidence.
+    status: confirmed
+  - id: A-20260809-014
+    type: Action
+    summary: Recorded the scope boundary without adding feasibility control.
+    status: completed
+  - id: O-20260809-014
+    type: Outcome
+    summary: Negative rear normal force is not reproduced in the checked runs.
+    status: unconfirmed
+relations:
+  - subject: Q-20260809-014
+    predicate: receives
+    object: R-20260809-014
+  - subject: R-20260809-014
+    predicate: receives
+    object: E-20260809-014
+  - subject: E-20260809-014
+    predicate: causes
+    object: A-20260809-014
+  - subject: A-20260809-014
+    predicate: produces
+    object: O-20260809-014
+unresolved_questions:
+  - Under what body pose does the unconstrained allocation request a negative normal force?
+superseded_claims:
+  - The prior claim that the checked forward run had negative rear normal force.
+```
+
+Related: #6, #20
