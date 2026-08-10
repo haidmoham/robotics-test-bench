@@ -38,4 +38,7 @@ This repository is a disposable robotics learning test bench. Optimize for fast 
 - Python + MuJoCo.
 - Prefer direct MuJoCo concepts (`mjModel`, `mjData`, `qpos`, `qvel`, `ctrl`, contacts, timestep) while learning.
 - Default experiment loop: predict -> change -> run -> explain -> challenge -> record next question.
+- Keep the issue-driven experiment loop as the learning frontier moves. Re-evaluate `TODO.md` after resolved evidence and select the next blocking capability, not the next simulator novelty.
+- Let the frontier graduate from MuJoCo mechanics into controller and state interfaces, sensing and estimation, logging and replay, ROS 2 and C++, timing, noise, calibration, and physical integration when those become the next useful gaps.
+- A simulation-only experiment must close a current conceptual blocker or name a transfer or integration hook. Do not optimize indefinitely for simulation depth.
 - Do not polish an experiment after its learning value is exhausted; move to the next mechanism.
