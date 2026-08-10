@@ -141,3 +141,81 @@ superseded_claims: []
 ```
 
 Related: #6
+
+## AI-20260809-012 — Two-joint velocity-map continuation
+
+```yaml
+id: AI-20260809-012
+date: 2026-08-09
+sources:
+  - kind: chat
+    system: Codex
+    reference: current task
+status: acted
+evaluation: unconfirmed
+repo_state:
+  repository: robotics-test-bench
+  branch: codex/responsive-jacobian-overlay
+  commit:
+  changed_files:
+    - experiments/2026-08-09-jacobians-task-space/README.md
+    - experiments/2026-08-09-jacobians-task-space/two_joint_planar_leg.py
+    - experiments/2026-08-09-jacobians-task-space/agent-log.md
+related:
+  experiment: experiments/2026-08-09-jacobians-task-space
+  hypotheses: []
+  experiments: []
+  claims: []
+  decisions: []
+  issues: [6]
+  files:
+    - experiments/2026-08-09-jacobians-task-space/two_joint_planar_leg.py
+objects:
+  question: Q-20260809-012
+  response: R-20260809-012
+  evaluation: E-20260809-012
+  action: A-20260809-012
+  outcome: O-20260809-012
+librarian:
+  status: pending
+  record_ids: []
+```
+
+## Q — Question
+
+How does the same small two-joint velocity map into foot velocity when only the planar leg pose changes?
+
+### Human prediction
+
+Not yet recorded. Predict the relative world-X and world-Z foot motion before running the two poses.
+
+### Purpose
+
+Continue #6 from one Jacobian column and a rotated frame to the complete 2-by-2 planar velocity map, without introducing locomotion.
+
+## R — Response summary
+
+Set the same `qdot` at two fixed poses, compare `J(q) @ qdot` to MuJoCo's foot velocity, then attribute any velocity change to the changed local map rather than to a changed command.
+
+## E — Human evaluation
+
+### Verification required
+
+- Confirm that predicted and MuJoCo-reported X-Z foot velocities agree at both poses.
+- Record the learner's prediction and observed pose-dependent change before explaining it further.
+
+## A — Action
+
+Added the two-joint planar-leg velocity comparison as a continuation inside the active #6 directory, with an optional viewer that alternates the two evaluated poses.
+
+## O — Outcome
+
+Pending the learner's prediction and observation.
+
+### Effect on current belief
+
+- Before: the one-link comparison connected a single joint column to task-space motion across frames.
+- After: the next test isolates the full local two-joint velocity mapping while holding `qdot` fixed.
+- Evidence status: Experiment scaffold only; no learner interpretation is recorded.
+
+Related: #6

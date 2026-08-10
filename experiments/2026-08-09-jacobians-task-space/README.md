@@ -45,6 +45,40 @@ For a quick non-visual comparison:
 python jacobians_task_space.py --base-degrees 45 --headless --duration 2
 ```
 
+## Continuation: a full two-joint velocity map
+
+`two_joint_planar_leg.py` stays inside this experiment. It does not add a controller, gait, or locomotion objective; it freezes a two-joint planar leg at two poses and gives both poses the identical small joint velocity:
+
+```text
+qdot = [ +0.70, -0.35 ] rad/s
+```
+
+Before running, predict which pose makes that same `qdot` move the foot more in world X, and whether either world-X or world-Z velocity can reverse sign. Then run:
+
+```bash
+python two_joint_planar_leg.py
+```
+
+For each pose, the terminal prints:
+
+- `q`, the current joint configuration;
+- `x(q)`, the foot position in the world X-Z plane;
+- the 2-by-2 translational Jacobian `J(q)` from MuJoCo;
+- `J(q) @ qdot`, the predicted foot velocity;
+- MuJoCo's reported foot velocity, and their difference.
+
+It then changes only `q`, keeps `qdot` fixed, and repeats the comparison. The displayed difference should be near numerical precision: this is a velocity-level kinematic check, not a locomotion simulation.
+
+To inspect the two poses in the MuJoCo viewer, sweeping smoothly between them:
+
+```bash
+mjpython two_joint_planar_leg.py --viewer
+```
+
+At the foot, the live arrows make the Jacobian geometric: blue is the first column (a unit hip velocity), orange is the second (a unit knee velocity), and green is their actual weighted sum `J(q) @ qdot`. Their shared scale is fixed, so the change in arrow direction and size comes from the pose-dependent Jacobian rather than from auto-rescaling.
+
+Learning target: **the Jacobian is the pose-dependent local map from joint-space motion to task-space motion.**
+
 ## What to record
 
 - Do the Jacobian and finite-difference estimates agree in sign and rough magnitude?
