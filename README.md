@@ -10,12 +10,14 @@ Small MuJoCo experiments for learning robotics from direct simulation evidence.
 4. Run it and measure the result.
 5. Update the model and choose the next question.
 
-`TODO.md` selects the current experiment. Its post-foundation frontier is a deep-toy platform for procedurally generated, validated physical worlds; reproducible rollout populations; and scientifically constrained agentic experimentation. The immediate experiment always takes priority over that frontier.
+`TODO.md` selects the current experiment. `docs/research-platform.md` records the long-range simulation-platform direction. The design document never overrides the current queue.
 
 ## Structure
 
 ```text
 TODO.md
+docs/
+  research-platform.md
 experiments/
   telemetry.py
   viewer_runtime.py
@@ -31,12 +33,14 @@ Each experiment owns its code and local evidence. Shared viewer telemetry lives 
 
 ## Working rules
 
-- Use Python + MuJoCo by default.
+- Use Python and MuJoCo by default.
 - Build physical intuition before notation when the mechanism is the learning target.
 - Change one meaningful variable at a time when causality matters.
-- For a visual comparison, begin with a labelled control and a deliberately legible treatment. Render the control as a ghost over the live treatment, show shared telemetry, and inspect the viewer before interpreting the rollout.
+- Begin a visual comparison with a labelled control and one deliberately legible treatment.
+- Render the control as a ghost over the treatment when the comparison is spatial.
+- Treat overlays as inspection aids, not as evidence.
 - Define objectives and evaluation conditions explicitly.
-- Compare behavior across fixed scenarios, seeds, or parameter draws when the question is statistical.
+- Compare fixed scenarios, seeds, or parameter draws when the question is statistical.
 - Preserve useful failures.
 - Add infrastructure only when a real experiment needs it.
 - Stop polishing when the experiment has answered its question.
