@@ -106,9 +106,15 @@ sources:
   - kind: chat
     system: chat
     reference: user instruction in this session
+  - kind: chat
+    system: chat
+    reference: user request to preserve the telemetry architecture as a future simulation-robotics post seed
   - kind: coding-agent
     system: Codex
     reference: robotics-test-bench viewer infrastructure
+  - kind: external-reference
+    system: MuJoCo
+    reference: passive-viewer documentation and upstream Python viewer loop
 status: acted
 evaluation: confirmed
 repo_state:
@@ -175,6 +181,27 @@ budget even when figure data publication is already throttled.
 
 Project-local convention recorded. It does not assert a physical result or
 replace an experiment's prediction, controls, or headless validation.
+
+### Simulation-robotics blog seed
+
+Preserve a separate future post about debugging viewer telemetry as a
+simulation-robotics engineering problem. The useful reasoning was not merely
+to reduce plot refresh frequency: research into MuJoCo's passive-viewer
+documentation and upstream timing loop showed how to separate fixed physics
+steps, wall-clock rendering, and fast state-only synchronization. The local
+adaptation added independent telemetry sampling, rate-gated figure updates,
+and paging that kept hidden signals recording while limiting the number of
+figures drawn per frame. Use commit `b75ea14` as the implementation source.
+This is a prospective writing seed, not experimental evidence.
+
+### Effect on writing plan
+
+- Before: the viewer architecture existed as experiment infrastructure and a
+  local convention, but had no separate future-post intent.
+- After: preserve the debugging path and upstream research as a potential
+  simulation-robotics post independent of the static-support narrative.
+- Evidence status: user-directed editorial intent grounded in the recorded
+  implementation and named upstream sources; it adds no physical claim.
 
 ## AI-20260811-003 — Ballast-mass comparison evidence
 
