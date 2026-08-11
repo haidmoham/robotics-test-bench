@@ -61,6 +61,33 @@ Controls, contact mechanics, actuator limits, state estimation, numerical method
 
 The intended direction is:
 
-`physical intuition -> support mechanics -> leg reachability -> STAND -> learned locomotion -> statistical simulation / model inference / uncertainty / differentiable dynamics / scale`
+`physical intuition -> support mechanics -> leg reachability -> STAND -> learned locomotion -> distributional evaluation -> system identification / calibration -> uncertainty / randomization -> scalable simulation -> procedural validated worlds -> scientifically constrained agentic experimentation`
+
+## Post-foundation frontier
+
+This bench has no fixed terminal capstone. Once learned locomotion produces behavior that can be evaluated across a population, grow the scale lane into a deep-toy simulation research platform. Do not pull this work ahead of a concrete prerequisite: standing, locomotion, and physics repair remain the current foundation.
+
+The target platform should:
+
+- generate structured pseudorandom physical worlds from declared distributions or grammars;
+- reject worlds that fail deterministic MuJoCo, physics, semantic, or experiment-specific validators;
+- run reproducible rollout populations and retain seeds, manifests, code/simulator versions, metrics, invalid worlds, failures, and artifacts;
+- support treatment comparison, failure clustering, counterexample reduction, and scale experiments through typed interfaces.
+
+A natural-language agent is a first-class control-plane objective, not a chatbot wrapper. It must compile research goals into explicit experiment specifications and call typed generation, validation, execution, and analysis operations. Deterministic validators and simulator contracts remain authoritative.
+
+Scientific policy is structural:
+
+- declare hypotheses, interventions, controls, measured variables, and evaluation criteria before execution when applicable;
+- retain validation failures; never silently discard them;
+- record provenance and distributions for every treatment;
+- create a new analysis record when metrics or protocol change after results are seen;
+- distinguish observations, inferences, and speculation; include simulator limits and uncertainty in conclusions;
+- prevent the agent from silently changing hidden parameters to rescue a failed result;
+- require compatible populations and declared conditions for comparisons.
+
+### Routing rule
+
+Use frontier failures to select the next learning block. A failure in world validity can pull in mechanics, numerical methods, or simulator contracts; poor population evidence can pull in statistics or experiment design; a calibration or transfer gap can pull in system identification and uncertainty; throughput or reproducibility limits can pull in simulation or distributed-systems architecture. Do not build infrastructure or study a topic merely because it appears in the final platform.
 
 Hardware is not a graduation requirement for this bench.
