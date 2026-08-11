@@ -24,7 +24,7 @@ The experiment must compare joint-space position/velocity/acceleration with task
 
 Before code, predict the sign and rough relative size of shared-frame end-effector X motion produced by the same small positive first-joint perturbation at three different base orientations.
 
-After the bench experiment closes, use its C-1N hook to add torso-frame foot task-space telemetry to the canonical robot. If that integration preserves the understood failure, it becomes the `C-1N // 02 · FRAME` checkpoint. Do not fix the C-1N gait as part of the bench experiment.
+After the bench experiment closes, use its C-1N hook to add torso-frame foot task-space telemetry to the canonical robot. That instrumentation may integrate without creating a public checkpoint; it does not reserve or advance the lineage. Do not fix the C-1N gait as part of the bench experiment.
 
 ## Deferred route
 

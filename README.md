@@ -177,7 +177,7 @@ Current bridge into task space:
 - verify at least one Jacobian column by finite difference or geometry;
 - do not implement IK, RL, or a task-space controller yet;
 - after closure, use the #6 C-1N hook to instrument torso-frame foot motion before changing the gait;
-- when that integration is preserved as a checkpoint, call it `C-1N // 02 · FRAME`.
+- treat that instrumentation as an optional non-checkpoint integration; it does not reserve or advance the lineage.
 
 MuJoCo mental model:
 - `mjModel` = what the simulated system is.

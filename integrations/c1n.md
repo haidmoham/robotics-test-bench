@@ -17,13 +17,13 @@ The number preserves chronology. The codename records the capability or understo
 Current lineage:
 
 ```text
-C-1N // 00 · POSE     motor-assisted static-pose baseline
+C-1N // 00 · SPAWN    motor-assisted static-pose baseline
 C-1N // 01 · SHUFFLE  current coordinated gait failure
 C-1N // 02 · STAND    reserved for the first support-aware stable stance
 C-1N // 03 · STRIDE   reserved for the first materially better walk
 ```
 
-`POSE` is historical and does not claim demonstrated standing. `STAND` and `STRIDE` are reserved names, not completed checkpoints.
+`SPAWN` is historical and does not claim demonstrated standing. `STAND` and `STRIDE` are reserved names, not completed checkpoints.
 
 ## Contract
 
