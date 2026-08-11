@@ -104,3 +104,18 @@ mjpython static_support.py --viewer --duration 120 --push-x 8 --push-start 0.5 -
 Choose and record a human prediction before interpreting the perturbed result.
 
 Related: robotics-test-bench #24, Spider #11.
+
+## Stopping boundary
+
+This experiment stops here. It made the static-support question concrete and
+revealed a physical-intuition gap around contact geometry, moments, and
+rigid-body rotation; it does not establish an attached-ballast stability
+conclusion. The earlier mass sweep used a suspended-ballast configuration and
+is preserved only as a model-configuration failure, not as attached-ballast
+evidence.
+
+Before continuing this lane, repair that intuition with the documented
+mechanics problems, then return with a fresh prediction and a deliberately
+specified attached-ballast treatment. This stop is part of the prospective
+blog story: the useful result is recognizing when further simulation would
+outpace the physical model being learned.

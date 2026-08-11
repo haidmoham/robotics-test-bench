@@ -12,8 +12,8 @@ sources:
   - kind: coding-agent
     system: Codex
     reference: robotics-test-bench #24
-status: acted
-evaluation: unconfirmed
+status: resolved
+evaluation: confirmed
 repo_state:
   repository: robotics-test-bench
   branch: codex/static-support-centered-ballast
@@ -348,7 +348,11 @@ arguments, and preserve the blog teaching beat locally in the experiment README.
 
 ## O — Outcome
 
-Pending user inspection of the five live viewer windows.
+The user accepted this as the experiment's stopping boundary. The viewer
+comparison made the ballast-coordinate error visible; correcting it changed
+the treatment enough that the prior mass sweep cannot support an
+attached-ballast conclusion. The next action is mechanics practice before a
+fresh predicted treatment, not further refinement of this experiment.
 
 ### Effect on current belief
 
@@ -357,7 +361,8 @@ Pending user inspection of the five live viewer windows.
 - After: five live views provide the controlled XY placement contrast while
   the explanation remains preserved as a portfolio note.
 - Evidence status: user-directed visualization change and documentation
-  update; no new physical conclusion is asserted.
+  update and explicit stopping decision; no attached-ballast physical
+  conclusion is asserted.
 
 ### Portfolio learning detour
 
