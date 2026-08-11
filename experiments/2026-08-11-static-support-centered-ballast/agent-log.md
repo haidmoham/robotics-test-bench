@@ -185,6 +185,9 @@ sources:
   - kind: chat
     system: chat
     reference: user decision to forward-offset the treatment and report of unexpected 10 kg fall rate
+  - kind: chat
+    system: chat
+    reference: user's support-projection interpretation after the 1–100 kg mass sweep
   - kind: coding-agent
     system: Codex
     reference: two-second deterministic headless rollouts
@@ -239,8 +242,11 @@ case remains reproducible at the same recorded ballast position.
 
 ## E — Evaluation
 
-Observed deterministic headless output only; no human physical interpretation
-has been recorded. No updated human belief has been recorded.
+Observed deterministic headless output. The user now interprets the 10 kg
+case as the forward ballast shifting the combined robot-and-ballast
+center-of-mass ground projection outside the robot's supporting ground region,
+which initiates the tip. This is a human interpretation, not independently
+verified mechanism evidence.
 
 ## A — Action
 
@@ -254,3 +260,14 @@ At two seconds, final angular velocity was approximately
 `[-5.20e-16, 1.38365267, 4.87e-14] rad/s` at 10 kg. Maximum absolute pitch
 was `0.113972 degrees` at 1 kg and `24.756557 degrees` at 10 kg. These are
 observations, not an interpretation of the mechanism.
+
+### Effect on current belief
+
+- Before: the rapid 10 kg fall was surprising; no 1 kg interpretation had
+  been recorded.
+- After: the user’s working model is that the combined center-of-mass ground
+  projection passes outside the supporting ground region as the forward
+  ballast increases, creating the tip.
+- Evidence status: human interpretation grounded in the recorded deterministic
+  sweep; it remains to be tested against the measured support boundary and
+  contact geometry.
