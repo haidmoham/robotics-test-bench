@@ -10,7 +10,7 @@ Small MuJoCo experiments for learning robotics from direct simulation evidence.
 4. Run it and measure the result.
 5. Update the model and choose the next question.
 
-`TODO.md` selects the current experiment.
+`TODO.md` selects the current experiment. Its post-foundation frontier is a deep-toy platform for procedurally generated, validated physical worlds; reproducible rollout populations; and scientifically constrained agentic experimentation. The immediate experiment always takes priority over that frontier.
 
 ## Structure
 
