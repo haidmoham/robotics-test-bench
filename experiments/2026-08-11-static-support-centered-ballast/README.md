@@ -20,8 +20,10 @@ python static_support.py --duration 2
 mview static_support.py --duration 120
 ```
 
-The treatment defaults to 1 kg. Keep the recorded chassis-relative position
-fixed when comparing mass alone; reproduce the earlier 10 kg case headlessly
+The treatment defaults to 1 kg. Its position is chassis-relative, and its
+default \(z=0.14\) m puts the ballast on the chassis top; it is not a world
+height. Keep that recorded position fixed when comparing mass alone; reproduce
+the 10 kg case headlessly
 with:
 
 ```bash
@@ -54,6 +56,37 @@ an inspection aid; press `T` to page between those groups. The JSON report
 remains the experiment evidence.
 
 This first case is only the inside-support baseline. Edge, beyond-edge, and changed-support cases require new predictions.
+
+## Five-placement live comparison
+
+For a legible first comparison, inspect five representative positions from the
+\(x,y \in \{-0.2,-0.1,0,0.1,0.2\}\) m grid in separate live windows: center,
+forward, rearward, left, and right. Keep the 1 kg mass fixed and use the
+placement arguments to change only the ballast location. These views are
+inspection aids, not evidence artifacts. Use the default chassis-top `z=0.14`
+m unless height itself is the variable under test.
+
+## Portfolio note
+
+Keep the human learning beat for a later blog post: stability is not about the
+robot's visible footprint or the ballast alone. It is the mass-weighted,
+combined center-of-mass projection relative to the feet's support region. The
+threshold becomes legible when that projection reaches a support boundary;
+whether it passes beyond it remains an experimental claim to check against
+the recorded contact geometry.
+
+Also preserve the learning detour: turning that picture into a reliable model
+requires mechanics practice on static equilibrium, unilateral contact forces,
+moments about a pivot edge, and rigid-body angular-velocity vectors. The
+experiment exposed the distinction between an orientation quaternion and an
+angular rate, and between a fall plane and its perpendicular rotation axis.
+
+Use Daniel Kleppner and Robert Kolenkow, *An Introduction to Mechanics*, 2nd
+edition (Cambridge University Press), as the source of the associated practice
+problems. Bind this experiment to that study sequence: return to its support
+geometry, contact-force, moment, and rigid-body-kinematics questions after
+each relevant problem set, rather than treating the simulation as a substitute
+for the mechanics.
 
 ## Perturbation mode
 

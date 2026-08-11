@@ -30,7 +30,9 @@ from viewer_runtime import WallClockPlayback, WallClockRateGate, launch_experime
 
 BODY_MASS = 1.5
 TREATMENT_BALLAST_MASS = 1.0
-TREATMENT_BALLAST_POSITION = np.array((0.2, 0.0, 0.884))  # metres
+# This position is chassis-relative: z=0.14 places the 0.06 m-radius sphere
+# directly on the 0.08 m half-height chassis box rather than above the world.
+TREATMENT_BALLAST_POSITION = np.array((0.2, 0.0, 0.14))  # metres
 LINK_LENGTH = 0.45
 LEG_Q = np.array([0.40, -0.80])
 LEG_YAWS = (0.0, 120.0, 240.0)
