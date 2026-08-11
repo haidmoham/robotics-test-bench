@@ -17,13 +17,13 @@ The number preserves chronology. The codename records a capability or understood
 Current lineage:
 
 ```text
-C-1N // 00 · POSE     historical motor-assisted static-pose baseline
+C-1N // 00 · SPAWN    historical deterministic six-foot spawn baseline
 C-1N // 01 · SHUFFLE  current coordinated gait failure
 C-1N // 02 · STAND    reserved for first support-aware stable stance
 C-1N // 03 · STRIDE   reserved for first materially better sustained walk
 ```
 
-`POSE` does not demonstrate standing. `STAND` and `STRIDE` are reserved names, not completed capabilities.
+`SPAWN` does not demonstrate standing. `STAND` and `STRIDE` are reserved names, not completed capabilities.
 
 ## Contract
 
@@ -35,6 +35,7 @@ C-1N // 03 · STRIDE   reserved for first materially better sustained walk
 - After the standing foundation, prefer integrations that deepen simulation, statistics, optimization, evaluation, model inference, uncertainty, or learned behavior.
 - A bench issue never requires C-1N work for closure unless its own contract explicitly defines a post-close integration checkpoint.
 - Instrumentation alone does not require a public checkpoint.
+- Legacy issue #6 torso-frame foot task-space telemetry remains an optional non-checkpoint integration.
 - Keep browser and WASM work downstream of useful simulation behavior. The web surface exposes evidence; it does not create the learning target.
 
 ## Required standing bridge
