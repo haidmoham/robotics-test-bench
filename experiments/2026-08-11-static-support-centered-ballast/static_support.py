@@ -29,7 +29,7 @@ from viewer_runtime import WallClockPlayback, WallClockRateGate, launch_experime
 
 
 BODY_MASS = 1.5
-TREATMENT_BALLAST_MASS = 10.0
+TREATMENT_BALLAST_MASS = 1.0
 TREATMENT_BALLAST_POSITION = np.array((0.2, 0.0, 0.884))  # metres
 LINK_LENGTH = 0.45
 LEG_Q = np.array([0.40, -0.80])
@@ -322,6 +322,7 @@ def main() -> None:
     parser.add_argument("--push-x", type=float, default=0.0, help="world +X force in N during the push pulse; zero preserves the baseline")
     parser.add_argument("--push-start", type=float, default=0.5, help="push pulse start time in seconds")
     parser.add_argument("--push-duration", type=float, default=0.1, help="push pulse length in seconds")
+    parser.add_argument("--ballast-mass", type=float, default=TREATMENT_BALLAST_MASS, help="treatment ballast mass in kg")
     parser.add_argument("--ballast-x", type=float, default=TREATMENT_BALLAST_POSITION[0], help="treatment ballast offset along chassis X in metres")
     parser.add_argument("--ballast-y", type=float, default=TREATMENT_BALLAST_POSITION[1], help="treatment ballast offset along chassis Y in metres")
     parser.add_argument("--ballast-z", type=float, default=TREATMENT_BALLAST_POSITION[2], help="treatment ballast offset along chassis Z in metres")
@@ -334,7 +335,7 @@ def main() -> None:
     if args.playback_speed <= 0:
         parser.error("--playback-speed must be positive")
     treatment_ballast_position = np.array((args.ballast_x, args.ballast_y, args.ballast_z))
-    model = make_model(TREATMENT_BALLAST_MASS, treatment_ballast_position)
+    model = make_model(args.ballast_mass, treatment_ballast_position)
     data = mujoco.MjData(model)
     initialize(model, data)
     body_id = model.body("body").id
@@ -425,7 +426,7 @@ def main() -> None:
             viewer.close()
     print(json.dumps({
         "case": "centered_ballast_tripod",
-        "treatment_ballast_mass_kg": TREATMENT_BALLAST_MASS,
+        "treatment_ballast_mass_kg": args.ballast_mass,
         "treatment_ballast_position_metres": treatment_ballast_position.tolist(),
         "push": {"x_newtons": args.push_x, "start_seconds": args.push_start, "duration_seconds": args.push_duration},
         "initial": initial,

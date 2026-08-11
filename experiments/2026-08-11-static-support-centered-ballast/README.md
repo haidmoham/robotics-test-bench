@@ -4,17 +4,28 @@ Question: does the bench's existing articulated tripod remain supported when a c
 
 ## Human prediction
 
-The ballast is fixed directly above the original body center. It adds weight without shifting the whole-body COM sideways. With no perturbation, the contact loads should remain roughly balanced, no contact should be lost, no tipping edge should dominate, and roll/pitch should remain near zero.
+The default treatment ballast is purposefully forward-offset at the recorded
+chassis-relative position. With no perturbation, the contact loads should
+remain roughly balanced, no contact should be lost, no tipping edge should
+dominate, and roll/pitch should remain near zero.
 
 ## Model and run
 
-This is deliberately not C-1N. It duplicates the existing three-leg, two-joint tripod construction and its centered posture/support hold. The translucent blue reference is a separate, settled no-ballast model; the live treatment adds one fixed orange ballast directly above the chassis center. The report measures actual whole-body COM and ground projection, active contacts, normal loads, roll/pitch, angular velocity, and body height.
+This is deliberately not C-1N. It duplicates the existing three-leg, two-joint tripod construction and its centered posture/support hold. The translucent blue reference is a separate, settled no-ballast model; the live treatment adds a fixed 1 kg orange ballast. The report measures actual whole-body COM and ground projection, active contacts, normal loads, roll/pitch, angular velocity, and body height.
 
 The hold is existing experimental infrastructure, not the variable under test. The only physical model change from the centered tripod hold is the ballast mass and its attachment point. #31 will separately ask whether the leg geometry can reach the required support points.
 
 ```bash
 python static_support.py --duration 2
 mview static_support.py --duration 120
+```
+
+The treatment defaults to 1 kg. Keep the recorded chassis-relative position
+fixed when comparing mass alone; reproduce the earlier 10 kg case headlessly
+with:
+
+```bash
+python static_support.py --duration 2 --ballast-mass 10
 ```
 
 The viewer defaults to real-time playback. The physical scene renders at 60
@@ -36,7 +47,7 @@ mview static_support.py --ballast-x 0.10 --duration 120
 
 The viewer renders two overlapping models: the translucent blue, settled
 no-ballast baseline and the live treatment. Red gravity and green support
-arrows belong to the treatment; their scale adapts to its heavy ballast. The
+arrows belong to the treatment; their scale adapts to its ballast mass. The
 shared telemetry stack shows per-foot loads, COM projection,
 support margin, roll/pitch, angular velocity, and body height. The overlay is
 an inspection aid; press `T` to page between those groups. The JSON report

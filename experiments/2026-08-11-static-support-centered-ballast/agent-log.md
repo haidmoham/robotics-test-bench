@@ -175,3 +175,82 @@ budget even when figure data publication is already throttled.
 
 Project-local convention recorded. It does not assert a physical result or
 replace an experiment's prediction, controls, or headless validation.
+
+## AI-20260811-003 — Ballast-mass comparison evidence
+
+```yaml
+id: AI-20260811-003
+date: 2026-08-11
+sources:
+  - kind: chat
+    system: chat
+    reference: user decision to forward-offset the treatment and report of unexpected 10 kg fall rate
+  - kind: coding-agent
+    system: Codex
+    reference: two-second deterministic headless rollouts
+status: acted
+evaluation: observed
+repo_state:
+  repository: robotics-test-bench
+  branch: codex/static-support-centered-ballast
+  commit:
+  changed_files:
+    - experiments/2026-08-11-static-support-centered-ballast/static_support.py
+    - experiments/2026-08-11-static-support-centered-ballast/README.md
+    - experiments/2026-08-11-static-support-centered-ballast/agent-log.md
+related:
+  experiment: experiments/2026-08-11-static-support-centered-ballast
+  hypotheses: []
+  experiments: []
+  claims: []
+  decisions: []
+  issues: [24]
+  files:
+    - experiments/2026-08-11-static-support-centered-ballast/static_support.py
+objects:
+  question: Q-20260811-003
+  response: R-20260811-003
+  evaluation: E-20260811-003
+  action: A-20260811-003
+  outcome: O-20260811-003
+librarian:
+  status: pending
+  record_ids: []
+```
+
+## Q — Question
+
+What changes in the fixed two-second headless rollout when the purposefully
+forward-offset treatment ballast is 1 kg rather than 10 kg?
+
+### Human prediction history
+
+The original centered-ballast prediction remains preserved in
+`AI-20260811-001`: added weight without a sideways COM shift was expected to
+retain balanced contact loads and near-zero roll/pitch. The user subsequently
+purposefully shifted the treatment ballast forward to destabilize the case and
+reported not expecting the 10 kg fall to be so rapid. No 1 kg prediction or
+human physical interpretation has been recorded.
+
+## R — Response summary
+
+Make 1 kg the default treatment mass and expose `--ballast-mass` so the 10 kg
+case remains reproducible at the same recorded ballast position.
+
+## E — Evaluation
+
+Observed deterministic headless output only; no human physical interpretation
+has been recorded. No updated human belief has been recorded.
+
+## A — Action
+
+Set the default treatment ballast to 1 kg and added `--ballast-mass` for an
+explicit mass comparison.
+
+## O — Outcome
+
+At two seconds, final angular velocity was approximately
+`[4.81e-16, 0.00045124, 6.72e-17] rad/s` at 1 kg and
+`[-5.20e-16, 1.38365267, 4.87e-14] rad/s` at 10 kg. Maximum absolute pitch
+was `0.113972 degrees` at 1 kg and `24.756557 degrees` at 10 kg. These are
+observations, not an interpretation of the mechanism.
