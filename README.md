@@ -18,6 +18,7 @@ Small MuJoCo experiments for learning robotics from direct simulation evidence.
 TODO.md
 experiments/
   telemetry.py
+  viewer_runtime.py
   YYYY-MM-DD-short-question/
     README.md
     <experiment code>
@@ -33,6 +34,7 @@ Each experiment owns its code and local evidence. Shared viewer telemetry lives 
 - Use Python + MuJoCo by default.
 - Build physical intuition before notation when the mechanism is the learning target.
 - Change one meaningful variable at a time when causality matters.
+- For a visual comparison, begin with a labelled control and a deliberately legible treatment. Render the control as a ghost over the live treatment, show shared telemetry, and inspect the viewer before interpreting the rollout.
 - Define objectives and evaluation conditions explicitly.
 - Compare behavior across fixed scenarios, seeds, or parameter draws when the question is statistical.
 - Preserve useful failures.
