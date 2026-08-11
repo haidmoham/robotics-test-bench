@@ -70,6 +70,14 @@ Standing is required because later locomotion objectives and evaluation need a p
 
 These are lanes, not a fixed order after `STAND`. Learned locomotion is the first forcing function. Its failures choose which lane becomes useful next.
 
+## Post-foundation simulation frontier
+
+After locomotion and population evaluation are credible, extend the scale lane into procedurally generated, deterministically validated world populations. C-1N is one useful policy-under-test, not the only generator of future requirements.
+
+The future control plane should let an agent compile a goal such as “generate uneven-terrain worlds within declared slope and friction bounds; reject invalid cases; evaluate the policy; cluster failures; return minimal reproducible cases” into typed generation, validation, rollout, and analysis operations.
+
+This remains a deep-toy architectural objective. It does not create a new checkpoint or bypass the standing and locomotion evidence gates. Validators, declared treatments, retained failures, provenance, and simulator contracts remain authoritative.
+
 ## Supporting mechanisms
 
 Legacy topics such as trajectory tracking, contact mechanics, actuator limits, state estimation, or numerical sensitivity are not deleted knowledge. They are no longer permanent open routes.
