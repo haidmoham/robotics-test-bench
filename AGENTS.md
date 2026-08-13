@@ -1,56 +1,94 @@
 # Agent instructions
 
-This repository is a disposable robotics learning test bench. Optimize for fast simulation experiments that build physical intuition and then compound into statistical modeling, robot learning, evaluation, and simulation systems work.
+## Read order and ownership
 
-- Read the root `README.md` and `TODO.md`, then the current experiment README and code before changing anything.
-- `TODO.md` is the authoritative selector for the next experiment. Treat its single `NEXT` item as current even when older experiments or closed issues suggest another route.
-- New experiments belong in `experiments/YYYY-MM-DD-short-question/` and should keep their code, README, and meaningful agent log local to that directory.
-- Root docs contain only repo-wide conventions. Keep experiment-specific findings inside the experiment.
-- Prefer the smallest change that answers the current question. Keep experiments easy to inspect, revert, and compare.
-- Do not assume formal physics coursework. Build new physical mechanisms from a concrete force picture before notation. Name forces and contacts. State the motion or rotation each force tends to cause. State what resists or constrains that motion. Show how geometry or leverage changes the effect. Introduce the equation last.
-- Treat physics and controls as enabling literacy for simulation. Do not route the user toward controls specialization or low-level hardware work by default.
-- C++ is in scope when it improves robotics employability, simulator performance, autonomy software, numerical code, or integration with robotics libraries. Do not treat C++ as evidence that the user should become an embedded or firmware engineer.
-- ROS 2 is in scope when a simulator, autonomy stack, or target robotics role needs it. Do not make ROS 2, device drivers, microcontrollers, board-level electronics, firmware, or motor electronics the learning destination.
-- Hardware is not a graduation requirement. Physical-system knowledge matters because simulator assumptions need interpretation and eventual external validation, not because the learning path must terminate in hardware.
-- Prefer work that exploits the user's statistics background: inference, uncertainty, experiment design, evaluation, stochastic modeling, system identification, calibration, optimization, and learned behavior.
-- Preserve Iteration 0: ask for or respect the human prediction before revealing a non-trivial mechanism or diagnosis when learning is the target.
-- Prefer eagerness to teach over eagerness to solve. Prepare the notebook, diagram, telemetry, calculation, or simulation fixture. Explain the question and the observable quantities. Let the user make the prediction and run or inspect the analysis before giving the diagnosis or conclusion, unless they explicitly ask for the answer.
-- Do not turn an active goal, issue, or experiment queue into pressure for a quick reply or a reason to hill-climb toward completion. Progress includes the user's ability to reconstruct the causal chain without help.
-- When a numerical analysis is the learning target, distinguish setup from solution. It is acceptable to write the model and unrun cells. Do not execute or interpret them on the user's behalf without explicit permission.
-- Automate setup, API lookup, boilerplate, repetitive edits, plotting, batch execution, and experiment plumbing aggressively.
-- Do not outsource the learning target. Leave hypotheses, physical interpretation, objective design, architecture tradeoffs, and diagnosis with the human unless explicitly asked to solve them.
-- Before giving a conceptual explanation for a surprising result, let the human state a first diagnosis and, when practical, one observation that could falsify it.
-- Use chat or stronger reasoning to challenge, falsify, or verify a stated human model. Do not use stronger reasoning as the default first-pass diagnosis when the mechanism itself is the learning target.
-- Prefer delaying conceptual help over deliberately using an unreliable model. Preserve reasoning friction, not information-quality friction.
-- Periodically test transfer with a cold rep: explain, predict, or implement a familiar mechanism without conceptual AI help. Routine syntax, API, boilerplate, and experiment plumbing can remain automated.
+- Read `README.md` and `TODO.md` first.
+- Read the current experiment README and code before you edit anything.
+- Treat the single `NEXT` item in `TODO.md` as the current experiment.
+- Treat `docs/research-platform.md` as long-range design only. It never overrides `TODO.md`.
+- Keep root documents limited to repository-wide rules.
+- Keep experiment-specific findings in the experiment directory.
+- Put new experiments in `experiments/YYYY-MM-DD-short-question/`.
+
+## Experiment execution
+
+- Build the smallest test that answers the current question.
+- Preserve Iteration 0. Get or respect the human prediction before you reveal a non-trivial mechanism or diagnosis.
+- Do not outsource the hypothesis, causal interpretation, objective design, architecture tradeoff, or diagnosis unless the human asks for the answer.
+- Prefer eagerness to teach over eagerness to solve. Prepare the notebook, telemetry, or calculation fixture. Let the human inspect it before you interpret a learning-target result.
+- Separate analysis setup from analysis execution. Do not run or interpret a learning-target calculation without explicit permission.
+- Do not use goals, issue state, or the experiment queue to pressure the human or substitute delivery speed for understanding.
 - Change one physical, statistical, numerical, or objective variable at a time when causality matters.
-- When behavior is surprising, consider objective design, state representation, model parameters, contacts, actuators, estimator assumptions, stochastic variation, policy optimization, and numerical integration before assuming one cause.
-- Verify important claims with the cheapest reliable check: inspect MuJoCo state, run the experiment, print a focused value, compare held-out rollouts, or use a minimal numerical check.
-- Do not add tests, abstractions, infrastructure, or dependencies by default. Add simulation infrastructure when a real experiment needs reproducibility, throughput, or structured evaluation.
-- Record an `agent-log.md` entry only when an interaction changes a prediction, experiment, interpretation, decision, code direction, or next meaningful action. Do not log routine syntax/API help.
-- Meaningful agent-log entries use the stable `Q/R/E/A/O` ontology from `templates/agent-interaction.md`: Question -> Response -> Evaluation -> Action -> Outcome. Preserve IDs across updates and record explicit relations and Librarian status.
-- When parallel work lands, preserve existing stable `AI/Q/R/E/A/O` entries by ID. Integrate or rebase around them; do not regenerate, renumber, or silently replace a conversation-derived entry because another branch changed the same log.
-- Before landing a commit that changes evidence state, queue state, stable IDs, provenance, experiment closure, or C-1N integration claims, use the installed `commit-boundary` skill with `.ontology/commit-rules.md`.
-- New agent-log entries must identify their source provenance. Keep coding-agent, chat, human-observation, and external-reference sources distinct; do not merge claims from different sources without attribution.
-- For conversation-derived entries, preserve the epistemic change as an explicit before -> after belief update and keep verification status separate from source provenance.
-- Use `templates/agent-interaction.md` as the canonical log shape. Do not store full chat transcripts.
-- Commit at meaningful experimental boundaries: completed experiments, informative failures, ontology changes, and before broad refactors. Commit messages should state the hypothesis or decision and the observed result when known.
-- Use GitHub Issues for the active simulation frontier, not as a permanent encyclopedia of robotics prerequisites.
-- Closed legacy issues are historical provenance. Do not reopen or recreate their old curriculum unless a current failure explicitly makes that mechanism the next useful experiment.
-- Treat a GitHub issue number as stable concept identity, not experiment chronology. Do not renumber or backfill issues when evidence resolves out of issue order.
-- Treat the dated experiment directory and the commit that records its resolved boundary as the chronology source.
-- Keep communication concise. Distinguish observed behavior from inference when it matters.
+- Distinguish observed behavior from inference.
+- Verify important claims with the cheapest reliable check.
+- Preserve useful failures and negative cases.
+- Do not add tests, abstractions, dependencies, or infrastructure by default.
+- Add infrastructure only when a real experiment needs reproducibility, throughput, or structured evaluation.
+- Stop polishing when the experiment has answered its question.
 
-## Current conventions
+## Viewer and telemetry
 
-- Python + MuJoCo are the current default tools. Introduce C++ when a concrete simulator, performance, interoperability, or target-role need justifies it.
-- Prefer direct MuJoCo concepts (`mjModel`, `mjData`, `qpos`, `qvel`, `ctrl`, contacts, timestep) while physical intuition is still the learning target.
-- Default experiment loop: predict -> change -> run -> explain -> challenge -> record next question.
-- Preserve the immediate foundation: learn static support well enough to establish `C-1N // 02 · STAND` from reproducible rollout evidence.
-- After `STAND`, move directly into learned locomotion. Let policy and simulator failures pull in the next mechanism.
-- Prefer future work that compounds the user's software and statistics background: policy optimization, rollout evaluation, system identification, simulator calibration, uncertainty, distribution shift, differentiable dynamics, numerical fidelity, and scalable simulation infrastructure.
-- Treat a successful-looking rollout as a sample, not a conclusion. Compare behavior across fixed scenarios, seeds, and parameter draws when the question is statistical.
-- Separate training objectives from evaluation metrics. Preserve objective components when learned behavior is the question.
-- Validate fitted simulator parameters and learned conclusions on behavior not used for fitting or selection.
-- Pull deeper controls, contact, actuator, estimation, or numerical concepts back in only when a current simulation failure makes them causally relevant.
-- Do not polish an experiment after its learning value is exhausted; move to the next question.
+- Start comparison experiments with one control and one deliberately legible treatment.
+- Label the treatment.
+- Render the control as a translucent ghost over the treatment when the comparison is spatial.
+- Treat the overlay as an inspection aid, not as evidence.
+- Use `experiments/telemetry.py` when telemetry makes the changed variable or its physical consequence inspectable.
+- Capture timestamped samples independently of display availability.
+- Represent unavailable measurements explicitly. Do not freeze every channel.
+- Use one three-panel MuJoCo plot page at a time with `TelemetryPager`.
+- Match plot publication to the telemetry sample rate. Use 10 Hz as the initial rate unless the experiment requires another rate.
+- Launch custom experiment views with `launch_experiment_viewer`.
+- Preserve MuJoCo's built-in side UI.
+- Use `WallClockPlayback` from `experiments/viewer_runtime.py` for continuous physics viewers.
+- Batch fixed-timestep physics to the wall-clock target. Update overlays and synchronize once per frame. Then wait for the 60 Hz frame deadline.
+- Use `viewer.sync(state_only=True)` when the model is immutable after launch.
+- Use full synchronization only for runtime model edits.
+- Gate expensive plot rebuilding separately with `WallClockRateGate`.
+- Do not sleep inside every physics step.
+- Do not busy-synchronize the viewer.
+
+## Evidence integrity
+
+- Keep hypotheses, interventions, controls, and measurements distinct.
+- Keep training objectives separate from evaluation metrics.
+- Treat a successful rollout as one sample, not as a conclusion.
+- Compare fixed scenarios, seeds, and parameter draws when the question is statistical.
+- Record code, simulator, seed, distribution, policy, and metric provenance when they affect the result.
+- Retain invalid cases and failed rollouts.
+- Create a new record when a metric or protocol changes after results are visible.
+- Do not change hidden parameters to rescue a failed result.
+- Validate fitted parameters and learned conclusions on behavior that was not used for fitting or selection.
+
+## Agent logs and commits
+
+- Add an `agent-log.md` entry only when an interaction changes a prediction, experiment, interpretation, decision, code direction, or next meaningful action.
+- Do not log routine syntax or API help.
+- Use the `Q/R/E/A/O` shape from `templates/agent-interaction.md`.
+- Preserve stable IDs across updates and parallel work.
+- Do not regenerate, renumber, or silently replace an existing entry.
+- Identify the source provenance for every new entry.
+- Keep coding-agent, chat, human-observation, and external-reference sources distinct.
+- Preserve an explicit before-to-after belief update for conversation-derived entries.
+- Keep verification status separate from provenance.
+- Use the installed `commit-boundary` skill with `.ontology/commit-rules.md` before a commit changes evidence state, queue state, stable IDs, provenance, experiment closure, or C-1N integration claims.
+- Commit at meaningful experiment boundaries, informative failures, ontology changes, and before broad refactors.
+- State the hypothesis or decision and the observed result in the commit message when the result is known.
+
+## Issues and chronology
+
+- Use GitHub Issues for the active simulation frontier.
+- Do not use issues as a permanent encyclopedia of prerequisites.
+- Treat closed legacy issues as historical provenance.
+- Do not reopen or recreate a legacy curriculum unless a current failure makes it necessary.
+- Treat an issue number as stable concept identity, not chronology.
+- Use the dated experiment directory and its resolving commit as the chronology source.
+
+## Current route
+
+- Use Python and MuJoCo by default.
+- Prefer direct MuJoCo concepts while the mechanism is the learning target.
+- #24 static support and #31 leg workspace are resolved bench evidence.
+- Integrate their results through `haidmoham/spider#12`. Earn `C-1N // 02 · STAND` only with reproducible evidence.
+- After `STAND`, move to `#25` learned locomotion.
+- Let later policy and simulator failures select the next mechanism.
+- Keep the platform direction in `docs/research-platform.md` inactive until a concrete scale, reproducibility, validation, or analysis need appears.

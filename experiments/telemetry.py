@@ -21,6 +21,21 @@ SIGNAL_GREEN = np.array([0.25, 0.80, 0.40])
 OVERLAY_ALPHA = 0.72
 
 
+class TelemetryPager:
+    """Select one bounded telemetry page with a passive-viewer key callback."""
+
+    def __init__(self, page_count, key="T"):
+        if page_count <= 0:
+            raise ValueError("page count must be positive")
+        self.page_count = page_count
+        self.key = key.upper()
+        self.page = 0
+
+    def handle_key(self, keycode):
+        if keycode in (ord(self.key), ord(self.key.lower())):
+            self.page = (self.page + 1) % self.page_count
+
+
 def make_figure(title, series):
     """Create one graph using C-1N's readable viewer styling."""
     figure = mujoco.MjvFigure()
@@ -39,9 +54,29 @@ def make_figure(title, series):
     return figure
 
 
-def rolling_samples():
-    """Return the standard bounded history buffer for viewer telemetry."""
-    return deque(maxlen=round(PLOT_HISTORY_SECONDS / PLOT_INTERVAL))
+def rolling_samples(sample_interval=PLOT_INTERVAL):
+    """Return a bounded history buffer for the requested viewer sample rate."""
+    if sample_interval <= 0.0:
+        raise ValueError("sample interval must be positive")
+    return deque(maxlen=round(PLOT_HISTORY_SECONDS / sample_interval))
+
+
+def add_ghost_model_geoms(scene, model, data, rgba, label="reference"):
+    """Render a second MuJoCo state as translucent viewer-only geometry."""
+    for geom_id in range(model.ngeom):
+        if model.geom_bodyid[geom_id] == 0 or scene.ngeom >= len(scene.geoms):
+            continue
+        geom = scene.geoms[scene.ngeom]
+        mujoco.mjv_initGeom(
+            geom,
+            model.geom_type[geom_id],
+            model.geom_size[geom_id],
+            data.geom_xpos[geom_id],
+            data.geom_xmat[geom_id],
+            rgba,
+        )
+        geom.label = label
+        scene.ngeom += 1
 
 
 def update_figure(figure, samples, value_index, value_range=None):
@@ -59,8 +94,12 @@ def update_figure(figure, samples, value_index, value_range=None):
 
     figure.range[0] = (times[0], max(times[-1], times[0] + PLOT_INTERVAL))
     if value_range is None:
-        lower = float(np.min(values))
-        upper = float(np.max(values))
+        finite_values = values[np.isfinite(values)]
+        if not finite_values.size:
+            figure.range[1] = (-0.01, 0.01)
+            return
+        lower = float(np.min(finite_values))
+        upper = float(np.max(finite_values))
         padding = max((upper - lower) * 0.12, 0.01)
         figure.range[1] = (lower - padding, upper + padding)
     else:
@@ -111,3 +150,35 @@ def update_stacks(
     viewer.set_figures(
         list(zip(left_viewports, left_figures)) + list(zip(right_viewports, right_figures))
     )
+
+
+def update_stack(viewer, figures, samples, fields, value_ranges=None, side="left"):
+    """Attach one three-panel telemetry page to reduce persistent render cost."""
+    if side not in ("left", "right"):
+        raise ValueError("side must be 'left' or 'right'")
+    value_ranges = value_ranges or (None,) * len(figures)
+    for figure, field, value_range in zip(figures, fields, value_ranges):
+        update_figure(figure, samples, field, value_range)
+
+    viewport = viewer.viewport
+    margin = max(6, min(12, viewport.width // 100))
+    gap = max(4, min(8, viewport.height // 120))
+    width = max(180, min(480, int(viewport.width * 0.32)))
+    available_height = viewport.height - 2 * margin - 2 * gap
+    height = max(100, min(260, available_height // 3))
+    left = (
+        viewport.left + margin
+        if side == "left"
+        else viewport.left + viewport.width - width - margin
+    )
+    top = viewport.bottom + viewport.height
+    viewports = [
+        mujoco.MjrRect(
+            left,
+            top - margin - height * (index + 1) - gap * index,
+            width,
+            height,
+        )
+        for index in range(len(figures))
+    ]
+    viewer.set_figures(list(zip(viewports, figures)))

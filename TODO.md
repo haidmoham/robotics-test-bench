@@ -4,9 +4,11 @@ This file is the authoritative selector for the next robotics test-bench experim
 
 - Exactly one item is `NEXT`.
 - GitHub issues are active experiment lanes, not a fixed syllabus.
-- Closed legacy issues remain historical provenance only. Do not route new work through them unless a current failure explicitly revives the concept.
+- Closed legacy issues remain historical provenance only.
+- Do not route new work through a closed issue unless a current failure revives its mechanism.
 - Re-evaluate the queue after each resolved experiment or integrated C-1N failure.
 - Do not create the next experiment directory until its Iteration 0 prediction exists.
+- `docs/research-platform.md` records long-range design. It does not select current work.
 
 ## NEXT
 
@@ -28,7 +30,7 @@ stable equilibrium.
 
 ## After STAND
 
-Move directly to #25 learned locomotion. The first learned gait is allowed to be ugly. Its failure selects the next simulation lane.
+Move directly to #25 learned locomotion. The first learned gait can be ugly. Its failure selects the next simulation lane.
 
 Primary lanes:
 
@@ -39,10 +41,20 @@ Primary lanes:
 - #29 Differentiate — backpropagate through simulated dynamics.
 - #30 Scale — make simulation experiments reproducible, observable, and fast.
 
-Controls, contact mechanics, actuator limits, state estimation, numerical methods, or other robotics concepts are supporting mechanisms. Pull them back in only when a concrete simulation failure makes them necessary.
+Controls, contact mechanics, actuator limits, state estimation, numerical methods, and other robotics concepts are supporting mechanisms. Pull one back in only when a concrete simulation failure makes it necessary.
 
 The intended direction is:
 
-`physical intuition -> support mechanics -> leg reachability -> STAND -> learned locomotion -> statistical simulation / model inference / uncertainty / differentiable dynamics / scale`
+`physical intuition -> support mechanics -> leg reachability -> STAND -> learned locomotion -> distributional evaluation -> system identification and calibration -> uncertainty and randomization -> scalable simulation`
 
-Hardware is not a graduation requirement for this bench.
+## Long-range design
+
+`docs/research-platform.md` owns the design for procedural validated worlds, reproducible rollout populations, and scientifically constrained agentic experimentation.
+
+Keep that design inactive until all three conditions exist:
+
+1. C-1N has earned `STAND`.
+2. A learned locomotion loop can produce rollout populations.
+3. A concrete failure requires more scale, reproducibility, validation, or structured analysis.
+
+Use current experiment failures to select the next learning or engineering block. Do not build platform infrastructure only because it appears in the long-range design.
