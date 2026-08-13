@@ -476,3 +476,91 @@ and is not claimed complete or closed.
   with #24 deferred until the new analysis path exists.
 - Evidence status: user decision, supported by inspection of open issue #35;
   no new physical experiment result is asserted.
+
+## AI-20260813-002 — Establish Jupyter as the bench's scientific front end
+
+```yaml
+id: AI-20260813-002
+date: 2026-08-13
+sources:
+  - kind: chat
+    system: chat
+    reference: user implementation request in current session
+  - kind: coding-agent
+    system: Codex
+    reference: robotics-test-bench issue #35 acceptance criteria
+status: acted
+evaluation: confirmed
+repo_state:
+  repository: robotics-test-bench
+  branch: codex/static-support-centered-ballast
+  commit:
+  changed_files:
+    - AGENTS.md
+    - README.md
+    - .gitignore
+    - experiments/artifacts.py
+    - experiments/2026-08-11-static-support-centered-ballast/static_support.py
+    - experiments/2026-08-11-static-support-centered-ballast/README.md
+    - notebooks/README.md
+    - notebooks/static_support_telemetry.ipynb
+related:
+  experiment: experiments/2026-08-11-static-support-centered-ballast
+  hypotheses: []
+  experiments: []
+  claims: []
+  decisions: [35]
+  issues: [35]
+  files:
+    - experiments/artifacts.py
+    - notebooks/static_support_telemetry.ipynb
+objects:
+  question: Q-20260813-002
+  response: R-20260813-002
+  evaluation: E-20260813-002
+  action: A-20260813-002
+  outcome: O-20260813-002
+librarian:
+  status: pending
+  record_ids: []
+```
+
+## Q — Question
+
+How should issue #35 change the repository so Jupyter is a first-class
+scientific front end rather than a separate or competing simulator path?
+
+## R — Response summary
+
+Use a stable headless telemetry artifact as the interface: MuJoCo experiments
+measure and save it; notebooks load and interrogate it; reusable implementation
+remains in normal source code; experiment evidence remains authoritative.
+
+## E — Evaluation
+
+### Accepted
+
+- Jupyter notebooks are important enough to make #35 a repo-wide architecture
+  alignment change.
+
+## A — Action
+
+Add the shared artifact writer, ignored `results/` store, notebook guidance,
+and a static-support notebook that reads one saved artifact. Update repository
+rules and the static-support experiment so the same headless rollout can be
+analyzed without launching MuJoCo again.
+
+## O — Outcome
+
+The static-support experiment wrote a schema-version-1 telemetry artifact with
+21 samples over a two-second headless rollout. The notebook validated that
+artifact and executed all five of its code cells without re-running MuJoCo.
+
+### Effect on current belief
+
+- Before: telemetry was primarily a live viewer surface, with no first-class
+  notebook layer or stable artifact interface.
+- After: the repository has an explicit MuJoCo-to-artifact-to-Jupyter path;
+  physical claims remain tied to their source experiment.
+- Evidence status: user-directed architecture decision plus verified code and
+  notebook execution; no new physical conclusion is asserted.

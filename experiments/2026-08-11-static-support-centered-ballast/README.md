@@ -16,9 +16,27 @@ This is deliberately not C-1N. It duplicates the existing three-leg, two-joint t
 The hold is existing experimental infrastructure, not the variable under test. The only physical model change from the centered tripod hold is the ballast mass and its attachment point. #31 will separately ask whether the leg geometry can reach the required support points.
 
 ```bash
-python static_support.py --duration 2
+python3 static_support.py --duration 2
 mview static_support.py --duration 120
 ```
+
+## Saved telemetry for Jupyter
+
+The headless experiment can save a versioned JSON artifact for later notebook
+analysis. The artifact is a run record—not a replacement for the experiment—so
+it includes the model/timestep provenance, input parameters, termination state,
+timestamped observations, and the usual summary report.
+
+```bash
+python3 static_support.py --duration 2 \
+  --artifact ../../results/static-support/default.json \
+  --run-id static-support-default
+```
+
+Open `../../notebooks/static_support_telemetry.ipynb` after generating the
+artifact. It loads the stored trace without launching the viewer or rerunning
+MuJoCo. `results/` is intentionally ignored by Git; regenerate an artifact
+from the command above when sharing or rerunning the analysis.
 
 The treatment defaults to 1 kg. Its position is chassis-relative, and its
 default \(z=0.14\) m puts the ballast on the chassis top; it is not a world
@@ -27,7 +45,7 @@ the 10 kg case headlessly
 with:
 
 ```bash
-python static_support.py --duration 2 --ballast-mass 10
+python3 static_support.py --duration 2 --ballast-mass 10
 ```
 
 The viewer defaults to real-time playback. The physical scene renders at 60
@@ -97,7 +115,7 @@ exact force, start, and duration so a pushed rollout is not confused with the
 baseline.
 
 ```bash
-python static_support.py --duration 2 --push-x 8 --push-start 0.5 --push-duration 0.1
+python3 static_support.py --duration 2 --push-x 8 --push-start 0.5 --push-duration 0.1
 mjpython static_support.py --viewer --duration 120 --push-x 8 --push-start 0.5 --push-duration 0.1
 ```
 

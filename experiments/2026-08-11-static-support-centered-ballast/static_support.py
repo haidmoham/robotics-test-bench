@@ -13,6 +13,7 @@ import mujoco.viewer
 import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from artifacts import write_telemetry_artifact
 from fbd_overlay import add_force_arrow, draw_force_diagram
 from telemetry import (
     SIGNAL_BLUE,
@@ -29,6 +30,7 @@ from viewer_runtime import WallClockPlayback, WallClockRateGate, launch_experime
 
 
 BODY_MASS = 1.5
+EXPERIMENT_ID = "2026-08-11-static-support-centered-ballast"
 TREATMENT_BALLAST_MASS = 1.0
 # This position is chassis-relative: z=0.14 places the 0.06 m-radius sphere
 # directly on the 0.08 m half-height chassis box rather than above the world.
@@ -201,6 +203,11 @@ def observe(model: mujoco.MjModel, data: mujoco.MjData) -> dict:
     projection = (com[0], com[1])
     return {
         "time": float(data.time),
+        "qpos": [float(value) for value in data.qpos],
+        "qvel": [float(value) for value in data.qvel],
+        "qacc": [float(value) for value in data.qacc],
+        "actuator_controls": [float(value) for value in data.ctrl],
+        "actuator_forces": [float(value) for value in data.qfrc_actuator],
         "com": com,
         "com_ground_projection": [com[0], com[1], 0.0],
         "active_contact_positions": active,
@@ -211,6 +218,14 @@ def observe(model: mujoco.MjModel, data: mujoco.MjData) -> dict:
         "pitch_degrees": pitch,
         "angular_velocity": [float(value) for value in data.qvel[3:6]],
         "body_height": float(data.qpos[2]),
+    }
+
+
+def telemetry_sample(state: dict, applied_push: np.ndarray) -> dict:
+    """Add the external input to the state observed at one telemetry instant."""
+    return {
+        **state,
+        "applied_push_newtons": [float(value) for value in applied_push],
     }
 
 
@@ -329,6 +344,8 @@ def main() -> None:
     parser.add_argument("--ballast-y", type=float, default=TREATMENT_BALLAST_POSITION[1], help="treatment ballast offset along chassis Y in metres")
     parser.add_argument("--ballast-z", type=float, default=TREATMENT_BALLAST_POSITION[2], help="treatment ballast offset along chassis Z in metres")
     parser.add_argument("--playback-speed", type=float, default=DEFAULT_PLAYBACK_SPEED, help="viewer playback multiplier; 1 is real time")
+    parser.add_argument("--artifact", type=Path, help="write structured rollout telemetry to this JSON path")
+    parser.add_argument("--run-id", help="optional run identifier stored in the structured artifact")
     args = parser.parse_args()
     if args.duration <= 0:
         parser.error("duration must be positive")
@@ -368,7 +385,31 @@ def main() -> None:
     )
     left_figures, right_figures = make_telemetry_figures()
     samples = rolling_samples(TELEMETRY_SAMPLE_INTERVAL)
-    next_plot = 0.0
+    artifact_samples = [telemetry_sample(initial, np.zeros(3))]
+    next_sample = TELEMETRY_SAMPLE_INTERVAL
+
+    def record_sample(sample_state: dict, sample_push: np.ndarray) -> None:
+        support_margin = sample_state["support_margin_metres"]
+        samples.append(
+            (
+                sample_state["time"],
+                np.array(list(sample_state["normal_loads"].values())),
+                np.array(sample_state["com_ground_projection"][:2]),
+                np.array((np.nan if support_margin is None else support_margin,)),
+                np.array((sample_state["roll_degrees"], sample_state["pitch_degrees"])),
+                np.array(sample_state["angular_velocity"]),
+                np.array((sample_state["body_height"],)),
+            )
+        )
+        artifact_samples.append(telemetry_sample(sample_state, sample_push))
+
+    def capture_due_samples(sample_state: dict, sample_push: np.ndarray) -> None:
+        nonlocal next_sample
+        if sample_state["time"] + 1e-9 < next_sample:
+            return
+        record_sample(sample_state, sample_push)
+        while next_sample <= sample_state["time"] + 1e-9:
+            next_sample += TELEMETRY_SAMPLE_INTERVAL
 
     def step_treatment() -> tuple[dict, np.ndarray]:
         pushing = args.push_start <= data.time < args.push_start + args.push_duration
@@ -387,6 +428,7 @@ def main() -> None:
                 state, applied_push = step_treatment()
                 max_roll = max(max_roll, abs(state["roll_degrees"]))
                 max_pitch = max(max_pitch, abs(state["pitch_degrees"]))
+                capture_due_samples(state, applied_push)
         else:
             playback = WallClockPlayback(args.playback_speed, data.time)
             telemetry_refresh = WallClockRateGate(TELEMETRY_REFRESH_RATE)
@@ -396,21 +438,7 @@ def main() -> None:
                     state, applied_push = step_treatment()
                     max_roll = max(max_roll, abs(state["roll_degrees"]))
                     max_pitch = max(max_pitch, abs(state["pitch_degrees"]))
-                    if data.time >= next_plot:
-                        support_margin = state["support_margin_metres"]
-                        samples.append(
-                            (
-                                data.time,
-                                np.array(list(state["normal_loads"].values())),
-                                np.array(state["com_ground_projection"][:2]),
-                                np.array((np.nan if support_margin is None else support_margin,)),
-                                np.array((state["roll_degrees"], state["pitch_degrees"])),
-                                np.array(state["angular_velocity"]),
-                                np.array((state["body_height"],)),
-                            )
-                        )
-                        while next_plot <= data.time:
-                            next_plot += TELEMETRY_SAMPLE_INTERVAL
+                    capture_due_samples(state, applied_push)
 
                 draw_overlay(model, state, baseline_model, baseline_data, baseline_state, applied_push, viewer)
                 if telemetry_refresh.ready():
@@ -426,16 +454,52 @@ def main() -> None:
         data.xfrc_applied[body_id, :] = 0.0
         if viewer is not None:
             viewer.close()
-    print(json.dumps({
+    final = observe(model, data)
+    if artifact_samples[-1]["time"] != final["time"]:
+        record_sample(final, applied_push)
+    report = {
         "case": "centered_ballast_tripod",
         "treatment_ballast_mass_kg": args.ballast_mass,
         "treatment_ballast_position_metres": treatment_ballast_position.tolist(),
         "push": {"x_newtons": args.push_x, "start_seconds": args.push_start, "duration_seconds": args.push_duration},
         "initial": initial,
-        "final": observe(model, data),
+        "final": final,
         "max_abs_roll_degrees": max_roll,
         "max_abs_pitch_degrees": max_pitch,
-    }, indent=2))
+    }
+    if args.artifact is not None:
+        write_telemetry_artifact(
+            args.artifact,
+            experiment={
+                "id": EXPERIMENT_ID,
+                "source": "experiments/2026-08-11-static-support-centered-ballast/static_support.py",
+            },
+            model={
+                "name": "static_support_centered_ballast",
+                "mujoco_version": mujoco.__version__,
+                "timestep_seconds": float(model.opt.timestep),
+            },
+            run={
+                "id": args.run_id or args.artifact.stem,
+                "duration_seconds": args.duration,
+                "telemetry_sample_interval_seconds": TELEMETRY_SAMPLE_INTERVAL,
+                "random_seed": None,
+                "parameters": {
+                    "ballast_mass_kg": args.ballast_mass,
+                    "ballast_position_metres": treatment_ballast_position.tolist(),
+                    "push_x_newtons": args.push_x,
+                    "push_start_seconds": args.push_start,
+                    "push_duration_seconds": args.push_duration,
+                },
+                "termination": {
+                    "reason": "duration_reached" if data.time >= args.duration else "viewer_closed",
+                    "final_time_seconds": float(data.time),
+                },
+            },
+            samples=artifact_samples,
+            summary=report,
+        )
+    print(json.dumps(report, indent=2))
 
 
 if __name__ == "__main__":
