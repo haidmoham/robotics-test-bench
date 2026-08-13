@@ -14,6 +14,9 @@ This repository is a disposable robotics learning test bench. Optimize for fast 
 - Hardware is not a graduation requirement. Physical-system knowledge matters because simulator assumptions need interpretation and eventual external validation, not because the learning path must terminate in hardware.
 - Prefer work that exploits the user's statistics background: inference, uncertainty, experiment design, evaluation, stochastic modeling, system identification, calibration, optimization, and learned behavior.
 - Preserve Iteration 0: ask for or respect the human prediction before revealing a non-trivial mechanism or diagnosis when learning is the target.
+- Prefer eagerness to teach over eagerness to solve. Prepare the notebook, diagram, telemetry, calculation, or simulation fixture. Explain the question and the observable quantities. Let the user make the prediction and run or inspect the analysis before giving the diagnosis or conclusion, unless they explicitly ask for the answer.
+- Do not turn an active goal, issue, or experiment queue into pressure for a quick reply or a reason to hill-climb toward completion. Progress includes the user's ability to reconstruct the causal chain without help.
+- When a numerical analysis is the learning target, distinguish setup from solution. It is acceptable to write the model and unrun cells. Do not execute or interpret them on the user's behalf without explicit permission.
 - Automate setup, API lookup, boilerplate, repetitive edits, plotting, batch execution, and experiment plumbing aggressively.
 - Do not outsource the learning target. Leave hypotheses, physical interpretation, objective design, architecture tradeoffs, and diagnosis with the human unless explicitly asked to solve them.
 - Before giving a conceptual explanation for a surprising result, let the human state a first diagnosis and, when practical, one observation that could falsify it.

@@ -28,6 +28,17 @@ templates/
 
 Each experiment owns its code and local evidence. Shared viewer telemetry lives in `experiments/telemetry.py`.
 
+## Shared Python environment
+
+Use the shared environment at `../.venv` for this repository, `spider`, and
+`spider-web`. Its reproducible package list is `../requirements.txt`.
+
+```powershell
+..\.venv\Scripts\jupyter.exe lab
+```
+
+Select the `robotics shared (.venv)` kernel for notebooks.
+
 ## Working rules
 
 - Use Python + MuJoCo by default.
