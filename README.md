@@ -12,6 +12,8 @@ Small MuJoCo experiments for learning robotics from direct simulation evidence.
 
 `TODO.md` selects the current experiment. `docs/research-platform.md` records the long-range simulation-platform direction. The design document never overrides the current queue.
 
+For the C-1N robot, controller, and integrated locomotion checkpoints, start in [spider](https://github.com/haidmoham/spider). This repository owns the smaller experiments that test physical, numerical, statistical, or measurement questions before they become system changes.
+
 ## Structure
 
 ```text
