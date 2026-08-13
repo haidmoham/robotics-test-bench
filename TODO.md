@@ -10,39 +10,21 @@ This file is the authoritative selector for the next robotics test-bench experim
 
 ## NEXT
 
-### #24 Foundation — support state: make standing measurable
+### C-1N standing integration bridge
 
 **Status:** NEXT
 
-The immediate goal is still to learn what makes C-1N stand for real.
+#24 and #31 are resolved bench evidence. The current work is the C-1N
+integration of their measurement model and the evidence-backed proximal hinge.
 
-First isolate static support in the bench. Make this chain physical and measurable:
+Do not create another test-bench experiment until the C-1N integration exposes
+a concrete physical question and the user has recorded an Iteration 0
+prediction.
 
-`contact geometry + center-of-mass projection -> support load -> net body force/moment -> body attitude`
-
-Define standing as reproducible rollout behavior, not a visually plausible pose.
-
-Do not improve walking as part of the standing experiment.
-
-## Before C-1N STAND
-
-### #31 Foundation — leg workspace: separate reachability from gravity compensation
-
-Run #31 after #24 and before the C-1N standing integration.
-
-#24 establishes what support geometry C-1N needs and how to measure it. #31 then asks whether the current leg joint axes and DOFs can physically realize that geometry. Test one fixed-body leg first. Compare the current reachable workspace against one outward-and-down spider-like target. Add an orthogonal proximal hip DOF only if the existing morphology cannot reach the target.
-
-Keep the distinction explicit:
-
-`joint axes + joint limits -> reachable workspace -> available support geometry`
-
-then, only after the pose is reachable:
-
-`reachable pose + gravity/contact -> required joint torque`
-
-Do not modify all six legs until the one-leg experiment provides evidence that the extra DOF is required.
-
-After #31 closes, transfer #24's measurement model and any evidence-backed morphology change to C-1N. Build a stance-only integration with the gait clock disabled. Expose support geometry, center-of-mass projection, contact/load evidence, and torso attitude. If the robot demonstrates support-aware stable equilibrium under a fixed evaluation, preserve that boundary as `C-1N // 02 · STAND`.
+The integration must keep the gait clock disabled. It must expose support
+geometry, center-of-mass projection, contact/load evidence, and torso attitude.
+It must not claim `C-1N // 02 · STAND` until fixed evaluation evidence supports
+stable equilibrium.
 
 ## After STAND
 

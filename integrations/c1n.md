@@ -4,6 +4,9 @@ Target repository: `haidmoham/spider` (legacy repository slug; public robot iden
 
 C-1N is the longitudinal simulation robot. It integrates bench concepts and preserves visible checkpoints as the simulation becomes more physically grounded, statistically evaluated, and increasingly learned.
 
+The current cross-repository standing requirements and gates live in
+[`requirements.md`](requirements.md).
+
 ## Identity and checkpoint grammar
 
 Public checkpoints use:
@@ -29,6 +32,19 @@ C-1N // 03 · STRIDE   reserved for first materially better sustained walk
 
 - The test bench isolates questions and repairs mental models.
 - C-1N integrates learned mechanisms into one evolving robot.
+- Treat this work as a situated engineering apprenticeship. The objective is
+  both a working robot and the user's end-to-end physical understanding of why
+  it works or fails.
+- Use Jupyter as the shared reasoning surface. Set up geometry, force, or
+  telemetry evidence first. Explain what each observable means. Then let the
+  user form their own prediction before revealing a result or proposing a
+  hypothesis.
+- Do not supply a prediction for the user to accept or falsify. Ask for a
+  prediction only when the physical mechanism is the learning target. Do not
+  mistake response time for a blocker.
+- Use the active goal as a routing and quality guardrail. It must not pressure
+  the user, replace explanation with hill-climbing, or redefine understanding
+  as a secondary deliverable.
 - Preserve useful failures. Do not rewrite the project history into a clean final demo.
 - C-1N is simulation-first. Hardware integration is not a required checkpoint or graduation step.
 - Physics and controls remain necessary because learned and simulated behavior must be physically interpretable.
