@@ -10,9 +10,23 @@ This file is the authoritative selector for the next robotics test-bench experim
 
 ## NEXT
 
-### #24 Foundation — support state: make standing measurable
+### #35 Routing — make Jupyter the scientific front end to the test bench
 
 **Status:** NEXT
+
+Prioritize the notebook and telemetry interface before continuing the static-support lane. Route work through the cheapest valid surface:
+
+`question -> notebook or headless MuJoCo -> structured telemetry/results -> Jupyter analysis -> reusable code or next experiment`
+
+Add a first-class `notebooks/` layer without replacing MuJoCo. Preserve the existing simulator and telemetry infrastructure, make headless results independently consumable, and demonstrate one notebook analyzing stored MuJoCo telemetry. Keep reusable behavior in normal source code and keep robot-behavior claims reproducible from explicit experiments.
+
+After #35 establishes this scientific front end, return to the deferred #24 support experiment and re-evaluate its evidence and analysis path.
+
+## Deferred foundation
+
+### #24 Foundation — support state: make standing measurable
+
+**Status:** Deferred while #35 is active
 
 The immediate goal is still to learn what makes C-1N stand for real.
 

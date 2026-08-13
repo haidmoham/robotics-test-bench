@@ -400,3 +400,79 @@ from quaternion orientation. The associated source is Daniel Kleppner and
 Robert Kolenkow, *An Introduction to Mechanics*, 2nd edition. Bind this
 experiment to that problem-solving detour and preserve it as a learning-process
 note for a later blog projection, not as experimental evidence.
+
+## AI-20260813-001 — Supersede the immediate queue with the Jupyter front end
+
+```yaml
+id: AI-20260813-001
+date: 2026-08-13
+sources:
+  - kind: chat
+    system: chat
+    reference: user decision in current session
+  - kind: coding-agent
+    system: Codex
+    reference: robotics-test-bench issue #35 inspection
+status: acted
+evaluation: confirmed
+repo_state:
+  repository: robotics-test-bench
+  branch: codex/static-support-centered-ballast
+  commit:
+  changed_files:
+    - TODO.md
+    - experiments/2026-08-11-static-support-centered-ballast/agent-log.md
+related:
+  experiment: experiments/2026-08-11-static-support-centered-ballast
+  hypotheses: []
+  experiments: []
+  claims: []
+  decisions: [35]
+  issues: [35, 24]
+  files:
+    - TODO.md
+objects:
+  question: Q-20260813-001
+  response: R-20260813-001
+  evaluation: E-20260813-001
+  action: A-20260813-001
+  outcome: O-20260813-001
+librarian:
+  status: pending
+  record_ids: []
+```
+
+## Q — Question
+
+Which active issue should control the next robotics-test-bench experiment?
+
+## R — Response summary
+
+Issue #35's Jupyter routing work is more important now than continuing the
+static-support lane. The notebook layer should become the scientific front end
+for both notebook-native questions and headless MuJoCo telemetry analysis.
+
+## E — Evaluation
+
+### Accepted
+
+- Supersede #24 as the immediate queue item with #35.
+- Keep #24 open and explicitly deferred rather than treating it as resolved.
+
+## A — Action
+
+Make #35 the sole `NEXT` item in `TODO.md`, mark #24 deferred, and preserve the
+return path to #24 after the Jupyter/telemetry interface is established.
+
+## O — Outcome
+
+The authoritative queue now selects #35. #24 remains an open foundation issue
+and is not claimed complete or closed.
+
+### Effect on current belief
+
+- Before: the queue treated static support (#24) as the immediate next task.
+- After: the Jupyter scientific front end (#35) is the immediate prerequisite,
+  with #24 deferred until the new analysis path exists.
+- Evidence status: user decision, supported by inspection of open issue #35;
+  no new physical experiment result is asserted.
