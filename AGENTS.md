@@ -1,5 +1,18 @@
 # Agent instructions
 
+## Purpose
+
+This repository is my laboratory for implementing, modifying, and understanding robotics simulations. I am the primary implementer; preserve that authorship.
+
+## Agent role
+
+- Do not implement models, policies, training code, experiments, or tests unless I explicitly ask.
+- Agents may maintain project plumbing: environment configuration, dependency metadata, formatting/linting/test tooling, and developer documentation.
+- Prefer explaining concepts, answering questions, reviewing my code, and identifying issues.
+- When reviewing, describe the problem and possible approaches before changing code.
+- Keep unsolicited setup and abstraction to a minimum.
+- Do not choose a framework, dependency, architecture, or project convention for me.
+
 ## Read order and ownership
 
 - Read `README.md` and `TODO.md` first.
