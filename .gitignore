@@ -6,3 +6,9 @@ __pycache__/
 .pytest_cache/
 .ruff_cache/
 .DS_Store
+
+# Generated Ant policy-learning experiment artifacts (kept locally, never tracked).
+experiments/2026-08-27-ant-policy-learning/artifacts/
+experiments/2026-08-27-ant-policy-learning/logs/
+experiments/2026-08-27-ant-policy-learning/videos/
+experiments/2026-08-27-ant-policy-learning/rollouts/
