@@ -22,11 +22,21 @@ when learned locomotion exposes a concrete failure that requires them.
 
 ## NEXT
 
-### #25 Learn — first learned locomotion
+### #25 Learn — user-written RL, PPO, and control treatments
 
 **Status:** NEXT
 
-Move directly into the smallest useful policy-learning loop from issue #25.
+Start with the [C-1N notebook learning route](../spider/LEARNING.md).
+Trace one control step before defining the learning problem. Then write a basic
+RL loop and PPO with PyTorch. Keep observation selection, reward terms, episode
+boundaries, action timing, and interpretation with the human.
+
+Compare fixed neutral targets, the existing stance controller, and PPO under
+shared evaluation conditions. Begin with joint-target offsets through the
+existing actuators. Compare other action interfaces after the first treatment
+comparison is understood.
+
+Move into the smallest useful policy-learning loop from issue #25.
 The first learned gait can be ugly. Its job is to make
 
 `objective -> policy -> physical behavior -> failure`
@@ -41,6 +51,23 @@ The first C-1N locomotion policy should preserve rollout state, actions, objecti
 terms, seeds, policy checkpoints, and fixed evaluation scenarios. Do not promote
 `C-1N // 03 · STRIDE` from one attractive rollout. STRIDE requires materially
 better sustained locomotion under fixed evaluation.
+
+## Route reconciliation — 2026-09-04
+
+Source: the user's explicit refactor and algorithm-ownership instructions, plus
+remote state refreshed during landing. The earlier local checkout lagged the
+remote support evidence and Ant scaffold. Preserve the merged #24 and #31
+experiments and all stable records. Do not recreate them as prerequisites.
+
+The older #25 instruction and Ant-v5 scaffold use an existing PPO trainer.
+The current user instruction supersedes that algorithm-ownership rule: the
+human writes RL and PPO. Preserve the Ant scaffold as prior work. It does not
+select a framework or supply a new prediction for the current route.
+
+This is a route decision, not experiment closure. Existing implementation and
+bench evidence do not establish the human's present independent understanding.
+Keep #25 as the single next lane. Follow the initial control-step notebook with
+the human's learning-problem design and prediction before training.
 
 ## After first learned locomotion
 

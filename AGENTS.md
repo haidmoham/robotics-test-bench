@@ -101,7 +101,15 @@ This repository is my laboratory for implementing, modifying, and understanding 
 - Use Python and MuJoCo by default.
 - Prefer direct MuJoCo concepts while the mechanism is the learning target.
 - #24 static support and #31 leg workspace are resolved bench evidence.
-- Integrate their results through `haidmoham/spider#12`. Earn `C-1N // 02 · STAND` only with reproducible evidence.
-- After `STAND`, move to `#25` learned locomotion.
+- Preserve C-1N's recorded STAND baseline and its limits. Bench evidence does not certify the human's present understanding.
+- Follow `#25` into user-written RL/PPO. Use the C-1N notebook guide for the initial control-step ramp-up.
 - Let later policy and simulator failures select the next mechanism.
 - Keep the platform direction in `docs/research-platform.md` inactive until a concrete scale, reproducibility, validation, or analysis need appears.
+
+## Current notebook learning contract
+
+- The 2026-09-04 user instruction supersedes issue #25's earlier instruction to use an existing RL implementation. The human writes RL and PPO with PyTorch operations, autograd, and optimizers.
+- Use Jupyter first for predictions, bounded experiments, plots, and interpretation. Keep reusable simulation behavior in Python modules.
+- Default Run All in new learning notebooks validates setup without executing prediction-gated experiments.
+- Do not supply completed rollout, return, advantage, policy-loss, value-loss, or update code unless the human explicitly asks for that solution.
+- Preserve the existing Ant-v5 scaffold and its stable records as prior work. Do not infer a new prediction or understanding from those records.

@@ -22,11 +22,14 @@ Current lineage:
 ```text
 C-1N // 00 · SPAWN    historical deterministic six-foot spawn baseline
 C-1N // 01 · SHUFFLE  current coordinated gait failure
-C-1N // 02 · STAND    reserved for first support-aware stable stance
+C-1N // 02 · STAND    recorded six-contact baseline; see canonical C-1N README
 C-1N // 03 · STRIDE   reserved for first materially better sustained walk
 ```
 
-`SPAWN` does not demonstrate standing. `STAND` and `STRIDE` are reserved names, not completed capabilities.
+`SPAWN` does not demonstrate standing. C-1N records STAND as a six-contact
+baseline, with disturbance recovery excluded. STRIDE remains reserved.
+This records the canonical repository's claim. It does not certify the human's
+present understanding. `TODO.md` selects the user-written RL/PPO route.
 
 ## Contract
 
@@ -54,9 +57,13 @@ C-1N // 03 · STRIDE   reserved for first materially better sustained walk
 - Legacy issue #6 torso-frame foot task-space telemetry remains an optional non-checkpoint integration.
 - Keep browser and WASM work downstream of useful simulation behavior. The web surface exposes evidence; it does not create the learning target.
 
-## Required standing bridge
+## Standing bridge and evidence boundary
 
-Issue #24 is the current foundation.
+The following bridge records the standing integration requirements. The bench
+now contains #24 and #31 evidence. C-1N records its STAND baseline. Preserve
+these sources; use `TODO.md` and the [notebook guide](../../spider/LEARNING.md)
+to select current work. The historical requirements ledger predates that
+checkpoint and does not select an additional standing prerequisite.
 
 First isolate static support in the bench. Define standing through contact geometry, center-of-mass projection, support load, body moment, and reproducible rollout behavior.
 
