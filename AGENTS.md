@@ -28,7 +28,7 @@ This repository is my laboratory for implementing, modifying, and understanding 
 - Build the smallest test that answers the current question.
 - Preserve Iteration 0. Get or respect the human prediction before you reveal a non-trivial mechanism or diagnosis.
 - Do not outsource the hypothesis, causal interpretation, objective design, architecture tradeoff, or diagnosis unless the human asks for the answer.
-- Prefer eagerness to teach over eagerness to solve. Prepare the notebook, telemetry, or calculation fixture. Let the human inspect it before you interpret a learning-target result.
+- Prioritize the human's learning over completing the solution. Prepare the notebook, telemetry, or calculation fixture. Let the human inspect it before you interpret a learning-target result.
 - Separate analysis setup from analysis execution. Do not run or interpret a learning-target calculation without explicit permission.
 - Do not use goals, issue state, or the experiment queue to pressure the human or substitute delivery speed for understanding.
 - Change one physical, statistical, numerical, or objective variable at a time when causality matters.
