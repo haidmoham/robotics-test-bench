@@ -30,8 +30,14 @@ The user confirmed on 2026-09-10 that STAND is earned as recorded and requested
 a clean base before implementing a rudimentary walking policy. Use practice
 for the policy and its design. Use production for peripheral cleanup and
 verification. Do not implement the policy or infer a completed exercise during
-preparation. This confirms the existing route; it does not close issue #24's
-open understanding question or add a standing-robustness gate.
+preparation. This confirms the existing route; it does not certify support
+understanding or add a standing-robustness gate.
+
+The same day's issue cleanup archived #24, #26-#30, and #35-#37 as not planned.
+No remaining implementation or learning outcome was completed by closing them.
+Only #25 is active here, paired with `haidmoham/spider#17`. Historical issue
+bodies and experiment records remain available. Reopen a lane or create a
+bounded experiment only when current work supplies a concrete reason.
 
 Start with the [C-1N notebook learning route](../spider/LEARNING.md).
 Trace one control step before defining the learning problem. Then write a basic
@@ -80,14 +86,14 @@ the human's learning-problem design and prediction before training.
 
 Let the first understandable learned failure select the next lane.
 
-Primary lanes:
+Current lane and archived references (not queued prerequisites):
 
-- #25 Learn — objective -> policy -> behavior.
-- #26 Evaluate — treat behavior as a distribution.
-- #27 Model — identify and calibrate simulator parameters from rollouts.
-- #28 Uncertainty — train and test across distributions and shift.
-- #29 Differentiate — backpropagate through simulated dynamics.
-- #30 Scale — make simulation experiments reproducible, observable, and fast.
+- #25 Learn — active: objective -> policy -> behavior.
+- #26 Evaluate — archived: treat behavior as a distribution.
+- #27 Model — archived: identify and calibrate simulator parameters from rollouts.
+- #28 Uncertainty — archived: train and test across distributions and shift.
+- #29 Differentiate — archived: backpropagate through simulated dynamics.
+- #30 Scale — archived: make simulation experiments reproducible, observable, and fast.
 
 Controls, contact mechanics, actuator limits, state estimation, numerical methods,
 and other robotics concepts are supporting mechanisms. Pull one back in only

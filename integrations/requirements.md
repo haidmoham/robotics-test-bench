@@ -22,9 +22,10 @@ the baseline and failure limits. This ledger now agrees with that boundary and
 `TODO.md`. Preserve the original row IDs and the stronger historical
 perturbation requirement above. Do not reinterpret a failed recovery as a pass.
 
-Issue #24 can remain open for support understanding. Its fixture evidence and
-the robot checkpoint do not prove the user's present understanding. It is not
-a standing prerequisite before the current walking-policy work.
+Issue #24 was archived as not planned during the 2026-09-10 issue cleanup.
+Its fixture evidence is preserved. Neither administrative closure nor the
+robot checkpoint proves the user's present understanding. It is not a
+standing prerequisite before the current walking-policy work.
 
 ## Update rule
 
