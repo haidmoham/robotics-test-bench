@@ -2,7 +2,7 @@
 
 Question: How does the same first-joint motion map into shared-frame foot X motion when only the base orientation changes?
 
-## Iteration 0
+## Initial prediction
 
 Holding geometry, joint pose, perturbation size, controller, and timestep fixed, the same small positive first-joint perturbation should produce a large shared-X foot displacement at 0 degrees, near-zero X displacement at 90 degrees, and an equally large displacement with the opposite X sign at 180 degrees. The foot should not stop moving at 90 degrees; its motion should be along shared Z instead. At intermediate orientations, the shared-X magnitude should scale with the cosine of the base orientation: 45 and 135 degrees should have about 71% of the 0-degree magnitude, with opposite signs.
 

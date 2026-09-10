@@ -43,7 +43,10 @@ State the decision-relevant question.
 
 ### Human prediction
 
-Record Iteration 0 before the agent reveals a non-trivial mechanism or result when learning is the target.
+Record the user's actual initial attempt when it matters to this experiment.
+A conversational prediction, code attempt, explanation, or diagnosis counts.
+This log documents evidence after the interaction; it is not a form the user
+must fill out before receiving help.
 
 ### Purpose
 

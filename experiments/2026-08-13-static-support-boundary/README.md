@@ -5,7 +5,7 @@
 For a fixed three-foot support triangle, does forward payload shift make the
 signed support margin cross zero before the rear support load reaches zero?
 
-## Iteration 0
+## Initial prediction
 
 The human predicts that support margin reaches zero earlier. They also expect
 the morphology to become less stable while moving forward because a gait can

@@ -38,13 +38,12 @@ present understanding. `TODO.md` selects the user-written RL/PPO route.
 - Treat this work as a situated engineering apprenticeship. The objective is
   both a working robot and the user's end-to-end physical understanding of why
   it works or fails.
-- Use Jupyter as the shared reasoning surface. Set up geometry, force, or
-  telemetry evidence first. Explain what each observable means. Then let the
-  user form their own prediction before revealing a result or proposing a
-  hypothesis.
-- Do not supply a prediction for the user to accept or falsify. Ask for a
-  prediction only when the physical mechanism is the learning target. Do not
-  mistake response time for a blocker.
+- Use Jupyter as the shared reasoning surface. Prepare geometry, force, or
+  telemetry fixtures and explain the observables. Follow the shared practice
+  rule in `AGENTS.md`: get a real user attempt in conversation before advancing
+  the learning step. Do not require a numbered prediction form or code gate.
+- Do not supply the user's attempt for them. Give requested explanations and
+  offer hints. Do not mistake response time for a blocker.
 - Use the active goal as a routing and quality guardrail. It must not pressure
   the user, replace explanation with hill-climbing, or redefine understanding
   as a secondary deliverable.
