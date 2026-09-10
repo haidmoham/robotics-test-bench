@@ -7,7 +7,7 @@ This file is the authoritative selector for the next robotics test-bench experim
 - Closed legacy issues remain historical provenance only.
 - Do not route new work through a closed issue unless a current failure revives its mechanism.
 - Re-evaluate the queue after each resolved experiment or integrated C-1N failure.
-- Do not create the next experiment directory until its Iteration 0 prediction exists.
+- Preparing an experiment directory does not authorize solving or running the user's learning work. Follow the shared practice rule before advancing that work.
 - `docs/research-platform.md` records long-range design. It does not select current work.
 
 ## Current C-1N state
@@ -56,9 +56,9 @@ The first learned gait can be ugly. Its job is to make
 
 inspectable.
 
-Before training, record the Iteration 0 prediction required by #25, including at
-least one way the objective could be exploited without producing the intended
-motion.
+Before training, discuss the user's first attempt at the objective, including
+how it could reward behavior that misses the intended motion. Keep that
+iteration conversational; no prediction form or code gate is required.
 
 The first C-1N locomotion policy should preserve rollout state, actions, objective
 terms, seeds, policy checkpoints, and fixed evaluation scenarios. Do not promote

@@ -1,5 +1,17 @@
 # Agent instructions
 
+<!-- shared-practice:start -->
+<!-- Source: robotics-test-bench/guidance/practice.md. Refresh with scripts/sync_practice_contract.py from that repository. -->
+## Shared practice rule
+
+- Before advancing a meaningful learning step, get one real attempt from the user: code, a prediction, an explanation, a diagnosis, or a proposed design with a reason. A conversational attempt counts. Reuse a relevant attempt already supplied; do not restart this check every turn. Acknowledgment alone does not count.
+- Keep this boundary in the conversation. If no attempt exists, pause the learning step and help the user make one. Do not supply the attempt yourself or move ahead to its solution, run, or interpretation.
+- Do not require an "Iteration 0" label, a written form, a prediction variable, or a code switch to enforce participation. Do not turn each explanation into a quiz. Answer direct conceptual questions and offer hints that help the user attempt the work.
+- Review the attempt with the user. Let that feedback guide the next change. Do not count agent output, setup checks, or notebook execution as demonstrated user capability.
+- Automate peripheral setup, cleanup, and verification. Preparing a notebook does not authorize executing its learning experiment. Notebook cells can run normally when the user chooses to run them; the agent must preserve the conversational boundary before running them on the user's behalf.
+- Honor an explicit request for a full solution for that part only. Keep the remaining learning work with the user.
+<!-- shared-practice:end -->
+
 ## Purpose
 
 This repository is my laboratory for implementing, modifying, and understanding robotics simulations. I am the primary implementer; preserve that authorship.
@@ -26,7 +38,7 @@ This repository is my laboratory for implementing, modifying, and understanding 
 ## Experiment execution
 
 - Build the smallest test that answers the current question.
-- Preserve Iteration 0. Get or respect the human prediction before you reveal a non-trivial mechanism or diagnosis.
+- Follow the shared practice rule for the user's first attempt. Keep the learning boundary conversational.
 - Do not outsource the hypothesis, causal interpretation, objective design, architecture tradeoff, or diagnosis unless the human asks for the answer.
 - Prioritize the human's learning over completing the solution. Prepare the notebook, telemetry, or calculation fixture. Let the human inspect it before you interpret a learning-target result.
 - Separate analysis setup from analysis execution. Do not run or interpret a learning-target calculation without explicit permission.
@@ -111,6 +123,6 @@ This repository is my laboratory for implementing, modifying, and understanding 
 - Use `$practice` for the walking-policy work. The human owns the learning decisions and algorithm implementation. Use production for peripheral setup, cleanup, and verification. Preparation does not authorize training or completing an unanswered exercise.
 - The 2026-09-04 user instruction supersedes issue #25's earlier instruction to use an existing RL implementation. The human writes RL and PPO with PyTorch operations, autograd, and optimizers.
 - Use Jupyter first for predictions, bounded experiments, plots, and interpretation. Keep reusable simulation behavior in Python modules.
-- Default Run All in new learning notebooks validates setup without executing prediction-gated experiments.
+- Do not add prediction forms or code gates to new learning notebooks. Run All may execute experiments; validate structure and syntax during preparation instead.
 - Do not supply completed rollout, return, advantage, policy-loss, value-loss, or update code unless the human explicitly asks for that solution.
 - Preserve the existing Ant-v5 scaffold and its stable records as prior work. Do not infer a new prediction or understanding from those records.

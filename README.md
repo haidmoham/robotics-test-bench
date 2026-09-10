@@ -58,6 +58,11 @@ a comparison or install the older Ant trainer into the C-1N environment.
 
 ## Working rules
 
+- The shared practice section in both repositories' `AGENTS.md` files comes
+  from [guidance/practice.md](guidance/practice.md). After editing that source,
+  run `python scripts/sync_practice_contract.py` from this repository. Use
+  `--check` to detect drift; use `--spider-root PATH` for non-sibling checkouts.
+  Each repository keeps its own instructions outside that synchronized section.
 - Use Python and MuJoCo by default.
 - Build physical intuition before notation when the mechanism is the learning target.
 - Change one meaningful variable at a time when causality matters.

@@ -5,7 +5,7 @@
 Can the current two-joint front-left C-1N leg reach the body-frame support
 target `[+0.30, +0.32, -0.30] m` without adding morphology?
 
-## Iteration 0
+## Initial prediction
 
 The human predicts the target is reachable. The uncertain part is the current
 joint axes and their orientation, rather than leg length alone.

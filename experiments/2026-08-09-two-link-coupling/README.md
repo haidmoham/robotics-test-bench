@@ -2,7 +2,7 @@
 
 Question: How does moving one joint change the other joint's behavior in a planar 2-DOF arm?
 
-## Iteration 0 — make a prediction first
+## Initial prediction — make a prediction first
 
 Before running anything, write down:
 
@@ -10,7 +10,7 @@ Before running anything, write down:
 - How will that prediction change between `elbow-down` and `elbow-up` configurations?
 - Which difference do you expect when gravity is off?
 
-Do not read a dynamics explanation before you have a prediction.
+Discuss your own first attempt with your pair programmer before advancing the experiment. Ask for explanations when you need them.
 
 ## Smallest useful experiment
 
