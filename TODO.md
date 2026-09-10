@@ -26,6 +26,13 @@ when learned locomotion exposes a concrete failure that requires them.
 
 **Status:** NEXT
 
+The user confirmed on 2026-09-10 that STAND is earned as recorded and requested
+a clean base before implementing a rudimentary walking policy. Use practice
+for the policy and its design. Use production for peripheral cleanup and
+verification. Do not implement the policy or infer a completed exercise during
+preparation. This confirms the existing route; it does not close issue #24's
+open understanding question or add a standing-robustness gate.
+
 Start with the [C-1N notebook learning route](../spider/LEARNING.md).
 Trace one control step before defining the learning problem. Then write a basic
 RL loop and PPO with PyTorch. Keep observation selection, reward terms, episode

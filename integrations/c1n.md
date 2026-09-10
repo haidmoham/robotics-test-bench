@@ -62,8 +62,8 @@ present understanding. `TODO.md` selects the user-written RL/PPO route.
 The following bridge records the standing integration requirements. The bench
 now contains #24 and #31 evidence. C-1N records its STAND baseline. Preserve
 these sources; use `TODO.md` and the [notebook guide](../../spider/LEARNING.md)
-to select current work. The historical requirements ledger predates that
-checkpoint and does not select an additional standing prerequisite.
+to select current work. The requirements ledger preserves the historical rows
+and their reconciled status. It does not select an additional standing prerequisite.
 
 First isolate static support in the bench. Define standing through contact geometry, center-of-mass projection, support load, body moment, and reproducible rollout behavior.
 

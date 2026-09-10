@@ -41,8 +41,8 @@ Each experiment owns its code and local evidence. Shared viewer telemetry lives 
 
 ## Shared Python environment
 
-Use the shared environment at `../.venv` for this repository, `spider`, and
-`spider-web`. Its reproducible package list is `../requirements.txt`.
+Use the shared environment at `../.venv` for existing bench notebooks. Its
+package list is `../requirements.txt`. Preserve this environment for prior work.
 
 ```powershell
 ..\.venv\Scripts\jupyter.exe lab
@@ -50,9 +50,11 @@ Use the shared environment at `../.venv` for this repository, `spider`, and
 
 Select the `robotics shared (.venv)` kernel for notebooks.
 
-If the shared environment is absent, the C-1N guide documents a separate pinned
-environment at `../spider/.venv` for its first exercise. Use that environment
-for the C-1N kernel and checks. Do not mix kernels within a comparison.
+For the current C-1N practice route, use `../spider/.venv` and install
+`../spider/requirements-learning.txt` as described in the C-1N guide. This is
+the C-1N environment even when the shared bench environment exists. Its physics
+versions are pinned in Spider's `requirements.txt`. Do not mix kernels within
+a comparison or install the older Ant trainer into the C-1N environment.
 
 ## Working rules
 

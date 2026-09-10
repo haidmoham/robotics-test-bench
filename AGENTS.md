@@ -108,6 +108,7 @@ This repository is my laboratory for implementing, modifying, and understanding 
 
 ## Current notebook learning contract
 
+- Use `$practice` for the walking-policy work. The human owns the learning decisions and algorithm implementation. Use production for peripheral setup, cleanup, and verification. Preparation does not authorize training or completing an unanswered exercise.
 - The 2026-09-04 user instruction supersedes issue #25's earlier instruction to use an existing RL implementation. The human writes RL and PPO with PyTorch operations, autograd, and optimizers.
 - Use Jupyter first for predictions, bounded experiments, plots, and interpretation. Keep reusable simulation behavior in Python modules.
 - Default Run All in new learning notebooks validates setup without executing prediction-gated experiments.
