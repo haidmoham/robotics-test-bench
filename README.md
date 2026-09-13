@@ -15,8 +15,8 @@ Small MuJoCo experiments for learning robotics from direct simulation evidence.
 For the C-1N robot, controller, and integrated locomotion checkpoints, start in [spider](https://github.com/haidmoham/spider). This repository owns the smaller experiments that test physical, numerical, statistical, or measurement questions before they become system changes.
 
 Resume the current ramp-up in the [C-1N learning guide](https://github.com/haidmoham/spider/blob/master/LEARNING.md)
-and [first notebook](../spider/notebooks/01_control_step.ipynb). The notebook link
-assumes sibling checkouts. Use Jupyter for predictions, small runs, plots, and
+and [first notebook](https://github.com/haidmoham/spider/blob/master/notebooks/01_control_step.ipynb). Local commands below
+assume sibling checkouts. Use Jupyter for predictions, small runs, plots, and
 interpretation. Keep reusable simulation code in Python modules. The human
 writes RL and PPO; the older Ant scaffold remains prior work.
 
@@ -42,7 +42,9 @@ Each experiment owns its code and local evidence. Shared viewer telemetry lives 
 ## Shared Python environment
 
 Use the shared environment at `../.venv` for existing bench notebooks. Its
-package list is `../requirements.txt`. Preserve this environment for prior work.
+package list is `../requirements.txt`. Both are local workspace prerequisites,
+not files supplied by this repository; a fresh clone does not recreate that
+historical environment. Preserve it for prior work.
 
 ```powershell
 ..\.venv\Scripts\jupyter.exe lab
