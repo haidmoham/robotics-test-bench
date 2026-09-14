@@ -1,76 +1,17 @@
-# Robotics Test Bench
+# Robotics Test Bench — deprecated
 
-Small MuJoCo experiments for learning robotics from direct simulation evidence.
+Ongoing work has moved to [spider](https://github.com/haidmoham/spider).
+Start with the [bounded experiment notebooks](https://github.com/haidmoham/spider/tree/master/lab/notebooks)
+and the [current learning route](https://github.com/haidmoham/spider/blob/master/LEARNING.md).
 
-## Loop
+The consolidated repository has two code modules:
 
-1. State a physical, statistical, or numerical question.
-2. Make a prediction.
-3. Build the smallest useful test.
-4. Run it and measure the result.
-5. Update the model and choose the next question.
+- `lab`: isolated experiments and notebooks, with concept-to-robot links.
+- `spider`: the robot simulation, controllers, measurements, and viewing tools.
 
-`TODO.md` selects the current experiment. `docs/research-platform.md` records the long-range simulation-platform direction. The design document never overrides the current queue.
-
-For the C-1N robot, controller, and integrated locomotion checkpoints, start in [spider](https://github.com/haidmoham/spider). This repository owns the smaller experiments that test physical, numerical, statistical, or measurement questions before they become system changes.
-
-Resume the current ramp-up in the [C-1N learning guide](https://github.com/haidmoham/spider/blob/master/LEARNING.md)
-and [first notebook](../spider/notebooks/01_control_step.ipynb). The notebook link
-assumes sibling checkouts. Use Jupyter for predictions, small runs, plots, and
-interpretation. Keep reusable simulation code in Python modules. The human
-writes RL and PPO; the older Ant scaffold remains prior work.
-
-## Structure
-
-```text
-TODO.md
-docs/
-  research-platform.md
-experiments/
-  telemetry.py
-  viewer_runtime.py
-  YYYY-MM-DD-short-question/
-    README.md
-    <experiment code>
-    agent-log.md
-integrations/
-templates/
-```
-
-Each experiment owns its code and local evidence. Shared viewer telemetry lives in `experiments/telemetry.py`.
-
-## Shared Python environment
-
-Use the shared environment at `../.venv` for existing bench notebooks. Its
-package list is `../requirements.txt`. Preserve this environment for prior work.
-
-```powershell
-..\.venv\Scripts\jupyter.exe lab
-```
-
-Select the `robotics shared (.venv)` kernel for notebooks.
-
-For the current C-1N practice route, use `../spider/.venv` and install
-`../spider/requirements-learning.txt` as described in the C-1N guide. This is
-the C-1N environment even when the shared bench environment exists. Its physics
-versions are pinned in Spider's `requirements.txt`. Do not mix kernels within
-a comparison or install the older Ant trainer into the C-1N environment.
-
-## Working rules
-
-- The shared practice section in both repositories' `AGENTS.md` files comes
-  from [guidance/practice.md](guidance/practice.md). After editing that source,
-  run `python scripts/sync_practice_contract.py` from this repository. Use
-  `--check` to detect drift; use `--spider-root PATH` for non-sibling checkouts.
-  Each repository keeps its own instructions outside that synchronized section.
-- Use Python and MuJoCo by default.
-- Build physical intuition before notation when the mechanism is the learning target.
-- Change one meaningful variable at a time when causality matters.
-- Begin a visual comparison with a labelled control and one deliberately legible treatment.
-- Render the control as a ghost over the treatment when the comparison is spatial.
-- Treat overlays as inspection aids, not as evidence.
-- Define objectives and evaluation conditions explicitly.
-- Compare fixed scenarios, seeds, or parameter draws when the question is statistical.
-- Preserve useful failures.
-- Add infrastructure only when a real experiment needs it.
-- Stop polishing when the experiment has answered its question.
+This checkout remains historical source. Its experiment records and stable IDs
+were preserved at commit `9cdd22b377f17c65fc41a85ddbef19b2b9cbacc7` in
+[the migration map](https://github.com/haidmoham/spider/blob/master/lab/history/migration.json).
+The consolidation does not claim new experiment results or human mastery.
+Older instructions, scripts, issues, and environment notes below this root are
+historical context. Do new work in spider. Do not run the old practice-sync script.
