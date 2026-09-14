@@ -15,3 +15,5 @@ were preserved at commit `9cdd22b377f17c65fc41a85ddbef19b2b9cbacc7` in
 The consolidation does not claim new experiment results or human mastery.
 Older instructions, scripts, issues, and environment notes below this root are
 historical context. Do new work in spider. Do not run the old practice-sync script.
+
+The old shared environment and its requirements file were local workspace prerequisites, not files supplied by a fresh clone. Follow spider's current setup instructions for new work.
